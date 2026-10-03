@@ -16,8 +16,15 @@ export async function GET() {
     .from(newsletterSubscribers)
     .orderBy(desc(newsletterSubscribers.createdAt))
 
+  function csvField(value: string): string {
+    const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+    return `"${safe.replace(/"/g, '""')}"`
+  }
+
   const header = 'email,status,created_at'
-  const lines = rows.map((row) => `${row.email},${row.status},${row.createdAt.toISOString()}`)
+  const lines = rows.map(
+    (row) => `${csvField(row.email)},${csvField(row.status)},${csvField(row.createdAt.toISOString())}`
+  )
   const csv = [header, ...lines].join('\n')
 
   return new NextResponse(csv, {

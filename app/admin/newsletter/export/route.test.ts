@@ -28,6 +28,17 @@ describe('GET /admin/newsletter/export', () => {
 
     expect(response.headers.get('Content-Type')).toBe('text/csv')
     expect(body).toContain('email,status,created_at')
-    expect(body).toContain('jane@example.com,subscribed,')
+    expect(body).toContain('"jane@example.com","subscribed","2026-10-02T00:00:00.000Z"')
+  })
+
+  it('neutralizes formula-leading characters to prevent CSV injection', async () => {
+    orderBy.mockResolvedValueOnce([
+      { email: '=1+1@evil.example', status: 'subscribed', createdAt: new Date('2026-10-02T00:00:00Z') },
+    ])
+    const { GET } = await import('./route')
+    const response = await GET()
+    const body = await response.text()
+
+    expect(body).toContain(`"'=1+1@evil.example"`)
   })
 })
