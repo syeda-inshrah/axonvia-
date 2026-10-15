@@ -1,1 +1,43 @@
 @import "tailwindcss";
+
+:root {
+  --bg-primary: #05070D;
+  --bg-secondary: #0A0E1A;
+  --bg-card: #0F1420;
+  --accent-cyan: #2DD4FF;
+  --accent-purple: #9B5CFF;
+  --accent-gradient: linear-gradient(135deg, #2DD4FF 0%, #9B5CFF 100%);
+  --text-primary: #F5F7FA;
+  --text-secondary: #9BA3B5;
+  --text-muted: #5C6478;
+  --border-glass: rgba(255,255,255,0.08);
+  --border-glow: rgba(45,212,255,0.35);
+  --success: #4ADE80;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body), sans-serif;
+}
+
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.gradient-blob {
+  animation: blob-drift 20s ease-in-out infinite;
+}
+
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.1); }
+  66% { transform: translate(-30px, 20px) scale(0.95); }
+}
+
+[data-reduced-motion='true'] .gradient-blob {
+  animation: none;
+}
