@@ -1,14 +1,14 @@
 // components/sections/Hero.test.tsx
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
+import { Hero } from './Hero'
 
 vi.mock('@/components/CalEmbed', () => ({
   CalEmbed: ({ children }: { children: React.ReactNode }) => <button data-testid="cal-trigger">{children}</button>,
 }))
 
 describe('Hero', () => {
-  it('renders the headline, subheadline, and both CTAs', async () => {
-    const { Hero } = await import('./Hero')
+  it('renders the headline, subheadline, and both CTAs', () => {
     const { container } = render(<Hero />)
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('We Build AI Agents That Run Your Business')
