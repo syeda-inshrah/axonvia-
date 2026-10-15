@@ -30,4 +30,22 @@ describe('CalEmbed', () => {
     const trigger = screen.getByTestId('cal-trigger')
     expect(trigger).toHaveAttribute('data-cal-link', 'axonvia/strategy-call')
   })
+
+  it('styles the trigger as a button itself, so callers pass plain text instead of nesting a Button', async () => {
+    process.env.NEXT_PUBLIC_CAL_LINK = 'axonvia/strategy-call'
+    const { CalEmbed } = await import('./CalEmbed')
+    render(<CalEmbed size="large">Book a Call</CalEmbed>)
+
+    const trigger = screen.getByTestId('cal-trigger')
+    expect(trigger).toHaveClass('bg-[image:var(--accent-gradient)]', 'px-9')
+    expect(trigger.querySelector('button')).toBeNull()
+  })
+
+  it('applies the requested variant to the mailto fallback', async () => {
+    delete process.env.NEXT_PUBLIC_CAL_LINK
+    const { CalEmbed } = await import('./CalEmbed')
+    render(<CalEmbed variant="secondary" className="w-full">Book a Call</CalEmbed>)
+
+    expect(screen.getByTestId('cal-fallback')).toHaveClass('border', 'w-full')
+  })
 })
