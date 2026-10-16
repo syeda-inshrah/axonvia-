@@ -18,7 +18,7 @@ describe('HomePage', () => {
 
     expect(screen.getByRole('link', { name: 'Axonvia' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'We Build AI Agents That Run Your Business'
+      'AI Automation & Intelligent Solutions for Modern Businesses'
     )
     expect(screen.getByText(/© 2026 Axonvia/)).toBeInTheDocument()
   })

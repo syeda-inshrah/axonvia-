@@ -20,7 +20,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   title: 'Axonvia — Intelligence that works for your business.',
   description:
-    'Axonvia designs, builds, and deploys intelligent automation systems — from lead generation to customer operations.',
+    'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

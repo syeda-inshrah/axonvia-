@@ -100,14 +100,13 @@ export function Hero() {
           variants={fadeUp}
           className="mt-6 text-4xl md:text-7xl font-semibold leading-tight text-[var(--text-primary)]"
         >
-          We Build{' '}
-          <span className="bg-[image:var(--accent-gradient)] bg-clip-text text-transparent">AI Agents</span> That Run
-          Your Business
+          <span className="bg-[image:var(--accent-gradient)] bg-clip-text text-transparent">AI Automation</span> &amp;
+          Intelligent Solutions for Modern Businesses
         </motion.h1>
 
         <motion.p variants={fadeUp} className="mt-6 text-lg md:text-xl text-[var(--text-secondary)] max-w-xl mx-auto">
-          Axonvia designs, builds, and deploys intelligent automation systems — from lead generation to customer
-          operations — so your business runs on autopilot, not overtime.
+          Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business
+          workflow automation — shaped around how your business actually works.
         </motion.p>
 
         <motion.div
@@ -121,10 +120,6 @@ export function Hero() {
             See Our Work
           </Button>
         </motion.div>
-
-        <motion.p variants={fadeUp} className="mt-10 text-xs text-[var(--text-muted)]">
-          Trusted by businesses automating sales, operations &amp; support
-        </motion.p>
       </motion.div>
 
       <HeroNetworkVisual />

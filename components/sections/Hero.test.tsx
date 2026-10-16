@@ -21,8 +21,8 @@ describe('Hero', () => {
   it('renders the headline, subheadline, and both CTAs', () => {
     const { container } = render(<Hero />)
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('We Build AI Agents That Run Your Business')
-    expect(screen.getByText(/Axonvia designs, builds, and deploys/)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('AI Automation & Intelligent Solutions for Modern Businesses')
+    expect(screen.getByText(/Axonvia designs and builds/)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Book a Free Strategy Call' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'See Our Work' })).toHaveAttribute('href', '#projects')
     expect(container.querySelector('button button')).toBeNull()
@@ -66,5 +66,14 @@ describe('Hero', () => {
     } finally {
       motionPrefs.reduced = false
     }
+  })
+
+  it('describes the four service areas without sales-agency framing or unverified claims', () => {
+    const { container } = render(<Hero />)
+    const subheadline = screen.getByText(/Axonvia designs and builds/)
+    for (const area of ['AI automation', 'agentic AI', 'custom AI-powered applications', 'business workflow automation']) {
+      expect(subheadline).toHaveTextContent(area)
+    }
+    expect(container).not.toHaveTextContent(/sales|lead generation|Trusted by/i)
   })
 })
