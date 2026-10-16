@@ -17,4 +17,10 @@ describe('globals.css', () => {
     expect(focus).toMatch(/outline:\s*2px solid var\(--accent-cyan\)/)
     expect(focus).toMatch(/box-shadow:[^;]*var\(--border-glow\)/)
   })
+
+  it('animates text-link underlines in from the left on hover', () => {
+    expect(rule('.link-underline')).toMatch(/background-size:\s*0% 1px/)
+    expect(rule('.link-underline')).toMatch(/transition:\s*background-size/)
+    expect(rule('.link-underline:hover')).toMatch(/background-size:\s*100% 1px/)
+  })
 })

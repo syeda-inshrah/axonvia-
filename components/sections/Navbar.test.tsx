@@ -11,6 +11,14 @@ describe('Navbar', () => {
     expect(screen.getByRole('link', { name: 'FAQ' })).toBeInTheDocument()
   })
 
+  it('underlines desktop nav links with the animated underline', () => {
+    render(<Navbar />)
+    const primaryNav = screen.getByRole('navigation', { name: 'Primary' })
+    for (const link of primaryNav.querySelectorAll('a')) {
+      expect(link).toHaveClass('link-underline')
+    }
+  })
+
   it('opens and closes the mobile menu', () => {
     render(<Navbar />)
     fireEvent.click(screen.getByRole('button', { name: 'Open menu' }))

@@ -18,4 +18,10 @@ describe('Button', () => {
     render(<Button variant="secondary">Secondary</Button>)
     expect(screen.getByRole('button')).toHaveClass('border')
   })
+
+  it('gives the ghost variant the animated underline instead of an instant one', () => {
+    render(<Button variant="ghost">Ghost</Button>)
+    expect(screen.getByRole('button')).toHaveClass('link-underline')
+    expect(screen.getByRole('button')).not.toHaveClass('hover:underline')
+  })
 })

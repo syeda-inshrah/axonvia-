@@ -32,6 +32,20 @@ h1, h2, h3, h4 {
   box-shadow: 0 0 0 6px var(--border-glow);
 }
 
+/* Underline grows in from the left; content-box origin keeps it under the text, not the padding. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 200ms ease-out, color 200ms ease-out;
+}
+
+.link-underline:hover {
+  background-size: 100% 1px;
+}
+
 .grid-texture {
   background-image:
     linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),

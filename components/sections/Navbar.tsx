@@ -56,7 +56,7 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+              className="link-underline text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
             >
               {link.label}
             </Link>

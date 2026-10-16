@@ -6,7 +6,7 @@ const variantClasses: Record<ButtonVariant, string> = {
     'bg-[image:var(--accent-gradient)] text-[#05070D] shadow-[0_0_24px_rgba(45,212,255,0.35)] hover:scale-[1.03]',
   secondary:
     'bg-transparent border border-[var(--border-glass)] text-[var(--text-primary)] hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)]',
-  ghost: 'bg-transparent text-[var(--accent-cyan)] hover:underline',
+  ghost: 'bg-transparent text-[var(--accent-cyan)] link-underline',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
