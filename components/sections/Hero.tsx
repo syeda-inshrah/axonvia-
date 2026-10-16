@@ -1,6 +1,6 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { CalEmbed } from '@/components/CalEmbed'
@@ -67,10 +67,22 @@ function HeroNetworkVisual() {
 }
 
 export function Hero() {
+  const reduced = useReducedMotion()
+  const { scrollY } = useScroll()
+  // Blobs drift down 240px over the first 800px of scroll, so they move slower than the content.
+  const blobY = useTransform(scrollY, [0, 800], [0, 240])
+
   return (
     <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-5 pt-24 grid-texture">
-      <GradientBlob color="cyan" className="w-[480px] h-[480px] -top-20 -right-20" />
-      <GradientBlob color="purple" className="w-[480px] h-[480px] bottom-0 -left-20" />
+      <motion.div
+        aria-hidden="true"
+        data-parallax={!reduced}
+        className="pointer-events-none absolute inset-0"
+        style={{ y: reduced ? 0 : blobY }}
+      >
+        <GradientBlob color="cyan" className="w-[480px] h-[480px] -top-20 -right-20" />
+        <GradientBlob color="purple" className="w-[480px] h-[480px] bottom-0 -left-20" />
+      </motion.div>
 
       <motion.div
         initial="hidden"

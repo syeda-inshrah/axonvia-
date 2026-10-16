@@ -52,4 +52,19 @@ describe('Hero', () => {
       motionPrefs.reduced = false
     }
   })
+
+  it('moves the background blobs with a parallax offset', () => {
+    const { container } = render(<Hero />)
+    expect(container.querySelector('[data-parallax]')).toHaveAttribute('data-parallax', 'true')
+  })
+
+  it('pins the blobs in place for visitors who prefer reduced motion', () => {
+    motionPrefs.reduced = true
+    try {
+      const { container } = render(<Hero />)
+      expect(container.querySelector('[data-parallax]')).toHaveAttribute('data-parallax', 'false')
+    } finally {
+      motionPrefs.reduced = false
+    }
+  })
 })
