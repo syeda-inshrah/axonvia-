@@ -22,4 +22,22 @@ describe('Faq', () => {
     fireEvent.click(screen.getByText('What do you do?'))
     expect(screen.getByText('We build AI agents.')).toBeInTheDocument()
   })
+
+  it('tells assistive tech whether each question is expanded and which panel it controls', async () => {
+    getPublishedFaqs.mockResolvedValue([
+      { id: '1', question: 'What do you do?', answer: 'We build AI agents.', isPublished: true, sortOrder: 0 },
+    ])
+
+    const { Faq } = await import('./Faq')
+    render(await Faq())
+
+    const trigger = screen.getByRole('button', { name: 'What do you do?' })
+    expect(trigger).toHaveAttribute('aria-expanded', 'false')
+
+    fireEvent.click(trigger)
+    expect(trigger).toHaveAttribute('aria-expanded', 'true')
+    const panel = screen.getByRole('region', { name: 'What do you do?' })
+    expect(trigger).toHaveAttribute('aria-controls', panel.id)
+    expect(panel).toHaveTextContent('We build AI agents.')
+  })
 })
