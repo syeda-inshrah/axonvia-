@@ -22,7 +22,7 @@ export function NewsletterForm() {
         type="email"
         placeholder="Email"
         required
-        className="flex-1 rounded-xl border border-[var(--border-glass)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-glow)] focus:outline-none"
+        className="min-w-0 flex-1 rounded-xl border border-[var(--border-glass)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-glow)] focus:outline-none"
       />
       <button type="submit" disabled={isPending} className={buttonClasses('primary')}>
         {isPending ? 'Subscribing…' : 'Subscribe'}

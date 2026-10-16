@@ -27,7 +27,7 @@ const linkClasses = 'link-underline w-fit hover:text-[var(--text-primary)]'
 export function Footer() {
   return (
     <footer className="border-t border-[var(--border-glass)] px-5 md:px-10 py-16">
-      <div className="max-w-[1320px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="max-w-[1320px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10">
         <div>
           <p className="flex items-center gap-2.5 font-semibold text-[var(--text-primary)]">
             <Logo className="h-7 w-7" />
