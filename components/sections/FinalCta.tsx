@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion'
 import { GradientBlob } from '@/components/ui/GradientBlob'
 import { CalEmbed } from '@/components/CalEmbed'
+import { ContactForm } from '@/components/ContactForm'
+import { GlassCard } from '@/components/ui/GlassCard'
 import { fadeUp } from '@/lib/animations'
 
 export function FinalCta() {
@@ -28,6 +30,14 @@ export function FinalCta() {
           Book Your Free Call
         </CalEmbed>
         <p className="mt-4 text-xs text-[var(--text-muted)]">No commitment. 20-minute call. Real answers.</p>
+
+        <GlassCard glow={false} className="mt-14 text-left">
+          <h3 className="text-xl font-semibold text-[var(--text-primary)]">Send us a message</h3>
+          <p className="mt-2 mb-6 text-sm text-[var(--text-secondary)]">
+            Prefer to write? Tell us what you&apos;d like to automate and we&apos;ll reply by email.
+          </p>
+          <ContactForm />
+        </GlassCard>
       </motion.div>
     </section>
   )

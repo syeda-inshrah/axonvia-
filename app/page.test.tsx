@@ -8,6 +8,8 @@ vi.mock('@/components/sections/Testimonials', () => ({ Testimonials: () => <div>
 vi.mock('@/components/sections/Faq', () => ({ Faq: () => <div>Faq stub</div> }))
 const { connection } = vi.hoisted(() => ({ connection: vi.fn(async () => {}) }))
 vi.mock('next/server', () => ({ connection }))
+vi.mock('@/app/actions/contact', () => ({ submitContactForm: vi.fn() }))
+vi.mock('@/app/actions/newsletter', () => ({ subscribeNewsletter: vi.fn() }))
 vi.mock('@/components/CalEmbed', () => ({
   CalEmbed: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
