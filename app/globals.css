@@ -25,6 +25,13 @@ h1, h2, h3, h4 {
   font-family: var(--font-heading), sans-serif;
 }
 
+/* Solid cyan keeps the ring above 3:1 contrast; --border-glow alone (35% alpha) is too faint. */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--border-glow);
+}
+
 .grid-texture {
   background-image:
     linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
