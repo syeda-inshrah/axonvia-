@@ -1,11 +1,12 @@
 'use client'
 
 import { Fragment, useRef } from 'react'
-import { motion, useInView, useReducedMotion } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { Brain, Wrench, GitBranch, UserCheck, Search, PenTool, Code, Rocket } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { fadeUp, staggerContainer } from '@/lib/animations'
 import { useScrollFill } from '@/lib/useScrollFill'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const flowNodes = [
   { icon: Search, label: 'Input (query/trigger)' },
@@ -66,7 +67,7 @@ function FlowConnector({ index, pulsing }: { index: number; pulsing: boolean }) 
 function AgentFlow() {
   const ref = useRef<HTMLOListElement>(null)
   const inView = useInView(ref, { amount: 0.4 })
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
   const pulsing = inView && !reduced
 
   return (

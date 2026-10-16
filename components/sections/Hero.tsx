@@ -1,11 +1,12 @@
 'use client'
 
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { CalEmbed } from '@/components/CalEmbed'
 import { GradientBlob } from '@/components/ui/GradientBlob'
 import { fadeUp, staggerContainer } from '@/lib/animations'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const NODES = [
   { x: 60, y: 60 },
@@ -27,10 +28,11 @@ const EDGES: [number, number][] = [
 
 function HeroNetworkVisual() {
   // Loops forever, so it's held static (not just slowed) for visitors who prefer reduced motion.
-  const animated = !useReducedMotion()
+  const animated = !usePrefersReducedMotion()
 
   return (
     <svg
+      key={String(animated)}
       viewBox="0 0 440 260"
       className="relative z-10 mt-12 w-full max-w-md opacity-70"
       aria-hidden="true"
@@ -67,7 +69,7 @@ function HeroNetworkVisual() {
 }
 
 export function Hero() {
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
   const { scrollY } = useScroll()
   // Blobs drift down 240px over the first 800px of scroll, so they move slower than the content.
   const blobY = useTransform(scrollY, [0, 800], [0, 240])

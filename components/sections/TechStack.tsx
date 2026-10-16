@@ -1,9 +1,10 @@
 'use client'
 
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/Badge'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { scatterIn, staggerContainer } from '@/lib/animations'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const chips = [
   'Claude API',
@@ -24,7 +25,7 @@ const chips = [
 
 export function TechStack() {
   // The float loops forever, so it's skipped entirely for reduced-motion visitors.
-  const floating = !useReducedMotion()
+  const floating = !usePrefersReducedMotion()
 
   return (
     <section className="px-5 md:px-10 py-24">
@@ -42,18 +43,15 @@ export function TechStack() {
           const delay = Number(((i * 0.37) % 2).toFixed(2))
           return (
             <motion.li key={chip} variants={scatterIn}>
-              {floating ? (
-                <motion.div
-                  data-floating="true"
-                  data-float-delay={delay}
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ duration: 3 + (i % 4) * 0.5, delay, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <Chip label={chip} />
-                </motion.div>
-              ) : (
+              <motion.div
+                key={String(floating)}
+                data-floating={floating}
+                data-float-delay={delay}
+                animate={floating ? { y: [0, -4, 0] } : undefined}
+                transition={{ duration: 3 + (i % 4) * 0.5, delay, repeat: Infinity, ease: 'easeInOut' }}
+              >
                 <Chip label={chip} />
-              )}
+              </motion.div>
             </motion.li>
           )
         })}
