@@ -1,3 +1,4 @@
+import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import { MotionSafeProvider } from '@/components/ui/MotionSafeProvider'
 import './globals.css'
@@ -17,10 +18,21 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
 })
 
-export const metadata = {
-  title: 'Axonvia — Intelligence that works for your business.',
-  description:
-    'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.',
+const title = 'Axonvia — Intelligence that works for your business.'
+const description =
+  'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.'
+
+// No metadataBase/og:url yet: the production domain isn't confirmed (see launch checklist).
+export const metadata: Metadata = {
+  title,
+  description,
+  openGraph: { title, description, siteName: 'Axonvia', type: 'website', locale: 'en_US' },
+  twitter: { card: 'summary', title, description },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#05070D',
+  colorScheme: 'dark',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
