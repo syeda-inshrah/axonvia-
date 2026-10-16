@@ -40,4 +40,16 @@ describe('Faq', () => {
     expect(trigger).toHaveAttribute('aria-controls', panel.id)
     expect(panel).toHaveTextContent('We build AI agents.')
   })
+
+  it('points visitors to email or a call when no FAQs are published yet', async () => {
+    getPublishedFaqs.mockResolvedValue([])
+    const { Faq } = await import('./Faq')
+    render(await Faq())
+
+    expect(screen.getByRole('link', { name: 'hello@axonvia.example' })).toHaveAttribute(
+      'href',
+      'mailto:hello@axonvia.example'
+    )
+    expect(screen.getByRole('link', { name: 'book a call' })).toHaveAttribute('href', '#final-cta')
+  })
 })

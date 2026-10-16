@@ -1,9 +1,20 @@
+import { UserRound } from 'lucide-react'
+
 export function About() {
   return (
     <section id="about" className="px-5 md:px-10 py-24 section-alt">
       <div className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-center">
         <div className="flex justify-center">
-          <div className="h-48 w-48 rounded-full bg-[var(--bg-card)] ring-2 ring-offset-4 ring-offset-[var(--bg-secondary)]" />
+          {/* Placeholder until the founder photo is supplied: gradient ring + glow halo per spec §9. */}
+          <div
+            data-testid="founder-photo-placeholder"
+            aria-hidden="true"
+            className="rounded-full bg-[image:var(--accent-gradient)] p-[2px] shadow-[0_0_60px_rgba(45,212,255,0.25)]"
+          >
+            <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[var(--bg-card)]">
+              <UserRound className="h-20 w-20 text-[var(--text-muted)]" strokeWidth={1.25} />
+            </div>
+          </div>
         </div>
 
         <div>

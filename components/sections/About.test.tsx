@@ -11,4 +11,9 @@ describe('About', () => {
     // Unverified headcount claim stays out until confirmed by the founder.
     expect(screen.queryByText('5-person team')).not.toBeInTheDocument()
   })
+
+  it('shows a styled founder-photo placeholder until a real photo is supplied', () => {
+    render(<About />)
+    expect(screen.getByTestId('founder-photo-placeholder').querySelector('svg')).toBeInTheDocument()
+  })
 })

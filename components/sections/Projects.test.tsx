@@ -54,13 +54,14 @@ describe('Projects', () => {
     expect(screen.queryByTestId('secondary-projects-grid')).not.toBeInTheDocument()
   })
 
-  it('shows a plain coming-soon line when there are no live projects at all', async () => {
+  it('shows a case-studies-in-progress card when there are no live projects at all', async () => {
     getPublishedProjects.mockResolvedValue([])
 
     const { Projects } = await import('./Projects')
     render(await Projects())
 
-    expect(screen.getByText(/Projects coming soon/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Case studies in progress' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Discuss your project' })).toHaveAttribute('href', '#final-cta')
   })
 
   it('features the first isFeatured project even when it is not first, and lists the rest in the grid', async () => {
