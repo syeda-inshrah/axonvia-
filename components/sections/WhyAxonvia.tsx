@@ -27,7 +27,7 @@ export function WhyAxonvia() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {differentiators.map((item) => (
-            <GlassCard key={item.title} glow={false} className="p-6">
+            <GlassCard key={item.title} glow={false} className="p-6!">
               <h3 className="font-semibold text-[var(--text-primary)]">{item.title}</h3>
               <p className="mt-2 text-sm text-[var(--text-secondary)]">{item.description}</p>
             </GlassCard>
