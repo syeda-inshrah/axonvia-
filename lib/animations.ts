@@ -11,3 +11,8 @@ export function staggerContainer(staggerDelay = 0.1): Variants {
     visible: { transition: { staggerChildren: staggerDelay } },
   }
 }
+
+export const scatterIn: Variants = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: 'easeOut' } },
+}
