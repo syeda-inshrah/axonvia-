@@ -60,4 +60,9 @@ describe('Navbar', () => {
       expect(link).toHaveAttribute('href', '#final-cta')
     }
   })
+
+  it('shows the brand mark beside the wordmark', () => {
+    render(<Navbar />)
+    expect(screen.getByRole('link', { name: 'Axonvia' }).querySelector('svg')).toBeInTheDocument()
+  })
 })

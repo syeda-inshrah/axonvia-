@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Logo } from '@/components/ui/Logo'
 
 const navLinks = [
   { href: '#services', label: 'Services' },
@@ -47,7 +48,8 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-full max-w-[1320px] items-center justify-between px-5 md:px-10">
-        <Link href="/" className="text-[var(--text-primary)] font-semibold text-lg">
+        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-primary)] font-semibold text-lg">
+          <Logo className="h-8 w-8" />
           Axonvia
         </Link>
 
