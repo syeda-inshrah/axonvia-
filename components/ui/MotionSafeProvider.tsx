@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { MotionConfig, useReducedMotion } from 'framer-motion'
 
 export function MotionSafeProvider({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = useReducedMotion()
@@ -10,5 +10,6 @@ export function MotionSafeProvider({ children }: { children: React.ReactNode }) 
     document.documentElement.setAttribute('data-reduced-motion', prefersReducedMotion ? 'true' : 'false')
   }, [prefersReducedMotion])
 
-  return <>{children}</>
+  // reducedMotion="user": Framer skips transform animations (the fade-up's y-offset) but keeps opacity fades.
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>
 }
