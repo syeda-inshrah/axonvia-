@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { getCalApi } from '@calcom/embed-react'
 import { buttonClasses, type ButtonVariant, type ButtonSize } from '@/components/ui/buttonStyles'
+import { siteConfig } from '@/lib/site'
 
 export function CalEmbed({
   children,
@@ -29,7 +30,7 @@ export function CalEmbed({
 
   if (!calLink) {
     return (
-      <a href="mailto:hello@axonvia.example" data-testid="cal-fallback" className={classes}>
+      <a href={`mailto:${siteConfig.contactEmail}`} data-testid="cal-fallback" className={classes}>
         {children}
       </a>
     )
