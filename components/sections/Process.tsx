@@ -1,8 +1,10 @@
 'use client'
 
+import { useRef } from 'react'
 import { motion } from 'framer-motion'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { fadeUp, staggerContainer } from '@/lib/animations'
+import { useScrollFill } from '@/lib/useScrollFill'
 
 const steps = [
   { title: 'Discovery Call', when: 'Week 0', description: 'We understand your business, bottlenecks, and goals — no obligation, no jargon.' },
@@ -13,28 +15,42 @@ const steps = [
 ]
 
 export function Process() {
+  const ref = useRef<HTMLDivElement>(null)
+  const fill = useScrollFill(ref)
+
   return (
-    <section className="px-5 md:px-10 py-24 bg-[var(--bg-secondary)]">
+    <section className="px-5 md:px-10 py-24 section-alt">
       <SectionHeader eyebrow="Our Process" title="From First Call to Live System" />
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={staggerContainer(0.12)}
-        className="mt-12 max-w-2xl mx-auto border-l border-[var(--border-glass)] pl-8"
-      >
-        {steps.map((step, i) => (
-          <motion.div key={step.title} variants={fadeUp} className="relative pb-10 last:pb-0">
-            <span className="absolute -left-[41px] flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-glass)] bg-[var(--bg-primary)] text-sm font-semibold text-[var(--text-primary)]">
-              {i + 1}
-            </span>
-            <h3 className="text-lg font-semibold text-[var(--text-primary)]">{step.title}</h3>
-            <span className="text-xs text-[var(--text-muted)]">{step.when}</span>
-            <p className="mt-2 text-[var(--text-secondary)]">{step.description}</p>
-          </motion.div>
-        ))}
-      </motion.div>
+      <div ref={ref} className="relative mt-12 max-w-2xl mx-auto pl-12">
+        {/* Line sits under the centre of the number circles and draws itself as the section scrolls by. */}
+        <div aria-hidden="true" className="absolute left-4 top-4 bottom-4 w-px bg-[var(--border-glass)]">
+          <motion.div
+            data-timeline-fill="vertical"
+            data-scroll-linked={fill !== 1}
+            className="h-full w-full origin-top bg-[image:var(--accent-gradient)]"
+            style={{ scaleY: fill }}
+          />
+        </div>
+
+        <motion.ol
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          variants={staggerContainer(0.12)}
+        >
+          {steps.map((step, i) => (
+            <motion.li key={step.title} variants={fadeUp} className="relative pb-10 last:pb-0">
+              <span className="absolute -left-12 top-0 flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border-glow)] bg-[var(--bg-primary)] text-sm font-semibold text-[var(--text-primary)]">
+                {i + 1}
+              </span>
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{step.title}</h3>
+              <span className="text-xs text-[var(--text-muted)]">{step.when}</span>
+              <p className="mt-2 text-[var(--text-secondary)]">{step.description}</p>
+            </motion.li>
+          ))}
+        </motion.ol>
+      </div>
     </section>
   )
 }
