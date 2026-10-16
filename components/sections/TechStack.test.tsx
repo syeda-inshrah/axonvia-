@@ -36,4 +36,11 @@ describe('TechStack', () => {
       motionPrefs.reduced = false
     }
   })
+
+  it('renders chip labels in their real casing, without the eyebrow-badge uppercase styling', () => {
+    render(<TechStack />)
+    const chip = screen.getByText('Claude API')
+    expect(chip).not.toHaveClass('uppercase')
+    expect(chip).not.toHaveClass('text-xs')
+  })
 })
