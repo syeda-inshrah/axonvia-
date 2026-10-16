@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { CalEmbed } from '@/components/CalEmbed'
@@ -26,8 +26,16 @@ const EDGES: [number, number][] = [
 ]
 
 function HeroNetworkVisual() {
+  // Loops forever, so it's held static (not just slowed) for visitors who prefer reduced motion.
+  const animated = !useReducedMotion()
+
   return (
-    <svg viewBox="0 0 440 260" className="relative z-10 mt-12 w-full max-w-md opacity-70" aria-hidden="true">
+    <svg
+      viewBox="0 0 440 260"
+      className="relative z-10 mt-12 w-full max-w-md opacity-70"
+      aria-hidden="true"
+      data-animated={animated}
+    >
       {EDGES.map(([from, to], i) => (
         <motion.line
           key={i}
@@ -38,7 +46,7 @@ function HeroNetworkVisual() {
           stroke="var(--accent-cyan)"
           strokeWidth={1}
           strokeDasharray="4 4"
-          animate={{ strokeDashoffset: [0, -16] }}
+          animate={animated ? { strokeDashoffset: [0, -16] } : undefined}
           transition={{ duration: 2, repeat: Infinity, ease: 'linear', delay: i * 0.2 }}
         />
       ))}
@@ -49,7 +57,8 @@ function HeroNetworkVisual() {
           cy={node.y}
           r={6}
           fill="var(--accent-cyan)"
-          animate={{ opacity: [0.4, 1, 0.4] }}
+          opacity={animated ? undefined : 0.8}
+          animate={animated ? { opacity: [0.4, 1, 0.4] } : undefined}
           transition={{ duration: 2.5, repeat: Infinity, delay: i * 0.3 }}
         />
       ))}
