@@ -1,6 +1,6 @@
 export function About() {
   return (
-    <section id="about" className="px-5 md:px-10 py-24 bg-[var(--bg-secondary)]">
+    <section id="about" className="px-5 md:px-10 py-24 section-alt">
       <div className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-center">
         <div className="flex justify-center">
           <div className="h-48 w-48 rounded-full bg-[var(--bg-card)] ring-2 ring-offset-4 ring-offset-[var(--bg-secondary)]" />

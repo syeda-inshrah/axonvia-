@@ -6,7 +6,7 @@ export async function Faq() {
   const faqs = await getPublishedFaqs()
 
   return (
-    <section id="faq" className="px-5 md:px-10 py-24 bg-[var(--bg-secondary)]">
+    <section id="faq" className="px-5 md:px-10 py-24 section-alt">
       <SectionHeader eyebrow="FAQ" title="Common Questions" />
       <div className="mt-12 max-w-[760px] mx-auto">
         <FaqAccordion items={faqs} />

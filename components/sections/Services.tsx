@@ -50,7 +50,7 @@ const services = [
 
 export function Services() {
   return (
-    <section id="services" className="px-5 md:px-10 py-24 bg-[var(--bg-secondary)]">
+    <section id="services" className="px-5 md:px-10 py-24 section-alt">
       <SectionHeader
         eyebrow="What We Do"
         title="AI Systems Built Around Your Business"

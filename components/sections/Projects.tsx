@@ -9,7 +9,7 @@ export async function Projects() {
   const rest = projects.filter((project) => project !== featured)
 
   return (
-    <section id="projects" className="px-5 md:px-10 py-24 bg-[var(--bg-secondary)]">
+    <section id="projects" className="px-5 md:px-10 py-24 section-alt">
       <SectionHeader eyebrow="Our Work" title="Systems We've Built" />
 
       <div className="mt-12 max-w-[1320px] mx-auto">
