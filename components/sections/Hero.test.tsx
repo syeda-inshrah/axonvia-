@@ -4,7 +4,11 @@ import { describe, it, expect, vi } from 'vitest'
 import { Hero } from './Hero'
 
 vi.mock('@/components/CalEmbed', () => ({
-  CalEmbed: ({ children }: { children: React.ReactNode }) => <button data-testid="cal-trigger">{children}</button>,
+  CalEmbed: ({ children, className }: { children: React.ReactNode; className?: string }) => (
+    <button data-testid="cal-trigger" className={className}>
+      {children}
+    </button>
+  ),
 }))
 
 describe('Hero', () => {
@@ -16,5 +20,15 @@ describe('Hero', () => {
     expect(screen.getByRole('button', { name: 'Book a Free Strategy Call' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'See Our Work' })).toHaveAttribute('href', '#projects')
     expect(container.querySelector('button button')).toBeNull()
+  })
+
+  it('stacks both CTAs full-width below 480px', () => {
+    render(<Hero />)
+    for (const cta of [
+      screen.getByRole('button', { name: 'Book a Free Strategy Call' }),
+      screen.getByRole('link', { name: 'See Our Work' }),
+    ]) {
+      expect(cta).toHaveClass('w-full', 'min-[480px]:w-auto')
+    }
   })
 })

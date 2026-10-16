@@ -87,9 +87,14 @@ export function Hero() {
           operations — so your business runs on autopilot, not overtime.
         </motion.p>
 
-        <motion.div variants={fadeUp} className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <CalEmbed size="large">Book a Free Strategy Call</CalEmbed>
-          <Button href="#projects" variant="secondary" size="large">
+        <motion.div
+          variants={fadeUp}
+          className="mt-8 flex flex-col min-[480px]:flex-row min-[480px]:flex-wrap items-center justify-center gap-4"
+        >
+          <CalEmbed size="large" className="w-full min-[480px]:w-auto">
+            Book a Free Strategy Call
+          </CalEmbed>
+          <Button href="#projects" variant="secondary" size="large" className="w-full min-[480px]:w-auto">
             See Our Work
           </Button>
         </motion.div>
