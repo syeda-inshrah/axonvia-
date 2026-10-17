@@ -16,5 +16,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   pages: { signIn: '/admin/login' },
-  session: { strategy: 'jwt' },
+  // Admin sessions last one working day rather than Auth.js's 30-day default.
+  session: { strategy: 'jwt', maxAge: 8 * 60 * 60 },
 })
