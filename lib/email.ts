@@ -2,7 +2,19 @@ import { Resend } from 'resend'
 import { siteConfig } from '@/lib/site'
 import { unsubscribeUrl } from '@/lib/unsubscribe'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Created on first send, not at import: the Resend constructor throws without an API key, which would
+// otherwise crash the contact and newsletter actions before a submission could even be saved.
+let client: Resend | null = null
+
+function emailClient(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.warn('RESEND_API_KEY is not set; skipping email send.')
+    return null
+  }
+  client ??= new Resend(apiKey)
+  return client
+}
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'Axonvia <onboarding@resend.dev>'
 const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || siteConfig.contactEmail
@@ -15,6 +27,8 @@ export interface LeadEmailPayload {
 }
 
 export async function sendContactNotification(lead: LeadEmailPayload) {
+  const resend = emailClient()
+  if (!resend) return null
   return resend.emails.send({
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
@@ -24,6 +38,8 @@ export async function sendContactNotification(lead: LeadEmailPayload) {
 }
 
 export async function sendContactConfirmation(lead: LeadEmailPayload) {
+  const resend = emailClient()
+  if (!resend) return null
   return resend.emails.send({
     from: FROM_EMAIL,
     to: lead.email,
@@ -33,6 +49,8 @@ export async function sendContactConfirmation(lead: LeadEmailPayload) {
 }
 
 export async function sendNewsletterWelcome(email: string) {
+  const resend = emailClient()
+  if (!resend) return null
   const unsubscribe = unsubscribeUrl(email)
   return resend.emails.send({
     from: FROM_EMAIL,

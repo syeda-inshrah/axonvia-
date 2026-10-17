@@ -2,7 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const send = vi.fn(async () => ({ data: { id: 'email_123' }, error: null }))
 vi.mock('resend', () => ({
-  Resend: vi.fn().mockImplementation(function MockResend() {
+  // Like the real client: constructing without an API key throws.
+  Resend: vi.fn().mockImplementation(function MockResend(apiKey?: string) {
+    if (!apiKey) throw new Error('Missing API key')
     return { emails: { send } }
   }),
 }))
@@ -49,5 +51,17 @@ describe('email helpers', () => {
     expect(link).toBeDefined()
     expect(new URL(link!).searchParams.get('email')).toBe('jane@example.com')
     expect(sent.headers['List-Unsubscribe']).toBe(`<${link}>`)
+  })
+
+  it('skips sending (instead of crashing the contact and newsletter actions) when RESEND_API_KEY is not configured', async () => {
+    vi.resetModules()
+    delete process.env.RESEND_API_KEY
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const { sendContactNotification } = await import('./email')
+
+    await expect(sendContactNotification({ name: 'Jane', email: 'jane@example.com' })).resolves.toBeNull()
+    expect(send).not.toHaveBeenCalled()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('RESEND_API_KEY'))
+    warn.mockRestore()
   })
 })
