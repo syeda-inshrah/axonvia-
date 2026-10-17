@@ -40,4 +40,13 @@ describe('verifyAdminCredentials', () => {
       email: 'admin@axonvia.example',
     })
   })
+
+  it('still runs a password comparison when no user matches, so response time does not reveal which emails exist', async () => {
+    limit.mockResolvedValue([])
+    compare.mockResolvedValue(false)
+    const { verifyAdminCredentials } = await import('./auth-credentials')
+
+    await verifyAdminCredentials('nobody@axonvia.example', 'pw')
+    expect(compare).toHaveBeenCalledTimes(1)
+  })
 })
