@@ -7,6 +7,7 @@ Never commit real values. `.env.local.example` lists every name with an empty va
 | --- | --- | --- | --- |
 | `DATABASE_URL` | **Yes** | Neon Postgres connection string (leads, subscribers, CMS content, admin users). | The site renders with empty Projects/FAQ/Testimonials; forms and admin fail. |
 | `AUTH_SECRET` | **Yes** | Signs admin sessions (Auth.js) and newsletter unsubscribe links. Generate with `openssl rand -base64 32` (or `npx auth secret`). Use a different value per environment. | Admin sign-in fails; welcome emails are not sent (they can't carry a valid unsubscribe link). |
+| `AUTH_URL` | **Yes** unless hosted on Vercel | The site's own origin for Auth.js, e.g. `https://axonvia.com` (locally `http://localhost:3000`). Vercel detects it automatically. | Admin sign-in fails with `UntrustedHost` on self-hosted servers and `next start`. |
 | `RESEND_API_KEY` | **Yes** | Sending contact notifications, contact confirmations, and newsletter welcome emails. | Submissions are saved but no emails go out (errors are logged). |
 | `RESEND_FROM_EMAIL` | **Yes** | Sender, e.g. `Axonvia <hello@your-domain>`. The domain must be verified in Resend. | Falls back to Resend's test sender `onboarding@resend.dev`, which only delivers to your own Resend account. |
 | `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox that receives "New lead" notifications. | Falls back to `NEXT_PUBLIC_CONTACT_EMAIL`, then to the placeholder `hello@axonvia.example` (undeliverable). |
