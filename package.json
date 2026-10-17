@@ -12,7 +12,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "db:local": "node --env-file=.env.local node_modules/.bin/tsx scripts/local-db.ts"
   },
   "keywords": [],
   "author": "",
@@ -33,6 +34,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.3.16",
     "@tailwindcss/postcss": "^4.3.3",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",

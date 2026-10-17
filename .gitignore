@@ -2,3 +2,6 @@ node_modules
 .next
 .env.local
 .claude/worktrees/
+
+# local PGlite database (DATABASE_URL=pglite:.local-db)
+/.local-db/

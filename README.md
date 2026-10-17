@@ -12,6 +12,9 @@ npm run db:migrate                  # applies drizzle/ migrations to DATABASE_UR
 npm run dev
 ```
 
+To run everything locally without touching the shared Neon database, set `DATABASE_URL=pglite:.local-db` and run
+`npm run db:local` instead of `db:migrate` (see docs/ENVIRONMENT.md).
+
 - Public site: `/` (plus `/privacy`, `/terms`, `/newsletter/unsubscribe`)
 - Admin: `/admin` — create the first account with `scripts/create-admin.ts` (see docs/ENVIRONMENT.md)
 
@@ -23,6 +26,7 @@ npm run dev
 | `npm test` | Vitest suite |
 | `npm run build` / `npm start` | Production build / server |
 | `npm run db:generate` / `npm run db:migrate` | Create / apply database migrations |
+| `npm run db:local` | Create/update the local PGlite database (local development only) |
 
 `scripts/seed-content.ts` loads starter projects and FAQs. It is not idempotent (running it twice duplicates
 FAQs), so run it once, deliberately, against the database you intend to seed.

@@ -16,6 +16,21 @@ Never commit real values. `.env.local.example` lists every name with an empty va
 
 `NEXT_PUBLIC_*` values are compiled into the site at build time: **rebuild and redeploy after changing them.**
 
+## Running everything locally without the shared database
+
+Set `DATABASE_URL=pglite:.local-db` in `.env.local` to use an embedded Postgres (PGlite) stored in the
+git-ignored `.local-db/` folder. Contact messages, subscribers, content, and admin accounts then live only on
+your machine. `@electric-sql/pglite` is a dev dependency, so this mode is for local development only.
+
+```bash
+npm run db:local                      # create/update the local database from drizzle/ migrations
+node --env-file=.env.local node_modules/.bin/tsx scripts/create-admin.ts you@example.com
+npm run build && npm start            # http://localhost:3000
+```
+
+`npm run db:local` refuses to run unless `DATABASE_URL` starts with `pglite:`. Stop the server before running
+scripts against the same folder: PGlite allows one process at a time. Delete `.local-db/` to start over.
+
 ## One-off script variables
 
 | Variable | Used by |
