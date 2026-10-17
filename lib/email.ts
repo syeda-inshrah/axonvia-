@@ -1,9 +1,11 @@
 import { Resend } from 'resend'
+import { siteConfig } from '@/lib/site'
+import { unsubscribeUrl } from '@/lib/unsubscribe'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'Axonvia <onboarding@resend.dev>'
-const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL ?? 'hello@axonvia.example'
+const ADMIN_EMAIL = process.env.ADMIN_NOTIFICATION_EMAIL || siteConfig.contactEmail
 
 export interface LeadEmailPayload {
   name: string
@@ -31,10 +33,12 @@ export async function sendContactConfirmation(lead: LeadEmailPayload) {
 }
 
 export async function sendNewsletterWelcome(email: string) {
+  const unsubscribe = unsubscribeUrl(email)
   return resend.emails.send({
     from: FROM_EMAIL,
     to: email,
     subject: "You're subscribed — Axonvia",
-    text: `Thanks for subscribing to Axonvia updates. We'll keep you posted.`,
+    text: `Thanks for subscribing to Axonvia updates. We'll keep you posted.\n\nDon't want these emails? Unsubscribe: ${unsubscribe}`,
+    headers: { 'List-Unsubscribe': `<${unsubscribe}>` },
   })
 }

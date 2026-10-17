@@ -37,6 +37,13 @@ export function Footer() {
           <h3 className="mt-6 text-sm font-semibold text-[var(--text-primary)]">Stay in the loop</h3>
           <p className="mt-1 mb-3 text-sm text-[var(--text-muted)]">Occasional updates from Axonvia. No spam.</p>
           <NewsletterForm />
+          <p className="mt-3 text-xs text-[var(--text-muted)]">
+            Unsubscribe any time. See our{' '}
+            <Link href="/privacy" className="link-underline hover:text-[var(--text-primary)]">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
 
         <div>

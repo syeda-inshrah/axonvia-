@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import { MotionSafeProvider } from '@/components/ui/MotionSafeProvider'
+import { siteConfig } from '@/lib/site'
 import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
@@ -22,11 +23,12 @@ const title = 'Axonvia — Intelligence that works for your business.'
 const description =
   'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.'
 
-// No metadataBase/og:url yet: the production domain isn't confirmed (see launch checklist).
+// metadataBase comes from NEXT_PUBLIC_SITE_URL; until it's set, share links resolve to localhost.
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   title,
   description,
-  openGraph: { title, description, siteName: 'Axonvia', type: 'website', locale: 'en_US' },
+  openGraph: { title, description, siteName: 'Axonvia', type: 'website', locale: 'en_US', url: '/' },
   twitter: { card: 'summary', title, description },
 }
 

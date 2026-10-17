@@ -43,4 +43,10 @@ describe('Footer', () => {
       'mailto:hello@axonvia.example'
     )
   })
+
+  it('tells subscribers they can unsubscribe and links the privacy policy beside the signup', () => {
+    render(<Footer />)
+    const note = screen.getByText(/Unsubscribe any time/)
+    expect(note.querySelector('a[href="/privacy"]')).not.toBeNull()
+  })
 })
