@@ -4,6 +4,9 @@ import { db } from '@/lib/db'
 import { newsletterSubscribers } from '@/lib/db/schema'
 import { newsletterSchema } from '@/lib/validations'
 import { sendNewsletterWelcome } from '@/lib/email'
+import { headers } from 'next/headers'
+import { allowSubmission, looksAutomated } from '@/lib/spam'
+import { clientIp } from '@/lib/client-ip'
 import type { ActionResult } from '@/app/actions/contact'
 
 export async function subscribeNewsletter(formData: FormData): Promise<ActionResult> {
@@ -14,6 +17,11 @@ export async function subscribeNewsletter(formData: FormData): Promise<ActionRes
   }
 
   const { email } = parsed.data
+
+  if (looksAutomated(formData)) return { success: true }
+  if (!allowSubmission('newsletter', clientIp(await headers()), email)) {
+    return { success: false, error: 'Too many signups. Please try again later.' }
+  }
 
   try {
     await db

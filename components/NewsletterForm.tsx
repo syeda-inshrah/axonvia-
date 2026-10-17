@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react'
 import { subscribeNewsletter } from '@/app/actions/newsletter'
 import { buttonClasses } from '@/components/ui/buttonStyles'
+import { SpamTrapFields } from '@/components/SpamTrapFields'
 
 export function NewsletterForm() {
   const [isPending, startTransition] = useTransition()
@@ -16,10 +17,13 @@ export function NewsletterForm() {
   }
 
   return (
-    <form action={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+    <form action={handleSubmit} className="relative flex flex-col sm:flex-row gap-3">
+      <SpamTrapFields />
       <input
         name="email"
         type="email"
+        aria-label="Email address"
+        autoComplete="email"
         placeholder="Email"
         required
         className="min-w-0 flex-1 rounded-xl border border-[var(--border-glass)] bg-[var(--bg-card)] px-4 py-3 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-glow)] focus:outline-none"

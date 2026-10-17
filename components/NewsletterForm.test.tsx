@@ -17,4 +17,19 @@ describe('NewsletterForm', () => {
 
     await waitFor(() => expect(screen.getByTestId('newsletter-success')).toBeInTheDocument())
   })
+
+  it('sends the spam-trap fields and labels the email field', async () => {
+    subscribeNewsletter.mockResolvedValue({ success: true })
+    const { NewsletterForm } = await import('./NewsletterForm')
+    const { container } = render(<NewsletterForm />)
+
+    expect(container.querySelector('input[name="website"]')?.closest('[aria-hidden="true"]')).not.toBeNull()
+    fireEvent.change(screen.getByLabelText('Email address'), { target: { value: 'jane@example.com' } })
+    fireEvent.click(screen.getByRole('button', { name: /subscribe/i }))
+
+    await waitFor(() => expect(subscribeNewsletter).toHaveBeenCalled())
+    const sent = subscribeNewsletter.mock.calls[0][0] as FormData
+    expect(sent.get('website')).toBe('')
+    expect(Number(sent.get('startedAt'))).toBeGreaterThan(0)
+  })
 })

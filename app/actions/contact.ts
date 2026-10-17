@@ -4,6 +4,9 @@ import { db } from '@/lib/db'
 import { leads } from '@/lib/db/schema'
 import { contactFormSchema } from '@/lib/validations'
 import { sendContactNotification, sendContactConfirmation } from '@/lib/email'
+import { headers } from 'next/headers'
+import { allowSubmission, looksAutomated } from '@/lib/spam'
+import { clientIp } from '@/lib/client-ip'
 
 export interface ActionResult {
   success: boolean
@@ -23,6 +26,12 @@ export async function submitContactForm(formData: FormData): Promise<ActionResul
   }
 
   const { name, email, company, message } = parsed.data
+
+  // Bots get a normal-looking success so they don't learn they were caught.
+  if (looksAutomated(formData)) return { success: true }
+  if (!allowSubmission('contact', clientIp(await headers()), email)) {
+    return { success: false, error: 'Too many messages. Please try again later.' }
+  }
 
   try {
     await db.insert(leads).values({
