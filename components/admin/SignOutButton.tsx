@@ -3,5 +3,12 @@
 import { signOutAction } from '@/app/actions/auth'
 
 export function SignOutButton() {
-  return <button onClick={() => signOutAction()}>Sign out</button>
+  return (
+    <button
+      onClick={() => signOutAction()}
+      className="w-fit text-left text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-red-400"
+    >
+      Sign out
+    </button>
+  )
 }

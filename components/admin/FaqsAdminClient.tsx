@@ -10,7 +10,7 @@ export function FaqsAdminClient({ faqs }: { faqs: Faq[] }) {
 
   return (
     <>
-      <FaqForm key={editing?.id ?? 'new'} faq={editing} onSaved={() => setEditing(null)} />
+      <FaqForm key={editing?.id ?? 'new'} faq={editing} onSaved={() => setEditing(null)} onCancel={() => setEditing(null)} />
       <FaqsTable faqs={faqs} onEdit={setEditing} />
     </>
   )

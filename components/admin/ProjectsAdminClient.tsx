@@ -10,7 +10,7 @@ export function ProjectsAdminClient({ projects }: { projects: Project[] }) {
 
   return (
     <>
-      <ProjectForm key={editing?.id ?? 'new'} project={editing} onSaved={() => setEditing(null)} />
+      <ProjectForm key={editing?.id ?? 'new'} project={editing} onSaved={() => setEditing(null)} onCancel={() => setEditing(null)} />
       <ProjectsTable projects={projects} onEdit={setEditing} />
     </>
   )

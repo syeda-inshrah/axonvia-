@@ -14,6 +14,7 @@ export function TestimonialsAdminClient({ testimonials }: { testimonials: Testim
         key={editing?.id ?? 'new'}
         testimonial={editing}
         onSaved={() => setEditing(null)}
+        onCancel={() => setEditing(null)}
       />
       <TestimonialsTable testimonials={testimonials} onEdit={setEditing} />
     </>
