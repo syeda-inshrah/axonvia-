@@ -1,13 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { HONEYPOT_FIELD, STARTED_AT_FIELD } from '@/lib/spam'
 
 /** Honeypot + start time for the public forms (checked server-side by looksAutomated). */
 export function SpamTrapFields() {
-  // Set after mount rather than during render, so server and client markup match.
-  const [startedAt, setStartedAt] = useState('')
-  useEffect(() => setStartedAt(String(Date.now())), [])
+  const startedAt = useRef<HTMLInputElement>(null)
+
+  // Stamped into the DOM after mount (not rendered), so server and client markup match.
+  useEffect(() => {
+    if (startedAt.current) startedAt.current.value = String(Date.now())
+  }, [])
 
   return (
     <>
@@ -17,7 +20,7 @@ export function SpamTrapFields() {
           <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" defaultValue="" />
         </label>
       </div>
-      <input type="hidden" name={STARTED_AT_FIELD} value={startedAt} />
+      <input ref={startedAt} type="hidden" name={STARTED_AT_FIELD} defaultValue="" />
     </>
   )
 }

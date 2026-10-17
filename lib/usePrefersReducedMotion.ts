@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 import { useReducedMotion } from 'framer-motion'
+
+const noSubscription = () => () => {}
 
 /**
  * Framer's useReducedMotion() is already true on the client's first render, but the server always renders
@@ -9,7 +11,12 @@ import { useReducedMotion } from 'framer-motion'
  */
 export function usePrefersReducedMotion(): boolean {
   const reduced = useReducedMotion()
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => setMounted(true), [])
+  // false while server-rendering and hydrating, true once running on the client — without an extra
+  // setState-in-effect render.
+  const mounted = useSyncExternalStore(
+    noSubscription,
+    () => true,
+    () => false
+  )
   return mounted && reduced === true
 }

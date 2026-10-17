@@ -92,7 +92,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
                   <p className="relative text-lg text-[var(--text-primary)]">{testimonial.quote}</p>
                   <div className="relative mt-6 flex items-center gap-3 border-t border-[var(--border-glass)] pt-4">
                     {testimonial.avatarUrl && (
-                      // Plain <img>: CMS avatar URLs can be on any host, which next/image would need configured.
+                      // eslint-disable-next-line @next/next/no-img-element -- Plain <img>: CMS avatar URLs can be on any host, which next/image would need configured.
                       <img src={testimonial.avatarUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
                     )}
                     <div>

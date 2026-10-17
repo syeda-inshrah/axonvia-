@@ -29,7 +29,7 @@ export async function Projects() {
         {featured && (
           <GlassCard className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-8">
             {featured.imageUrl ? (
-              // Plain <img>: CMS image URLs can be on any host, which next/image would need configured.
+              // eslint-disable-next-line @next/next/no-img-element -- Plain <img>: CMS image URLs can be on any host, which next/image would need configured.
               <img
                 src={featured.imageUrl}
                 alt={featured.name}
