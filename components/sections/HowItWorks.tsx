@@ -165,7 +165,7 @@ function StepsTimeline() {
 export function HowItWorks() {
   return (
     <section id="how-it-works" className="px-5 md:px-10 py-24">
-      <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-10 max-w-[1320px] mx-auto items-center">
+      <div className="grid grid-cols-1 xl:grid-cols-[40%_1fr] gap-10 max-w-[1320px] mx-auto items-center">
         <div>
           <h2 className="text-3xl md:text-4xl font-semibold text-[var(--text-primary)]">
             What Makes It <span className="italic">Agentic</span>?
