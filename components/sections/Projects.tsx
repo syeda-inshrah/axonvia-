@@ -28,13 +28,22 @@ export async function Projects() {
 
         {featured && (
           <GlassCard className="grid grid-cols-1 lg:grid-cols-[45%_55%] gap-8">
-            {/* Visual placeholder until project screenshots are stored in the CMS. */}
-            <div
-              className="relative min-h-[220px] overflow-hidden rounded-xl bg-[var(--bg-card)] grid-texture"
-              aria-hidden="true"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(45,212,255,0.18),transparent_60%),radial-gradient(circle_at_75%_75%,rgba(155,92,255,0.18),transparent_60%)]" />
-            </div>
+            {featured.imageUrl ? (
+              // Plain <img>: CMS image URLs can be on any host, which next/image would need configured.
+              <img
+                src={featured.imageUrl}
+                alt={featured.name}
+                className="min-h-[220px] w-full rounded-xl object-cover"
+              />
+            ) : (
+              // Visual placeholder until a project image URL is set in the admin.
+              <div
+                className="relative min-h-[220px] overflow-hidden rounded-xl bg-[var(--bg-card)] grid-texture"
+                aria-hidden="true"
+              >
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(45,212,255,0.18),transparent_60%),radial-gradient(circle_at_75%_75%,rgba(155,92,255,0.18),transparent_60%)]" />
+              </div>
+            )}
             <div>
               <span className="text-xs uppercase tracking-wider text-[var(--accent-cyan)]">Featured Project</span>
               <h3 className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">{featured.name}</h3>

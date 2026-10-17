@@ -78,4 +78,13 @@ describe('Projects', () => {
     expect(featuredHeading.tagName).toBe('H3')
     expect(screen.getByTestId('secondary-projects-grid')).toHaveTextContent('Ordinary Project')
   })
+
+  it('shows the featured project image when the CMS has one', async () => {
+    getPublishedProjects.mockResolvedValue([
+      { id: '1', name: 'RevenueOS', description: 'd', stats: [], tags: [], imageUrl: 'https://example.com/revenueos.png', link: null, isFeatured: true, status: 'live', sortOrder: 0 },
+    ])
+    const { Projects } = await import('./Projects')
+    render(await Projects())
+    expect(screen.getByRole('img', { name: 'RevenueOS' })).toHaveAttribute('src', 'https://example.com/revenueos.png')
+  })
 })
