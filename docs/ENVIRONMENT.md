@@ -1,0 +1,43 @@
+# Environment variables
+
+Set these in `.env.local` for local development and in your hosting provider's settings for production.
+Never commit real values. `.env.local.example` lists every name with an empty value.
+
+| Variable | Required | Used for | Without it |
+| --- | --- | --- | --- |
+| `DATABASE_URL` | **Yes** | Neon Postgres connection string (leads, subscribers, CMS content, admin users). | The site renders with empty Projects/FAQ/Testimonials; forms and admin fail. |
+| `AUTH_SECRET` | **Yes** | Signs admin sessions (Auth.js) and newsletter unsubscribe links. Generate with `openssl rand -base64 32` (or `npx auth secret`). Use a different value per environment. | Admin sign-in fails; welcome emails are not sent (they can't carry a valid unsubscribe link). |
+| `RESEND_API_KEY` | **Yes** | Sending contact notifications, contact confirmations, and newsletter welcome emails. | Submissions are saved but no emails go out (errors are logged). |
+| `RESEND_FROM_EMAIL` | **Yes** | Sender, e.g. `Axonvia <hello@your-domain>`. The domain must be verified in Resend. | Falls back to Resend's test sender `onboarding@resend.dev`, which only delivers to your own Resend account. |
+| `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox that receives "New lead" notifications. | Falls back to `NEXT_PUBLIC_CONTACT_EMAIL`, then to the placeholder `hello@axonvia.example` (undeliverable). |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | **Yes** for launch | Public contact address shown in the footer, FAQ, legal pages, and the booking fallback. | Shows the placeholder `hello@axonvia.example` (`.example` never delivers). |
+| `NEXT_PUBLIC_SITE_URL` | **Yes** for launch | Canonical origin without a trailing slash, e.g. `https://axonvia.com`. Used for unsubscribe links in emails, share-preview URLs, `robots.txt`, and `sitemap.xml`. | Falls back to `http://localhost:3000`, so email links and share previews point at localhost. |
+| `NEXT_PUBLIC_CAL_LINK` | Recommended | Cal.com event path, e.g. `axonvia/strategy-call`. Enables the booking pop-up on every "Book" button. | Booking buttons open an email to `NEXT_PUBLIC_CONTACT_EMAIL` instead. |
+
+`NEXT_PUBLIC_*` values are compiled into the site at build time: **rebuild and redeploy after changing them.**
+
+## One-off script variables
+
+| Variable | Used by |
+| --- | --- |
+| `ADMIN_PASSWORD` | Optional for `scripts/create-admin.ts`; if unset the script prompts for the password without echoing it. |
+
+## Creating the first admin
+
+```bash
+node --env-file=.env.local node_modules/.bin/tsx scripts/create-admin.ts you@your-domain
+```
+
+Passwords must be at least 12 characters. Every admin has full access to leads, subscribers, and content.
+
+## Security notes
+
+- **Sign-in rate limiting** (5 failed attempts per account, 20 per IP, per 15 minutes) and **form rate limiting**
+  (contact: 5/hour per IP; newsletter: 10/hour per IP; at most 3 confirmation/welcome emails per address per day)
+  are kept in server memory. On a single server that is enough. On serverless or multi-instance hosting each
+  instance counts separately and counts reset on cold start, so for stronger guarantees move `lib/rate-limit.ts`
+  to a shared store such as Upstash Redis.
+- Rate limits identify clients by the `x-forwarded-for` header, which hosts like Vercel set. Behind a proxy that
+  does not set it, all visitors share one bucket.
+- Security headers (CSP, HSTS, frame and content-type protections) are set in `next.config.ts`. If you add a new
+  third-party script, iframe, or font host, add it to the Content-Security-Policy there.
