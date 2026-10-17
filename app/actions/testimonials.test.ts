@@ -4,6 +4,9 @@ import { testimonials } from '@/lib/db/schema'
 const requireAdminUser = vi.fn(async () => ({ id: 'admin1', email: 'admin@axonvia.example' }))
 vi.mock('@/lib/require-admin', () => ({ requireAdminUser }))
 
+const revalidatePath = vi.fn()
+vi.mock('next/cache', () => ({ revalidatePath }))
+
 const orderBy = vi.fn(async () => [{ id: '1', quote: 'Great work' }])
 const from = vi.fn(() => ({ orderBy }))
 const select = vi.fn(() => ({ from }))
@@ -61,5 +64,21 @@ describe('testimonial admin actions', () => {
 
     expect(result).toEqual({ success: true })
     expect(deleteWhere).toHaveBeenCalled()
+  })
+
+  it('refreshes the admin list and the homepage after a change', async () => {
+    revalidatePath.mockClear()
+    const { createTestimonial } = await import('./testimonials')
+    await createTestimonial(baseInput)
+    expect(revalidatePath).toHaveBeenCalledWith('/admin/testimonials')
+    expect(revalidatePath).toHaveBeenCalledWith('/')
+  })
+
+  it('rejects an avatar URL that is not http(s)', async () => {
+    values.mockClear()
+    const { createTestimonial } = await import('./testimonials')
+    const result = await createTestimonial({ ...baseInput, avatarUrl: 'data:text/html,hi' })
+    expect(result.success).toBe(false)
+    expect(values).not.toHaveBeenCalled()
   })
 })

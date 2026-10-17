@@ -4,6 +4,9 @@ import { faqs } from '@/lib/db/schema'
 const requireAdminUser = vi.fn(async () => ({ id: 'admin1', email: 'admin@axonvia.example' }))
 vi.mock('@/lib/require-admin', () => ({ requireAdminUser }))
 
+const revalidatePath = vi.fn()
+vi.mock('next/cache', () => ({ revalidatePath }))
+
 const orderBy = vi.fn(async () => [{ id: '1', question: 'What do you do?' }])
 const from = vi.fn(() => ({ orderBy }))
 const select = vi.fn(() => ({ from }))
@@ -59,5 +62,20 @@ describe('faq admin actions', () => {
 
     expect(result).toEqual({ success: true })
     expect(deleteWhere).toHaveBeenCalled()
+  })
+
+  it('refreshes the admin list and the homepage after a change', async () => {
+    revalidatePath.mockClear()
+    const { createFaq } = await import('./faqs')
+    await createFaq(baseInput)
+    expect(revalidatePath).toHaveBeenCalledWith('/admin/faqs')
+    expect(revalidatePath).toHaveBeenCalledWith('/')
+  })
+
+  it('rejects an FAQ with an empty answer', async () => {
+    values.mockClear()
+    const { createFaq } = await import('./faqs')
+    expect((await createFaq({ ...baseInput, answer: '' })).success).toBe(false)
+    expect(values).not.toHaveBeenCalled()
   })
 })

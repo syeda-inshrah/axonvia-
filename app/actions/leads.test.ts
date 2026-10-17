@@ -4,6 +4,9 @@ import { leads } from '@/lib/db/schema'
 const requireAdminUser = vi.fn(async () => ({ id: 'admin1', email: 'admin@axonvia.example' }))
 vi.mock('@/lib/require-admin', () => ({ requireAdminUser }))
 
+const revalidatePath = vi.fn()
+vi.mock('next/cache', () => ({ revalidatePath }))
+
 const orderBy = vi.fn(async () => [{ id: '1', name: 'Jane', status: 'new' }])
 const from = vi.fn(() => ({ orderBy }))
 const select = vi.fn(() => ({ from }))
@@ -43,5 +46,12 @@ describe('lead admin actions', () => {
 
     expect(result).toEqual({ success: true })
     expect(set).toHaveBeenCalledWith({ status: 'contacted' })
+  })
+
+  it('refreshes the leads list after a status change', async () => {
+    revalidatePath.mockClear()
+    const { updateLeadStatus } = await import('./leads')
+    await updateLeadStatus('1', 'contacted')
+    expect(revalidatePath).toHaveBeenCalledWith('/admin/leads')
   })
 })
