@@ -121,7 +121,7 @@ export function ChatWidget() {
         <div
           role="dialog"
           aria-label="Axonvia assistant"
-          className="fixed inset-0 z-40 flex flex-col bg-[var(--bg-secondary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(600px,calc(100vh-2.5rem))] sm:w-[380px] sm:rounded-2xl sm:border sm:border-[var(--border-glass)] sm:shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+          className="fixed inset-0 z-[60] flex flex-col bg-[var(--bg-secondary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(600px,calc(100vh-2.5rem))] sm:w-[380px] sm:rounded-2xl sm:border sm:border-[var(--border-glass)] sm:shadow-[0_0_40px_rgba(0,0,0,0.5)]"
         >
           <header className="flex items-center justify-between gap-3 border-b border-[var(--border-glass)] px-4 py-3">
             <div className="flex items-center gap-2.5">
