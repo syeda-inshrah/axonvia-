@@ -1,18 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #05070D;
-  --bg-secondary: #0A0E1A;
-  --bg-card: #0F1420;
-  --accent-cyan: #2DD4FF;
-  --accent-purple: #9B5CFF;
-  --accent-gradient: linear-gradient(135deg, #2DD4FF 0%, #9B5CFF 100%);
-  --text-primary: #F5F7FA;
-  --text-secondary: #9BA3B5;
-  --text-muted: #5C6478;
-  --border-glass: rgba(255,255,255,0.08);
-  --border-glow: rgba(45,212,255,0.35);
-  --success: #4ADE80;
+  /* Premium light theme: white page, navy text, subtle blue accents.
+     Token names are kept from the original theme (e.g. --accent-cyan is now the primary blue). */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F4F7FC;
+  --bg-card: #FFFFFF;
+  --accent-cyan: #2563EB;
+  --accent-purple: #1E40AF;
+  --accent-gradient: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+  --on-accent: #FFFFFF;
+  --text-primary: #0B1B3F;
+  --text-secondary: #3D4B66;
+  --text-muted: #4F5B73;
+  --border-glass: rgba(11,27,63,0.10);
+  --border-glow: rgba(37,99,235,0.40);
+  --border-glow-alt: rgba(30,64,175,0.40);
+  --success: #15803D;
+  --danger: #B91C1C;
+
+  /* Surfaces, depth, and decoration */
+  --surface: rgba(255,255,255,0.88);
+  --tint: rgba(37,99,235,0.07);
+  --tint-strong: rgba(37,99,235,0.12);
+  --shadow-card: 0 1px 2px rgba(11,27,63,0.04), 0 10px 30px -12px rgba(11,27,63,0.12);
+  --shadow-raised: 0 2px 4px rgba(11,27,63,0.05), 0 22px 44px -16px rgba(37,99,235,0.28);
+  --glow: rgba(37,99,235,0.22);
+  --nav-bg: rgba(255,255,255,0.82);
+  --grid-line: rgba(11,27,63,0.045);
+  --chrome-dot: rgba(11,27,63,0.16);
+  --blob-opacity: 0.08;
 }
 
 body {
@@ -59,8 +76,8 @@ h1, h2, h3, h4 {
 
 .grid-texture {
   background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 48px 48px;
 }
 

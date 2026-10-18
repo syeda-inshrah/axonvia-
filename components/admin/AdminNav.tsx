@@ -38,8 +38,8 @@ export function AdminNav() {
               aria-current={active ? 'page' : undefined}
               className={`shrink-0 rounded-lg px-3 py-2 text-sm transition-colors duration-200 ${
                 active
-                  ? 'bg-[rgba(45,212,255,0.08)] text-[var(--accent-cyan)]'
-                  : 'text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.04)] hover:text-[var(--text-primary)]'
+                  ? 'bg-[var(--tint)] text-[var(--accent-cyan)]'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--tint)] hover:text-[var(--text-primary)]'
               }`}
             >
               {section.label}

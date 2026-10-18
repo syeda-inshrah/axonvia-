@@ -111,7 +111,7 @@ export function ChatWidget() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Chat with Axonvia"
-          className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[image:var(--accent-gradient)] text-[#05070D] shadow-[0_0_24px_rgba(45,212,255,0.35)] transition-transform duration-200 hover:scale-105"
+          className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[image:var(--accent-gradient)] text-[var(--on-accent)] shadow-[0_10px_30px_-8px_var(--glow)] transition-transform duration-200 hover:scale-105"
         >
           <MessageCircle aria-hidden="true" className="h-6 w-6" />
         </button>
@@ -121,7 +121,7 @@ export function ChatWidget() {
         <div
           role="dialog"
           aria-label="Axonvia assistant"
-          className="fixed inset-0 z-[60] flex flex-col bg-[var(--bg-secondary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(600px,calc(100vh-2.5rem))] sm:w-[380px] sm:rounded-2xl sm:border sm:border-[var(--border-glass)] sm:shadow-[0_0_40px_rgba(0,0,0,0.5)]"
+          className="fixed inset-0 z-[60] flex flex-col bg-[var(--bg-secondary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(600px,calc(100vh-2.5rem))] sm:w-[380px] sm:rounded-2xl sm:border sm:border-[var(--border-glass)] sm:shadow-[var(--shadow-raised)]"
         >
           <header className="flex items-center justify-between gap-3 border-b border-[var(--border-glass)] px-4 py-3">
             <div className="flex items-center gap-2.5">
@@ -195,7 +195,7 @@ export function ChatWidget() {
                 type="submit"
                 disabled={busy}
                 aria-label="Send"
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[image:var(--accent-gradient)] text-[#05070D] disabled:opacity-50"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[image:var(--accent-gradient)] text-[var(--on-accent)] disabled:opacity-50"
               >
                 <Send aria-hidden="true" className="h-4 w-4" />
               </button>
@@ -214,7 +214,7 @@ function Bubble({ role, children }: { role: ChatMessage['role']; children: React
       <p
         className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
           mine
-            ? 'bg-[rgba(45,212,255,0.12)] text-[var(--text-primary)]'
+            ? 'bg-[var(--tint-strong)] text-[var(--text-primary)]'
             : 'border border-[var(--border-glass)] bg-[var(--bg-card)] text-[var(--text-secondary)]'
         }`}
       >

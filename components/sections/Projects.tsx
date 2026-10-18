@@ -61,18 +61,18 @@ function FeaturedVisual({ project }: { project: DisplayProject }) {
         aria-hidden="true"
         className="relative min-h-[220px] overflow-hidden rounded-xl bg-[var(--bg-card)] grid-texture"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(45,212,255,0.18),transparent_60%),radial-gradient(circle_at_75%_75%,rgba(155,92,255,0.18),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,var(--tint-strong),transparent_60%),radial-gradient(circle_at_75%_75%,var(--tint),transparent_60%)]" />
       </div>
     )
   }
 
   return (
     // Browser-chrome frame keeps a light-themed screenshot at home on the dark card.
-    <div className="overflow-hidden rounded-xl border border-[var(--border-glass)] bg-[var(--bg-card)] shadow-[0_20px_60px_-20px_rgba(45,212,255,0.25)]">
+    <div className="overflow-hidden rounded-xl border border-[var(--border-glass)] bg-[var(--bg-card)] shadow-[var(--shadow-raised)]">
       <div className="flex items-center gap-1.5 border-b border-[var(--border-glass)] px-3 py-2" aria-hidden="true">
-        <span className="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.15)]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.15)]" />
-        <span className="h-2.5 w-2.5 rounded-full bg-[rgba(255,255,255,0.15)]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
+        <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
       </div>
       <div className="overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element -- Plain <img>: admin image URLs can be on any host, which next/image would need configured. */}

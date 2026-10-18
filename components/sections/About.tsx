@@ -10,7 +10,7 @@ export function About() {
           <div
             data-testid="founder-photo-placeholder"
             aria-hidden="true"
-            className="rounded-full bg-[image:var(--accent-gradient)] p-[2px] shadow-[0_0_60px_rgba(45,212,255,0.25)]"
+            className="rounded-full bg-[image:var(--accent-gradient)] p-[2px] shadow-[0_0_60px_var(--glow)]"
           >
             <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[var(--bg-card)]">
               <UserRound className="h-20 w-20 text-[var(--text-muted)]" strokeWidth={1.25} />

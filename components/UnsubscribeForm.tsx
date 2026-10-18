@@ -27,7 +27,7 @@ export function UnsubscribeForm({ email, token }: { email: string; token: string
         {isPending ? 'Unsubscribing…' : 'Unsubscribe'}
       </button>
       {result?.error && (
-        <p role="alert" className="mt-4 text-red-400">
+        <p role="alert" className="mt-4 text-[var(--danger)]">
           {result.error}
         </p>
       )}

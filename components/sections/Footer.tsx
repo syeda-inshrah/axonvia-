@@ -49,7 +49,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 aria-label={label}
                 title={label}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-glass)] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_16px_rgba(45,212,255,0.25)]"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-glass)] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_16px_var(--glow)]"
               >
                 <Icon className="h-4 w-4" />
               </a>

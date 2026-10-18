@@ -24,7 +24,7 @@ export function CalEmbed({
 
     ;(async () => {
       const cal = await getCalApi()
-      cal('ui', { theme: 'dark', styles: { branding: { brandColor: '#2DD4FF' } } })
+      cal('ui', { theme: 'light', styles: { branding: { brandColor: '#2563EB' } } })
     })()
   }, [calLink])
 

@@ -6,7 +6,7 @@ export function SignOutButton() {
   return (
     <button
       onClick={() => signOutAction()}
-      className="w-fit text-left text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-red-400"
+      className="w-fit text-left text-sm text-[var(--text-secondary)] transition-colors duration-200 hover:text-[var(--danger)]"
     >
       Sign out
     </button>

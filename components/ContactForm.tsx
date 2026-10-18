@@ -30,7 +30,7 @@ export function ContactForm() {
         {isPending ? 'Sending…' : 'Send'}
       </button>
       {result?.success && <p data-testid="form-success" className="text-[var(--success)]">Thanks — we&apos;ll be in touch.</p>}
-      {result && !result.success && <p data-testid="form-error" className="text-red-400">{result.error}</p>}
+      {result && !result.success && <p data-testid="form-error" className="text-[var(--danger)]">{result.error}</p>}
     </form>
   )
 }

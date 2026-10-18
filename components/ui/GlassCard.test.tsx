@@ -9,12 +9,12 @@ describe('GlassCard', () => {
     expect(screen.getByText('Card content')).toBeInTheDocument()
   })
 
-  it('defaults to the cyan glow and switches to purple when requested', () => {
+  it('defaults to the blue hover border and switches to the navy one for the secondary accent', () => {
     const { rerender } = render(<GlassCard>Content</GlassCard>)
     expect(screen.getByText('Content')).toHaveClass('hover:border-[var(--border-glow)]')
 
     rerender(<GlassCard accent="purple">Content</GlassCard>)
-    expect(screen.getByText('Content')).toHaveClass('hover:border-[rgba(155,92,255,0.35)]')
+    expect(screen.getByText('Content')).toHaveClass('hover:border-[var(--border-glow-alt)]')
   })
 
   it('omits the hover glow/lift entirely when glow={false}, for calmer sections like Why Axonvia', () => {

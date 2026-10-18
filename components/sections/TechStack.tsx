@@ -62,7 +62,7 @@ export function TechStack() {
 // Own classes rather than overriding Badge: Badge's uppercase/text-xs win on stylesheet order, not class order.
 function Chip({ label }: { label: string }) {
   return (
-    <span className="inline-block rounded-full border border-[var(--border-glass)] bg-[rgba(255,255,255,0.03)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] backdrop-blur-md transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--text-primary)] hover:shadow-[0_0_16px_rgba(45,212,255,0.25)]">
+    <span className="inline-block rounded-full border border-[var(--border-glass)] bg-[var(--surface)] shadow-[var(--shadow-card)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] backdrop-blur-md transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--text-primary)] hover:shadow-[0_0_16px_var(--glow)]">
       {label}
     </span>
   )

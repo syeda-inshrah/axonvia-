@@ -42,7 +42,7 @@ function FlowConnector({ index, pulsing }: { index: number; pulsing: boolean }) 
     <li
       aria-hidden="true"
       data-flow-connector
-      className="relative h-8 w-px self-center md:h-px md:w-auto md:min-w-4 md:flex-1 bg-[linear-gradient(to_bottom,var(--accent-cyan),var(--accent-purple))] md:bg-[image:var(--accent-gradient)] opacity-80 shadow-[0_0_8px_rgba(45,212,255,0.6)]"
+      className="relative h-8 w-px self-center md:h-px md:w-auto md:min-w-4 md:flex-1 bg-[linear-gradient(to_bottom,var(--accent-cyan),var(--accent-purple))] md:bg-[image:var(--accent-gradient)] opacity-80 shadow-[0_0_8px_var(--glow)]"
     >
       {pulsing && (
         <>
@@ -93,7 +93,7 @@ function AgentFlow() {
             {pulsing && (
               <motion.span
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-0 rounded-2xl border border-[var(--accent-cyan)] shadow-[0_0_24px_rgba(45,212,255,0.45)]"
+                className="pointer-events-none absolute inset-0 rounded-2xl border border-[var(--accent-cyan)] shadow-[0_0_24px_var(--glow)]"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: [0, 1, 0] }}
                 transition={{

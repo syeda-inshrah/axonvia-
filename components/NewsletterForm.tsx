@@ -32,7 +32,7 @@ export function NewsletterForm() {
         {isPending ? 'Subscribing…' : 'Subscribe'}
       </button>
       {result?.success && <p data-testid="newsletter-success" className="text-[var(--success)]">Subscribed — welcome aboard.</p>}
-      {result && !result.success && <p data-testid="newsletter-error" className="text-red-400">{result.error}</p>}
+      {result && !result.success && <p data-testid="newsletter-error" className="text-[var(--danger)]">{result.error}</p>}
     </form>
   )
 }

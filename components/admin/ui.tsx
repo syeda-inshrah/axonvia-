@@ -5,11 +5,11 @@ export const adminInput =
   'w-full rounded-lg border border-[var(--border-glass)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-glow)] focus:outline-none'
 export const adminCard = 'rounded-2xl border border-[var(--border-glass)] bg-[var(--bg-card)]'
 export const adminPrimaryButton =
-  'inline-flex items-center justify-center rounded-lg bg-[image:var(--accent-gradient)] px-4 py-2 text-sm font-medium text-[#05070D] transition-opacity duration-200 hover:opacity-90 disabled:opacity-60'
+  'inline-flex items-center justify-center rounded-lg bg-[image:var(--accent-gradient)] px-4 py-2 text-sm font-medium text-[var(--on-accent)] transition-opacity duration-200 hover:opacity-90 disabled:opacity-60'
 export const adminSecondaryButton =
   'inline-flex items-center justify-center rounded-lg border border-[var(--border-glass)] px-3 py-1.5 text-sm text-[var(--text-primary)] transition-colors duration-200 hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)] disabled:opacity-60'
 export const adminDangerButton =
-  'inline-flex items-center justify-center rounded-lg border border-red-500/30 px-3 py-1.5 text-sm text-red-400 transition-colors duration-200 hover:border-red-400 hover:bg-red-500/10 disabled:opacity-60'
+  'inline-flex items-center justify-center rounded-lg border border-red-200 px-3 py-1.5 text-sm text-[var(--danger)] transition-colors duration-200 hover:border-red-300 hover:bg-red-50 disabled:opacity-60'
 export const adminTable = 'w-full min-w-[560px] text-left text-sm'
 export const adminTh = 'px-4 py-3 text-xs font-medium uppercase tracking-wider text-[var(--text-muted)]'
 export const adminTd = 'border-t border-[var(--border-glass)] px-4 py-3 align-top text-[var(--text-secondary)]'
@@ -58,9 +58,9 @@ export function Checkbox({ label, name, defaultChecked }: { label: string; name:
 
 export function StatusPill({ tone, children }: { tone: 'on' | 'off' | 'warn'; children: ReactNode }) {
   const tones = {
-    on: 'border-[rgba(74,222,128,0.3)] text-[var(--success)]',
+    on: 'border-[var(--success)]/30 bg-[var(--success)]/5 text-[var(--success)]',
     off: 'border-[var(--border-glass)] text-[var(--text-muted)]',
-    warn: 'border-[rgba(45,212,255,0.35)] text-[var(--accent-cyan)]',
+    warn: 'border-[var(--border-glow)] bg-[var(--tint)] text-[var(--accent-cyan)]',
   }
   return <span className={`inline-block rounded-full border px-2.5 py-0.5 text-xs ${tones[tone]}`}>{children}</span>
 }
@@ -77,7 +77,7 @@ export function EmptyRow({ colSpan, children }: { colSpan: number; children: Rea
 
 export function FormError({ testId, children }: { testId: string; children: ReactNode }) {
   return (
-    <p role="alert" data-testid={testId} className="text-sm text-red-400">
+    <p role="alert" data-testid={testId} className="text-sm text-[var(--danger)]">
       {children}
     </p>
   )
