@@ -2,9 +2,38 @@ import { getPublishedProjects } from '@/lib/queries/content'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { Button } from '@/components/ui/Button'
+import { ExternalLink } from 'lucide-react'
+import { showcaseProjects, type ShowcaseProject } from '@/lib/showcase-projects'
+import { buttonClasses } from '@/components/ui/buttonStyles'
+import type { Project } from '@/lib/types'
+
+type DisplayProject = Project | ShowcaseProject
+
+function demoUrlOf(project: DisplayProject): string | null {
+  return 'demoUrl' in project ? project.demoUrl : null
+}
+
+// External demo link: opens in a new tab, and says so to screen readers.
+function LiveDemoButton({ project, className = '' }: { project: DisplayProject; className?: string }) {
+  const url = demoUrlOf(project)
+  if (!url) return null
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`Live Demo: ${project.name} (opens in a new tab)`}
+      className={buttonClasses('primary', 'default', `gap-2 ${className}`)}
+    >
+      Live Demo
+      <ExternalLink aria-hidden="true" className="h-4 w-4" />
+    </a>
+  )
+}
 
 export async function Projects() {
-  const projects = await getPublishedProjects()
+  // CMS projects first (they keep their admin-set order and featured flag), then the built-in showcase.
+  const projects: DisplayProject[] = [...(await getPublishedProjects()), ...showcaseProjects]
   const featured = projects.find((project) => project.isFeatured) ?? projects[0]
   const rest = projects.filter((project) => project !== featured)
 
@@ -65,11 +94,14 @@ export async function Projects() {
                   </span>
                 ))}
               </div>
-              {featured.link && (
-                <Button href={featured.link} variant="ghost" className="mt-4">
-                  View Details →
-                </Button>
-              )}
+              <div className="mt-6 flex flex-wrap items-center gap-4">
+                <LiveDemoButton project={featured} />
+                {featured.link && (
+                  <Button href={featured.link} variant="ghost">
+                    View Details →
+                  </Button>
+                )}
+              </div>
             </div>
           </GlassCard>
         )}
@@ -77,9 +109,23 @@ export async function Projects() {
         {rest.length > 0 && (
           <div data-testid="secondary-projects-grid" className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
             {rest.map((project) => (
-              <GlassCard key={project.id}>
+              <GlassCard key={project.id} className="flex flex-col">
                 <h4 className="text-lg font-semibold text-[var(--text-primary)]">{project.name}</h4>
                 <p className="mt-2 text-sm text-[var(--text-secondary)]">{project.description}</p>
+                {project.tags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="font-mono text-xs text-[var(--text-muted)]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {demoUrlOf(project) && (
+                  <div className="mt-auto pt-5">
+                    <LiveDemoButton project={project} />
+                  </div>
+                )}
               </GlassCard>
             ))}
           </div>

@@ -32,7 +32,7 @@ describe('Projects', () => {
     expect(screen.getByText('Claude API')).toBeInTheDocument()
   })
 
-  it('omits the secondary grid when there are no remaining projects', async () => {
+  it('lists the showcase project in the grid after a CMS featured project, with a Live Demo link', async () => {
     getPublishedProjects.mockResolvedValue([
       {
         id: '1',
@@ -51,10 +51,35 @@ describe('Projects', () => {
     const { Projects } = await import('./Projects')
     render(await Projects())
 
-    expect(screen.queryByTestId('secondary-projects-grid')).not.toBeInTheDocument()
+    expect(screen.getByText('RevenueOS').tagName).toBe('H3')
+    const grid = screen.getByTestId('secondary-projects-grid')
+    expect(grid).toHaveTextContent('Todo App')
+    const demo = screen.getByRole('link', { name: 'Live Demo: Todo App (opens in a new tab)' })
+    expect(grid).toContainElement(demo)
+    expect(demo).toHaveAttribute('href', 'https://speckit-hackathon-srha.vercel.app/')
   })
 
-  it('shows a case-studies-in-progress card when there are no live projects at all', async () => {
+  it('features the showcase project, with stack tags and a Live Demo button, when the CMS has no live projects', async () => {
+    getPublishedProjects.mockResolvedValue([])
+
+    const { Projects } = await import('./Projects')
+    render(await Projects())
+
+    expect(screen.getByText('Featured Project')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: 'Todo App' })).toBeInTheDocument()
+    for (const tag of ['Next.js 16', 'FastAPI', 'PostgreSQL']) expect(screen.getByText(tag)).toBeInTheDocument()
+
+    const demo = screen.getByRole('link', { name: 'Live Demo: Todo App (opens in a new tab)' })
+    expect(demo).toHaveAttribute('href', 'https://speckit-hackathon-srha.vercel.app/')
+    expect(demo).toHaveAttribute('target', '_blank')
+    expect(demo).toHaveAttribute('rel', 'noopener noreferrer')
+    // The demo site's own usage numbers are unverified, so the card must not repeat them.
+    expect(document.body).not.toHaveTextContent(/10K\+|50K\+|99\.9%/)
+  })
+
+  it('shows a case-studies-in-progress card when there are no CMS or showcase projects at all', async () => {
+    vi.resetModules()
+    vi.doMock('@/lib/showcase-projects', () => ({ showcaseProjects: [] }))
     getPublishedProjects.mockResolvedValue([])
 
     const { Projects } = await import('./Projects')
@@ -62,6 +87,8 @@ describe('Projects', () => {
 
     expect(screen.getByRole('heading', { name: 'Case studies in progress' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Discuss your project' })).toHaveAttribute('href', '#final-cta')
+    vi.doUnmock('@/lib/showcase-projects')
+    vi.resetModules()
   })
 
   it('features the first isFeatured project even when it is not first, and lists the rest in the grid', async () => {
