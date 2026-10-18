@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { PgDialect } from 'drizzle-orm/pg-core'
+import type { SQL } from 'drizzle-orm'
 
 const limit = vi.fn()
-const where = vi.fn(() => ({ limit }))
+const where = vi.fn<(condition: SQL) => { limit: typeof limit }>(() => ({ limit }))
 const from = vi.fn(() => ({ where }))
 const select = vi.fn(() => ({ from }))
 vi.mock('@/lib/db', () => ({ db: { select } }))
@@ -12,7 +14,18 @@ vi.mock('bcryptjs', () => ({ default: { compare } }))
 describe('verifyAdminCredentials', () => {
   beforeEach(() => {
     limit.mockReset()
+    where.mockClear()
     compare.mockReset()
+  })
+
+  it('matches the email regardless of letter case and surrounding spaces', async () => {
+    limit.mockResolvedValue([])
+    const { verifyAdminCredentials } = await import('./auth-credentials')
+
+    await verifyAdminCredentials('  Admin@Axonvia.Example ', 'pw')
+    const query = new PgDialect().sqlToQuery(where.mock.calls[0][0])
+    expect(query.sql).toMatch(/lower\(/)
+    expect(query.params).toEqual(['admin@axonvia.example'])
   })
 
   it('returns null when no user matches the email', async () => {
