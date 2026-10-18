@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { motion, useReducedMotion } from 'motion/react'
 import { Quote } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import type { Testimonial } from '@/lib/types'

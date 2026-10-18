@@ -1,7 +1,7 @@
 'use client'
 
 import { Fragment, useRef } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { motion, useInView } from 'motion/react'
 import { Brain, Wrench, GitBranch, UserCheck, Search, PenTool, Code, Rocket } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { fadeUp, staggerContainer } from '@/lib/animations'

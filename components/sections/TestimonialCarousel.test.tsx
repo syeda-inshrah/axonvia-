@@ -5,8 +5,8 @@ import type { Testimonial } from '@/lib/types'
 import { TestimonialCarousel } from './TestimonialCarousel'
 
 const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('framer-motion', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('framer-motion')>()),
+vi.mock('motion/react', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('motion/react')>()),
   useReducedMotion: () => motionPrefs.reduced,
 }))
 

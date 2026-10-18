@@ -1,7 +1,7 @@
 'use client'
 
 import type { RefObject } from 'react'
-import { useScroll, type MotionValue } from 'framer-motion'
+import { useScroll, type MotionValue } from 'motion/react'
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 /**

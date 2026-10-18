@@ -4,8 +4,8 @@ import { renderToString } from 'react-dom/server'
 import { describe, it, expect, vi } from 'vitest'
 import { usePrefersReducedMotion } from './usePrefersReducedMotion'
 
-vi.mock('framer-motion', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('framer-motion')>()),
+vi.mock('motion/react', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('motion/react')>()),
   useReducedMotion: () => true,
 }))
 
