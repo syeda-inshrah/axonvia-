@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { CalEmbed } from '@/components/CalEmbed'
 import { NewsletterForm } from '@/components/NewsletterForm'
 import { Logo } from '@/components/ui/Logo'
+import { InstagramIcon, LinkedInIcon } from '@/components/ui/SocialIcons'
 import { siteConfig } from '@/lib/site'
 
 const navigateLinks = [
@@ -22,6 +23,11 @@ const serviceLinks = [
   'AI Strategy & Consulting',
 ]
 
+const socialLinks = [
+  { href: siteConfig.social.instagram, label: 'Axonvia on Instagram', Icon: InstagramIcon },
+  { href: siteConfig.social.linkedin, label: 'Axonvia founder on LinkedIn', Icon: LinkedInIcon },
+]
+
 const linkClasses = 'link-underline w-fit hover:text-[var(--text-primary)]'
 
 export function Footer() {
@@ -34,6 +40,21 @@ export function Footer() {
             {siteConfig.name}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">{siteConfig.tagline}</p>
+          <div className="mt-4 flex gap-3">
+            {socialLinks.map(({ href, label, Icon }) => (
+              <a
+                key={href}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                title={label}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-glass)] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_16px_rgba(45,212,255,0.25)]"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
           <h3 className="mt-6 text-sm font-semibold text-[var(--text-primary)]">Stay in the loop</h3>
           <p className="mt-1 mb-3 text-sm text-[var(--text-muted)]">Occasional updates from Axonvia. No spam.</p>
           <NewsletterForm />

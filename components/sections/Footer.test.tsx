@@ -49,4 +49,17 @@ describe('Footer', () => {
     const note = screen.getByText(/Unsubscribe any time/)
     expect(note.querySelector('a[href="/privacy"]')).not.toBeNull()
   })
+
+  it('links Axonvia on Instagram and LinkedIn with accessible icon buttons that open in a new tab', () => {
+    render(<Footer />)
+    const instagram = screen.getByRole('link', { name: 'Axonvia on Instagram' })
+    const linkedin = screen.getByRole('link', { name: 'Axonvia founder on LinkedIn' })
+    expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/axonvia_automate/')
+    expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/syedainshrahkhatoon/')
+    for (const link of [instagram, linkedin]) {
+      expect(link).toHaveAttribute('target', '_blank')
+      expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+      expect(link.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+    }
+  })
 })
