@@ -40,6 +40,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
               <td className={`${adminTd} whitespace-nowrap`}>{new Date(lead.createdAt).toLocaleDateString()}</td>
               <td className={adminTd}>
                 <select
+                  name={`status-${lead.id}`}
                   aria-label={`Status for ${lead.name}`}
                   defaultValue={lead.status}
                   onChange={(e) => handleStatusChange(lead.id, e.target.value as Lead['status'])}

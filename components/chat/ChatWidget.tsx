@@ -184,6 +184,7 @@ export function ChatWidget() {
                     void send(input)
                   }
                 }}
+                name="message"
                 aria-label="Your message"
                 placeholder="Ask about our services…"
                 rows={1}

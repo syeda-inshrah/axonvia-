@@ -97,4 +97,9 @@ describe('ChatWidget', () => {
     fireEvent.click(screen.getByRole('link', { name: 'Contact us' }))
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
+
+  it('gives the message box a name so browsers can identify the field', () => {
+    open()
+    expect(screen.getByLabelText('Your message')).toHaveAttribute('name', 'message')
+  })
 })
