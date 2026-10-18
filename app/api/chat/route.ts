@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { z } from 'zod'
+import { describeApiKey, diagnoseChatError } from '@/lib/chat/diagnose'
 import { buildSystemPrompt } from '@/lib/chat/system-prompt'
 import { clientIp } from '@/lib/client-ip'
 import { getPublishedFaqs } from '@/lib/queries/content'
@@ -15,6 +16,7 @@ const MAX_TOKENS = 4096
 const UNAVAILABLE = 'The chat assistant is unavailable right now. Please use the contact form below and we’ll reply by email.'
 const DECLINED = 'I can’t help with that here. For anything about working with Axonvia, please use the contact form below.'
 const INTERRUPTED = '\n\nSorry, something went wrong while answering. Please try again, or use the contact form below.'
+const BUSY = '\n\nThe assistant is busy right now. Please try again in a moment, or use the contact form below.'
 
 // 20 messages per visitor per 10 minutes: plenty for a conversation, a ceiling on API spend.
 const limiter = createRateLimiter({ limit: 20, windowMs: 10 * 60 * 1000 })
@@ -86,12 +88,19 @@ export async function POST(request: Request) {
         const message = await stream.finalMessage()
         if (message.stop_reason === 'refusal') controller.enqueue(encoder.encode(DECLINED))
       } catch (error) {
-        if (error instanceof Anthropic.APIError) {
-          console.error(`Chat API error ${error.status}:`, error.message)
-        } else {
-          console.error('Chat stream failed:', error)
-        }
-        controller.enqueue(encoder.encode(INTERRUPTED))
+        // One JSON line per failure (Vercel → Logs): status, Anthropic error type and request id, plus the
+        // key's shape so a mis-pasted key is obvious. Never the key itself, headers, or the visitor's messages.
+        const failure = diagnoseChatError(error)
+        console.error(
+          JSON.stringify({
+            event: 'chat_api_error',
+            ...failure,
+            model: MODEL,
+            keyFormat: describeApiKey(process.env.ANTHROPIC_API_KEY),
+          })
+        )
+        const transient = failure.kind === 'overloaded' || failure.kind === 'rate_limit'
+        controller.enqueue(encoder.encode(transient ? BUSY : INTERRUPTED))
       } finally {
         controller.close()
       }

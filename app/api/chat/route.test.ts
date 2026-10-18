@@ -5,12 +5,19 @@ type StreamEvent = { type: string; delta?: { type: string; text?: string } }
 
 const stream = vi.fn()
 const finalStopReason = { value: 'end_turn' as string }
+const failStatus = { value: 500 }
 let events: StreamEvent[] = []
 let failMidStream = false
 
 vi.mock('@anthropic-ai/sdk', () => {
   class APIError extends Error {
-    status = 500
+    status: number
+    error = { type: 'error', error: { type: 'api_error', message: 'upstream failure' } }
+    requestID = 'req_mock'
+    constructor(message: string, status = 500) {
+      super(message)
+      this.status = status
+    }
   }
   class Anthropic {
     static APIError = APIError
@@ -21,7 +28,7 @@ vi.mock('@anthropic-ai/sdk', () => {
           return {
             async *[Symbol.asyncIterator]() {
               for (const event of events) yield event
-              if (failMidStream) throw new APIError('upstream failure')
+              if (failMidStream) throw new APIError('upstream failure', failStatus.value)
             },
             finalMessage: async () => ({ stop_reason: finalStopReason.value }),
           }
@@ -57,6 +64,7 @@ describe('POST /api/chat', () => {
     events = textEvents('We build ', 'AI agents.')
     finalStopReason.value = 'end_turn'
     failMidStream = false
+    failStatus.value = 500
   })
   afterEach(() => vi.unstubAllEnvs())
 
@@ -151,6 +159,31 @@ describe('POST /api/chat', () => {
 
     expect(text).toMatch(/^We build AI agents\./)
     expect(text).toMatch(/contact form/i)
+    errorLog.mockRestore()
+  })
+
+  it('logs a structured, key-free diagnosis (status, error type, request id) when the Claude call fails', async () => {
+    failMidStream = true
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    await (await POST(chatRequest(oneQuestion))).text()
+
+    const logged = errorLog.mock.calls.map((call) => call.join(' ')).join('\n')
+    const entry = JSON.parse(errorLog.mock.calls.find((call) => String(call[0]).includes('chat_api_error'))![0])
+    expect(entry).toMatchObject({ event: 'chat_api_error', model: 'claude-opus-5-5', keyFormat: expect.any(String) })
+    expect(entry.kind).toBeDefined()
+    expect(logged).not.toContain('test-key')
+    errorLog.mockRestore()
+  })
+
+  it('tells visitors to retry shortly when Claude is overloaded or rate limited', async () => {
+    failMidStream = true
+    failStatus.value = 529
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    const text = await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(text).toMatch(/busy/i)
     errorLog.mockRestore()
   })
 })
