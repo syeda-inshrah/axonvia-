@@ -1,10 +1,10 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { Bot, Workflow, Layers, MessageCircle, Database, Compass } from 'lucide-react'
 import { GlassCard } from '@/components/ui/GlassCard'
 import { SectionHeader } from '@/components/ui/SectionHeader'
-import { fadeUp, staggerContainer } from '@/lib/animations'
+import { rise, staggerContainer } from '@/lib/animations'
 
 const services = [
   {
@@ -65,7 +65,7 @@ export function Services() {
         className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1320px] mx-auto"
       >
         {services.map((service) => (
-          <motion.div key={service.title} variants={fadeUp}>
+          <motion.div key={service.title} variants={rise}>
             <GlassCard accent={service.accent} className="h-full">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-cyan)]/10">
                 <service.icon className="h-6 w-6 text-[var(--accent-cyan)]" />

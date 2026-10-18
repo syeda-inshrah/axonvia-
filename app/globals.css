@@ -77,3 +77,10 @@ h1, h2, h3, h4 {
 [data-reduced-motion='true'] .gradient-blob {
   animation: none;
 }
+
+/* The Hero headline reveal animates a blur; reduced-motion visitors never see it, even during hydration. */
+@media (prefers-reduced-motion: reduce) {
+  [data-word] {
+    filter: none !important;
+  }
+}

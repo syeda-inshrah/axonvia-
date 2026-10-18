@@ -1,11 +1,12 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { Fragment } from 'react'
+import { motion, useScroll, useTransform, type Variants } from 'motion/react'
 import { Button } from '@/components/ui/Button'
 import { Badge } from '@/components/ui/Badge'
 import { CalEmbed } from '@/components/CalEmbed'
 import { GradientBlob } from '@/components/ui/GradientBlob'
-import { fadeUp, staggerContainer } from '@/lib/animations'
+import { EASE_OUT, fadeUp, staggerContainer } from '@/lib/animations'
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const NODES = [
@@ -68,6 +69,25 @@ function HeroNetworkVisual() {
   )
 }
 
+// Headline tokens, revealed one by one. "AI Automation" stays one token so its gradient spans both words.
+const HEADLINE: { text: string; gradient?: boolean }[] = [
+  { text: 'AI Automation', gradient: true },
+  { text: '&' },
+  { text: 'Intelligent' },
+  { text: 'Solutions' },
+  { text: 'for' },
+  { text: 'Modern' },
+  { text: 'Businesses' },
+]
+
+function wordReveal(reduced: boolean): Variants {
+  // Blur is the one non-transform effect on the page: a single short run, and skipped for reduced motion.
+  return {
+    hidden: { opacity: 0, y: '0.45em', filter: reduced ? 'blur(0px)' : 'blur(12px)' },
+    visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.9, ease: EASE_OUT } },
+  }
+}
+
 export function Hero() {
   const reduced = usePrefersReducedMotion()
   const { scrollY } = useScroll()
@@ -97,11 +117,23 @@ export function Hero() {
         </motion.div>
 
         <motion.h1
-          variants={fadeUp}
+          variants={staggerContainer(0.08)}
           className="mt-6 text-4xl md:text-7xl font-semibold leading-tight text-[var(--text-primary)]"
         >
-          <span className="bg-[image:var(--accent-gradient)] bg-clip-text text-transparent">AI Automation</span> &amp;
-          Intelligent Solutions for Modern Businesses
+          {HEADLINE.map((word, index) => (
+            <Fragment key={word.text}>
+              {index > 0 && ' '}
+              <motion.span
+                data-word
+                variants={wordReveal(reduced)}
+                className={`inline-block ${
+                  word.gradient ? 'bg-[image:var(--accent-gradient)] bg-clip-text text-transparent' : ''
+                }`}
+              >
+                {word.text}
+              </motion.span>
+            </Fragment>
+          ))}
         </motion.h1>
 
         <motion.p variants={fadeUp} className="mt-6 text-lg md:text-xl text-[var(--text-secondary)] max-w-xl mx-auto">

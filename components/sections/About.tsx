@@ -1,9 +1,10 @@
 import { UserRound } from 'lucide-react'
+import { Reveal } from '@/components/motion/Reveal'
 
 export function About() {
   return (
     <section id="about" className="px-5 md:px-10 py-24 section-alt">
-      <div className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-center">
+      <Reveal className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-center">
         <div className="flex justify-center">
           {/* Placeholder until the founder photo is supplied: gradient ring + glow halo per spec §9. */}
           <div
@@ -39,7 +40,7 @@ export function About() {
             <span>Full-stack delivery</span>
           </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   )
 }
