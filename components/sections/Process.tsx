@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { fadeUp, staggerContainer } from '@/lib/animations'
 import { useScrollFill } from '@/lib/useScrollFill'

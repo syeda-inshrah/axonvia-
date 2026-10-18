@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const useReducedMotion = vi.fn()
-vi.mock('framer-motion', () => ({
+vi.mock('motion/react', () => ({
   useReducedMotion,
   MotionConfig: ({ reducedMotion, children }: { reducedMotion?: string; children: React.ReactNode }) => (
     <div data-testid="motion-config" data-reduced-motion-config={reducedMotion}>

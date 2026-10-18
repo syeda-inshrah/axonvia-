@@ -41,4 +41,9 @@ describe('globals.css', () => {
     expect(sectionTags.filter((tag) => tag.includes('bg-[var(--bg-secondary)]'))).toEqual([])
     expect(sectionTags.filter((tag) => tag.includes('section-alt'))).toHaveLength(5)
   })
+
+  it('never blurs the animated headline words for visitors who prefer reduced motion', () => {
+    const media = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'))
+    expect(media).toMatch(/\[data-word\]\s*\{[^}]*filter:\s*none\s*!important/)
+  })
 })

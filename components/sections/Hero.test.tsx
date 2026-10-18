@@ -4,8 +4,8 @@ import { describe, it, expect, vi } from 'vitest'
 import { Hero } from './Hero'
 
 const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('framer-motion', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('framer-motion')>()),
+vi.mock('motion/react', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('motion/react')>()),
   useReducedMotion: () => motionPrefs.reduced,
 }))
 
@@ -75,5 +75,12 @@ describe('Hero', () => {
       expect(subheadline).toHaveTextContent(area)
     }
     expect(container).not.toHaveTextContent(/sales|lead generation|Trusted by/i)
+  })
+
+  it('reveals the headline word by word while keeping its exact text for screen readers and search', () => {
+    const { container } = render(<Hero />)
+    const words = Array.from(container.querySelectorAll('h1 [data-word]'), (word) => word.textContent)
+    expect(words).toEqual(['AI Automation', '&', 'Intelligent', 'Solutions', 'for', 'Modern', 'Businesses'])
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('AI Automation & Intelligent Solutions for Modern Businesses')
   })
 })

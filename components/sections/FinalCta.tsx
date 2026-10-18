@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { GradientBlob } from '@/components/ui/GradientBlob'
 import { CalEmbed } from '@/components/CalEmbed'
 import { ContactForm } from '@/components/ContactForm'

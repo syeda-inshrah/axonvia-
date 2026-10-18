@@ -1,6 +1,6 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import { SectionHeader } from '@/components/ui/SectionHeader'
 import { scatterIn, staggerContainer } from '@/lib/animations'
 import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'

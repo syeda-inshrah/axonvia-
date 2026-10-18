@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { MotionConfig, useReducedMotion } from 'framer-motion'
+import { MotionConfig, useReducedMotion } from 'motion/react'
 
 export function MotionSafeProvider({ children }: { children: React.ReactNode }) {
   const prefersReducedMotion = useReducedMotion()
