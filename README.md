@@ -33,5 +33,6 @@ FAQs), so run it once, deliberately, against the database you intend to seed.
 
 ## Documentation
 
+- `docs/VERCEL.md`: deploying to Vercel and the environment variables to set
 - `docs/ENVIRONMENT.md`: every environment variable, admin setup, and security notes
 - `AXONVIA_WEBSITE_SPEC.md`: design and content spec
