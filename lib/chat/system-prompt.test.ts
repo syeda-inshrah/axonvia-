@@ -18,25 +18,20 @@ describe('chatbot system prompt', () => {
   })
 
   it('steers visitors to the contact form and forbids inventing prices, clients, or results', () => {
-    const [instructions] = buildSystemPrompt([])
-    expect(instructions.text).toMatch(/contact form/i)
-    expect(instructions.text).toMatch(/never invent/i)
-    expect(instructions.text).toMatch(/pricing|prices/i)
+    const prompt = buildSystemPrompt([])
+    expect(prompt).toMatch(/contact form/i)
+    expect(prompt).toMatch(/never invent/i)
+    expect(prompt).toMatch(/pricing|prices/i)
   })
 
-  it('keeps the stable instructions first and caches them; published FAQs go in a separate later block', () => {
-    const blocks = buildSystemPrompt([
+  it('keeps the stable instructions first and appends owner-published FAQs after them', () => {
+    const prompt = buildSystemPrompt([
       { id: '1', question: 'Do you work remotely?', answer: 'Yes.', isPublished: true, sortOrder: 0 },
     ])
-    expect(blocks).toHaveLength(2)
-    expect(blocks[0].text).not.toContain('Do you work remotely?')
-    expect(blocks[1].text).toContain('Q: Do you work remotely?\nA: Yes.')
-    expect(blocks[1].cache_control).toEqual({ type: 'ephemeral' })
+    expect(prompt.indexOf('Rules:')).toBeLessThan(prompt.indexOf('Q: Do you work remotely?\nA: Yes.'))
   })
 
-  it('sends a single cached block when no FAQs are published', () => {
-    const blocks = buildSystemPrompt([])
-    expect(blocks).toHaveLength(1)
-    expect(blocks[0].cache_control).toEqual({ type: 'ephemeral' })
+  it('adds no FAQ section when none are published', () => {
+    expect(buildSystemPrompt([])).not.toMatch(/Frequently asked questions/)
   })
 })

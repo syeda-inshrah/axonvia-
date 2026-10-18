@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+import { FinishReason, GoogleGenAI, ThinkingLevel, type Content } from '@google/genai'
 import { z } from 'zod'
 import { describeApiKey, diagnoseChatError } from '@/lib/chat/diagnose'
 import { buildSystemPrompt } from '@/lib/chat/system-prompt'
@@ -9,9 +9,19 @@ import { createRateLimiter } from '@/lib/rate-limit'
 // Streams can take a few seconds; give the function room on Vercel.
 export const maxDuration = 30
 
-const MODEL = 'claude-opus-5-5'
-// A cost cap, not a target: answers are short, and this leaves room for the model's (always-on) thinking.
-const MAX_TOKENS = 4096
+// Stable Gemini Flash model (Google's recommended Flash for new projects).
+const MODEL = 'gemini-3.8-flash'
+// A cost cap, not a target: answers are short; thinking tokens also count toward it.
+const MAX_OUTPUT_TOKENS = 2048
+
+// Finish/block reasons that mean Gemini's safety filters stopped the answer.
+const BLOCKED: string[] = [
+  FinishReason.SAFETY,
+  FinishReason.PROHIBITED_CONTENT,
+  FinishReason.BLOCKLIST,
+  FinishReason.SPII,
+  FinishReason.RECITATION,
+]
 
 const UNAVAILABLE = 'The chat assistant is unavailable right now. Please use the contact form below and we’ll reply by email.'
 const DECLINED = 'I can’t help with that here. For anything about working with Axonvia, please use the contact form below.'
@@ -45,7 +55,9 @@ export async function POST(request: Request) {
   const origin = request.headers.get('origin')
   if (origin && origin !== new URL(request.url).origin) return json(403, 'Forbidden')
 
-  if (!process.env.ANTHROPIC_API_KEY) return json(503, UNAVAILABLE)
+  // Read on the server only; never sent to the browser or logged.
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) return json(503, UNAVAILABLE)
 
   if (!limiter.hit(clientIp(request.headers)).allowed) {
     return json(429, 'You’ve sent a lot of messages. Please wait a few minutes, or use the contact form below.')
@@ -60,43 +72,53 @@ export async function POST(request: Request) {
   const parsed = requestSchema.safeParse(body)
   if (!parsed.success) return json(400, 'Invalid request.')
 
-  const client = new Anthropic()
-  const system = buildSystemPrompt(await getPublishedFaqs())
+  const ai = new GoogleGenAI({ apiKey })
+  const systemInstruction = buildSystemPrompt(await getPublishedFaqs())
+  // The widget's history uses 'assistant'; Gemini calls that role 'model'.
+  const contents: Content[] = parsed.data.messages.map((message) => ({
+    role: message.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: message.content }],
+  }))
 
   const encoder = new TextEncoder()
   const reply = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
-        const stream = client.beta.messages.stream({
+        const stream = await ai.models.generateContentStream({
           model: MODEL,
-          max_tokens: MAX_TOKENS,
-          // Low effort suits short website answers; Opus 5.5 defaults to medium.
-          output_config: { effort: 'low' },
-          // If a safety classifier declines, retry on Anthropic's recommended fallback model server-side.
-          betas: ['server-side-fallback-2026-07-01'],
-          fallbacks: 'default',
-          system,
-          messages: parsed.data.messages,
+          contents,
+          config: {
+            systemInstruction,
+            maxOutputTokens: MAX_OUTPUT_TOKENS,
+            // Short website answers don't need deep reasoning; low thinking keeps replies fast and cheap.
+            thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+          },
         })
 
-        for await (const event of stream) {
-          if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-            controller.enqueue(encoder.encode(event.delta.text))
+        let wroteText = false
+        let blocked = false
+        for await (const chunk of stream) {
+          const text = chunk.text
+          if (text) {
+            controller.enqueue(encoder.encode(text))
+            wroteText = true
           }
+          const finishReason = chunk.candidates?.[0]?.finishReason
+          if (chunk.promptFeedback?.blockReason || (finishReason && BLOCKED.includes(finishReason))) blocked = true
         }
 
-        const message = await stream.finalMessage()
-        if (message.stop_reason === 'refusal') controller.enqueue(encoder.encode(DECLINED))
+        if (blocked) controller.enqueue(encoder.encode(wroteText ? `\n\n${DECLINED}` : DECLINED))
       } catch (error) {
-        // One JSON line per failure (Vercel → Logs): status, Anthropic error type and request id, plus the
-        // key's shape so a mis-pasted key is obvious. Never the key itself, headers, or the visitor's messages.
+        // One JSON line per failure (Vercel → Logs): HTTP status and Gemini error status, plus the key's shape
+        // so a mis-pasted key is obvious. Never the key itself, headers, or the visitor's messages.
         const failure = diagnoseChatError(error)
         console.error(
           JSON.stringify({
             event: 'chat_api_error',
+            provider: 'gemini',
             ...failure,
             model: MODEL,
-            keyFormat: describeApiKey(process.env.ANTHROPIC_API_KEY),
+            keyFormat: describeApiKey(apiKey),
           })
         )
         const transient = failure.kind === 'overloaded' || failure.kind === 'rate_limit'

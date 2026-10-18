@@ -21,7 +21,7 @@ deployments). Never commit real values. See `docs/ENVIRONMENT.md` for details on
 | `RESEND_API_KEY` | Yes | Without it, submissions are saved but no emails are sent. |
 | `RESEND_FROM_EMAIL` | Yes | Sender on a domain verified in Resend (a `@gmail.com` address cannot be used). |
 | `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox for new-lead alerts, e.g. `axonvia@gmail.com`. |
-| `ANTHROPIC_API_KEY` | For the chat assistant | Claude API key (server-only). Without it the chat replies that it's unavailable and points to the contact form. |
+| `GEMINI_API_KEY` | For the chat assistant | Google Gemini API key (server-only). Without it the chat replies that it's unavailable and points to the contact form. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Yes | Public contact address, e.g. `axonvia@gmail.com`. |
 | `NEXT_PUBLIC_SITE_URL` | Yes | Production origin without trailing slash, e.g. `https://axonvia.vercel.app` or your domain. |
 | `NEXT_PUBLIC_CAL_LINK` | Optional | Cal.com event path; without it booking buttons open an email instead. |
@@ -37,9 +37,9 @@ variable is present. `NEXT_PUBLIC_*` values are inlined at build time, so redepl
 
 ## Notes
 
-- The chat assistant (`app/api/chat`) calls Claude Opus 5.5 and streams the reply. Each visitor is limited to
-  20 messages per 10 minutes and each reply is capped at 4,096 tokens; set a monthly spend limit for the key in the
-  Anthropic Console as well.
+- The chat assistant (`app/api/chat`) calls Google Gemini (`gemini-3.8-flash`) and streams the reply. Each visitor
+  is limited to 20 messages per 10 minutes and each reply is capped at 2,048 tokens; set usage limits for the key's
+  project in Google AI Studio as well. Failures are logged as one `chat_api_error` JSON line (no secrets).
 - Sign-in lockouts and form rate limits (`lib/rate-limit.ts`) are kept in function memory, so on Vercel each
   instance counts separately. A shared store (e.g. Upstash Redis via the Vercel Marketplace) would make them global.
 - The local PGlite database mode (`DATABASE_URL=pglite:...`) is for local development only; never set it on Vercel.

@@ -20,8 +20,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.135.0",
     "@calcom/embed-react": "^1.5.3",
+    "@google/genai": "^2.30.0",
     "@neondatabase/serverless": "^1.2.0",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.3",

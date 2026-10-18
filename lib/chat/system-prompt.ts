@@ -1,4 +1,3 @@
-import type Anthropic from '@anthropic-ai/sdk'
 import type { Faq } from '@/lib/types'
 import { siteConfig } from '@/lib/site'
 
@@ -53,18 +52,12 @@ Rules:
 
 ${SITE_KNOWLEDGE}`
 
-type SystemBlock = Anthropic.Beta.BetaTextBlockParam
-
 /**
- * Stable instructions first, then owner-published FAQs (which change rarely). The cache breakpoint sits on the
- * last block so the whole system prompt is reused across visitors until an FAQ changes.
+ * Stable instructions first, then owner-published FAQs (which change rarely), as one system instruction.
+ * Gemini caches repeated prompt prefixes automatically, so keeping the stable part first keeps it cheap.
  */
-export function buildSystemPrompt(faqs: Faq[]): SystemBlock[] {
-  const blocks: SystemBlock[] = [{ type: 'text', text: INSTRUCTIONS }]
-  if (faqs.length > 0) {
-    const faqText = faqs.map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`).join('\n\n')
-    blocks.push({ type: 'text', text: `Frequently asked questions published on the site:\n\n${faqText}` })
-  }
-  blocks[blocks.length - 1].cache_control = { type: 'ephemeral' }
-  return blocks
+export function buildSystemPrompt(faqs: Faq[]): string {
+  if (faqs.length === 0) return INSTRUCTIONS
+  const faqText = faqs.map((faq) => `Q: ${faq.question}\nA: ${faq.answer}`).join('\n\n')
+  return `${INSTRUCTIONS}\n\nFrequently asked questions published on the site:\n\n${faqText}`
 }
