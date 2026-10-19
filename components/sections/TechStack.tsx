@@ -1,5 +1,4 @@
 import { Section } from '@/components/ui/SectionHeader'
-import { Stagger, StaggerItem } from '@/components/motion/Reveal'
 
 // Grouped by the layer of a system each tool sits in.
 const stack = [
@@ -21,9 +20,9 @@ export function TechStack() {
             Chosen per project for reliability and long-term upkeep, not novelty.
           </p>
         </div>
-        <Stagger gap={0.06} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-8">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-8">
           {stack.map((group) => (
-            <StaggerItem key={group.layer}>
+            <div data-reveal key={group.layer}>
               <div className="h-full rounded-2xl border border-[var(--rule)] bg-[var(--bg-card)] p-5">
                 <h3 className="text-sm text-[var(--text-muted)]">{group.layer}</h3>
                 <ul className="mt-3 flex flex-wrap gap-2">
@@ -37,9 +36,9 @@ export function TechStack() {
                   ))}
                 </ul>
               </div>
-            </StaggerItem>
+            </div>
           ))}
-        </Stagger>
+        </div>
       </div>
     </Section>
   )

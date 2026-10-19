@@ -3,12 +3,6 @@ import { render, screen, within } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { Hero } from './Hero'
 
-const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('motion/react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('motion/react')>()),
-  useReducedMotion: () => motionPrefs.reduced,
-}))
-
 vi.mock('@/components/CalEmbed', () => ({
   CalEmbed: ({ children, className }: { children: React.ReactNode; className?: string }) => (
     <button data-testid="cal-trigger" className={className}>
@@ -71,17 +65,18 @@ describe('Hero', () => {
     expect(words).toEqual('AI Automation & Intelligent Solutions for Modern Businesses'.split(' '))
   })
 
-  it('fades the hero content away on scroll, except for visitors who prefer reduced motion', () => {
-    const { container, unmount } = render(<Hero />)
-    expect(container.querySelector('[data-scroll-fade]')).toHaveAttribute('data-scroll-fade', 'true')
-    unmount()
+  it('marks only the intro elements for the motion-safe hide-until-played rule', () => {
+    const { container } = render(<Hero />)
+    const intro = Array.from(container.querySelectorAll('[data-intro]'), (el) => el.tagName)
+    expect(intro).toEqual(['H1', 'P', 'DIV', 'DIV'])
+    expect(container.querySelector('[data-hero-panel]')).toHaveAttribute('data-intro')
+  })
 
-    motionPrefs.reduced = true
-    try {
-      const { container: still } = render(<Hero />)
-      expect(still.querySelector('[data-scroll-fade]')).toHaveAttribute('data-scroll-fade', 'false')
-    } finally {
-      motionPrefs.reduced = false
+  it('renders the finished state when no animation runs: nothing hidden or moved inline', () => {
+    const { container } = render(<Hero />)
+    for (const el of container.querySelectorAll<HTMLElement>('[data-intro], [data-word], [data-hero-content]')) {
+      expect(el.style.visibility).toBe('')
+      expect(el.style.transform).toBe('')
     }
   })
 })

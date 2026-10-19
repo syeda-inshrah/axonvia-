@@ -5,10 +5,7 @@ import type { Testimonial } from '@/lib/types'
 import { TestimonialCarousel } from './TestimonialCarousel'
 
 const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('motion/react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('motion/react')>()),
-  useReducedMotion: () => motionPrefs.reduced,
-}))
+vi.mock('@/lib/usePrefersReducedMotion', () => ({ usePrefersReducedMotion: () => motionPrefs.reduced }))
 
 function makeTestimonials(count: number): Testimonial[] {
   return Array.from({ length: count }, (_, i) => ({

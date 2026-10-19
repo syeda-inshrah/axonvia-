@@ -1,7 +1,6 @@
 import { Bot, Compass, Database, Layers, MessageCircle, Workflow } from 'lucide-react'
 import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { SpotlightCard } from '@/components/ui/SpotlightCard'
-import { Stagger, StaggerItem } from '@/components/motion/Reveal'
 
 // Footer's service links mirror these titles.
 const services = [
@@ -47,9 +46,9 @@ export function Services() {
         subtitle="From a single automated workflow to a full agentic system — we build what actually moves the needle."
       />
 
-      <Stagger className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 md:mt-16 lg:grid-cols-3">
+      <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 md:mt-16 lg:grid-cols-3">
         {services.map((service) => (
-          <StaggerItem key={service.title} className="h-full">
+          <div data-reveal key={service.title} className="h-full">
             <SpotlightCard className="group h-full p-7">
               <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--tint)] text-[var(--accent-cyan)] ring-1 ring-[var(--tint-strong)] transition-colors duration-300 group-hover:bg-[image:var(--accent-gradient)] group-hover:text-white group-hover:ring-transparent">
                 <service.icon aria-hidden="true" className="h-5 w-5" />
@@ -57,9 +56,9 @@ export function Services() {
               <h3 className="mt-6 text-xl font-semibold text-[var(--text-primary)]">{service.title}</h3>
               <p className="mt-2.5 text-[0.9375rem] leading-relaxed text-[var(--text-secondary)]">{service.description}</p>
             </SpotlightCard>
-          </StaggerItem>
+          </div>
         ))}
-      </Stagger>
+      </div>
     </Section>
   )
 }

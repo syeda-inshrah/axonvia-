@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { m, useReducedMotion } from 'motion/react'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 import type { Testimonial } from '@/lib/types'
 
 const AUTO_ADVANCE_MS = 5000
@@ -25,7 +25,7 @@ function useCardsPerView() {
 
 export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
   const perView = useCardsPerView()
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
   const [index, setIndex] = useState(0)
   const [paused, setPaused] = useState(false)
   const swipeStartX = useRef<number | null>(null)
@@ -68,10 +68,9 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
           else if (distance >= SWIPE_THRESHOLD_PX) goTo(current - 1)
         }}
       >
-        <m.ul
-          className="-mx-5 flex"
-          animate={{ x: `-${(current * 100) / perView}%` }}
-          transition={{ duration: 0.5, ease: 'easeInOut' }}
+        <ul
+          className="-mx-5 flex transition-transform duration-500 ease-[cubic-bezier(0.65,0,0.35,1)] motion-reduce:transition-none"
+          style={{ transform: `translateX(-${(current * 100) / perView}%)` }}
         >
           {items.map((testimonial, i) => {
             const visible = i >= current && i < current + perView
@@ -102,7 +101,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               </li>
             )
           })}
-        </m.ul>
+        </ul>
       </div>
 
       {positions > 1 && (

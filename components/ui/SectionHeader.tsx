@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Stagger, StaggerItem } from '@/components/motion/Reveal'
 
 /**
  * Left-aligned section opening: the heading takes the first half of the row and the supporting line sits
@@ -7,18 +6,18 @@ import { Stagger, StaggerItem } from '@/components/motion/Reveal'
  */
 export function SectionHeader({ title, subtitle, id }: { title: string; subtitle?: ReactNode; id?: string }) {
   return (
-    <Stagger gap={0.1} className="grid grid-cols-1 gap-5 md:grid-cols-12 md:items-end md:gap-10">
-      <StaggerItem className="md:col-span-6">
+    <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:items-end md:gap-10">
+      <div data-reveal className="md:col-span-6">
         <h2 id={id} className="text-[2rem] leading-[1.08] font-semibold text-[var(--text-primary)] md:text-[2.75rem]">
           {title}
         </h2>
-      </StaggerItem>
+      </div>
       {subtitle && (
-        <StaggerItem className="md:col-span-5 md:col-start-7 md:pb-1.5">
+        <div data-reveal className="md:col-span-5 md:col-start-7 md:pb-1.5">
           <p className="max-w-[34rem] text-[var(--text-secondary)]">{subtitle}</p>
-        </StaggerItem>
+        </div>
       )}
-    </Stagger>
+    </div>
   )
 }
 

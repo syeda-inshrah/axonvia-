@@ -3,7 +3,7 @@ import type { NewsletterSubscriber } from '@/lib/types'
 
 export function SubscribersTable({ subscribers }: { subscribers: NewsletterSubscriber[] }) {
   return (
-    <div className={`${adminCard} overflow-x-auto`}>
+    <div className={`${adminCard} relative overflow-x-auto`}>
       <table className={adminTable}>
         <thead>
           <tr>

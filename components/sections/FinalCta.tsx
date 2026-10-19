@@ -1,12 +1,11 @@
 import { CalEmbed } from '@/components/CalEmbed'
 import { ContactForm } from '@/components/ContactForm'
 import { Aurora } from '@/components/motion/Aurora'
-import { Reveal } from '@/components/motion/Reveal'
 
 export function FinalCta() {
   return (
     <section id="final-cta" aria-labelledby="final-cta-title" className="scroll-mt-16 px-5 py-16 md:px-10 md:py-24">
-      <Reveal className="relative isolate mx-auto max-w-[1280px] overflow-hidden rounded-3xl bg-[var(--ink-panel)]">
+      <div data-reveal className="relative isolate mx-auto max-w-[1280px] overflow-hidden rounded-3xl bg-[var(--ink-panel)]">
         <Aurora className="opacity-70" />
         <div aria-hidden="true" className="dot-grid absolute inset-0" />
 
@@ -36,7 +35,7 @@ export function FinalCta() {
             <ContactForm />
           </div>
         </div>
-      </Reveal>
+      </div>
     </section>
   )
 }

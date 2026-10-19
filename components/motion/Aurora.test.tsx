@@ -1,47 +1,27 @@
 // components/motion/Aurora.test.tsx
 import { render } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { Aurora } from './Aurora'
 
-const motion = vi.hoisted(() => ({ reduced: false, inView: true }))
-vi.mock('motion/react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('motion/react')>()),
-  useReducedMotion: () => motion.reduced,
-  useInView: () => motion.inView,
-}))
-
-function drifting() {
-  const { container, unmount } = render(<Aurora />)
-  const value = container.firstElementChild!.getAttribute('data-drifting')
-  unmount()
-  return value
-}
-
 describe('Aurora', () => {
-  it('is decorative, hidden from assistive tech', () => {
+  it('is decorative, hidden from assistive tech and pointer events', () => {
     const { container } = render(<Aurora />)
     expect(container.firstElementChild).toHaveAttribute('aria-hidden', 'true')
+    expect(container.firstElementChild).toHaveClass('pointer-events-none')
   })
 
-  it('drifts while on screen', () => {
-    expect(drifting()).toBe('true')
-  })
-
-  it('stops drifting off screen, so it costs nothing while scrolled past', () => {
-    motion.inView = false
-    try {
-      expect(drifting()).toBe('false')
-    } finally {
-      motion.inView = true
+  it('draws two light fields as gradients, not blurred layers', () => {
+    const { container } = render(<Aurora />)
+    const orbs = container.querySelectorAll<HTMLElement>('[data-orb]')
+    expect(orbs).toHaveLength(2)
+    for (const orb of orbs) {
+      expect(orb.style.background).toMatch(/radial-gradient/)
+      expect(orb.className).not.toMatch(/blur/)
     }
   })
 
-  it('stays still for visitors who prefer reduced motion', () => {
-    motion.reduced = true
-    try {
-      expect(drifting()).toBe('false')
-    } finally {
-      motion.reduced = false
-    }
+  it('stays still when no motion runs (reduced motion, tests): no transforms are applied', () => {
+    const { container } = render(<Aurora />)
+    for (const orb of container.querySelectorAll<HTMLElement>('[data-orb]')) expect(orb.style.transform).toBe('')
   })
 })

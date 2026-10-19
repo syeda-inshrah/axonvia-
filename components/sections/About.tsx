@@ -1,6 +1,5 @@
 import { Section } from '@/components/ui/SectionHeader'
 import { siteConfig } from '@/lib/site'
-import { Reveal } from '@/components/motion/Reveal'
 
 // Only facts the founder has confirmed; no headcount or client figures until they are.
 const facts = [
@@ -13,7 +12,7 @@ export function About() {
   return (
     <Section id="about" labelledBy="about-title">
       <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
-        <Reveal className="lg:col-span-7">
+        <div data-reveal className="lg:col-span-7">
           <h2 id="about-title" className="text-lg font-semibold text-[var(--text-primary)]">
             Built by engineers who&apos;ve shipped real AI systems
           </h2>
@@ -24,9 +23,9 @@ export function About() {
             </p>
             <footer className="mt-6 text-[var(--text-muted)]">Founder &amp; CEO, Axonvia</footer>
           </blockquote>
-        </Reveal>
+        </div>
 
-        <Reveal className="lg:col-span-4 lg:col-start-9 lg:pt-1">
+        <div data-reveal className="lg:col-span-4 lg:col-start-9 lg:pt-1">
           <p className="text-[var(--text-secondary)]">
             Axonvia was founded to close the gap between AI hype and AI that actually works in production. We&apos;re
             a team of engineers and builders who design agentic systems grounded in real business logic — not demos.
@@ -39,7 +38,7 @@ export function About() {
               </div>
             ))}
           </dl>
-        </Reveal>
+        </div>
       </div>
     </Section>
   )

@@ -5,8 +5,8 @@ import { siteConfig } from '@/lib/site'
 export function LegalPlaceholder({ title, topic }: { title: string; topic: string }) {
   return (
     <SimplePage>
-      <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">Legal</span>
-      <h1 className="mt-4 text-4xl md:text-5xl font-semibold text-[var(--text-primary)]">{title}</h1>
+      <p className="text-sm font-medium text-[var(--accent-purple)]">Legal</p>
+      <h1 className="mt-3 text-4xl md:text-5xl font-semibold text-[var(--text-primary)]">{title}</h1>
       <p className="mt-6 text-lg text-[var(--text-secondary)]">
         Our {title.toLowerCase()} is being finalised and will be published here before we start taking on client
         work through this site.

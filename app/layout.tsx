@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { Schibsted_Grotesk, IBM_Plex_Mono } from 'next/font/google'
-import { MotionSafeProvider } from '@/components/ui/MotionSafeProvider'
 import { siteConfig } from '@/lib/site'
 import './globals.css'
 
@@ -15,6 +14,10 @@ const plexMono = IBM_Plex_Mono({
   weight: ['400', '500'],
   variable: '--font-plex-mono',
 })
+
+// Marks the page as scripted so the hero intro and scroll reveals can stay hidden until GSAP plays them. If
+// GSAP hasn't started within 3s (slow device, blocked script), intro-timeout reveals everything as plain content.
+const scriptFlag = `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('intro-timeout')},3000)`
 
 const title = 'Axonvia — Intelligence that works for your business.'
 const description =
@@ -36,10 +39,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`}>
-      <body>
-        <MotionSafeProvider>{children}</MotionSafeProvider>
-      </body>
+    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: scriptFlag }} />
+      </head>
+      <body>{children}</body>
     </html>
   )
 }

@@ -12,6 +12,7 @@ import { Faq } from '@/components/sections/Faq'
 import { FinalCta } from '@/components/sections/FinalCta'
 import { Footer } from '@/components/sections/Footer'
 import { ChatWidget } from '@/components/chat/ChatWidget'
+import { ScrollReveals } from '@/components/motion/ScrollReveals'
 
 export default async function HomePage() {
   // Projects, Testimonials and FAQ read the CMS; render per request so edits show without a rebuild.
@@ -34,6 +35,7 @@ export default async function HomePage() {
       </main>
       <Footer />
       <ChatWidget />
+      <ScrollReveals />
     </>
   )
 }

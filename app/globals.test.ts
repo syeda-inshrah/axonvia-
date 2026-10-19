@@ -29,9 +29,17 @@ describe('globals.css', () => {
     expect(wash).not.toContain('gradient')
   })
 
-  it('lights spotlight cards with transform and opacity only, and keeps them still under reduced motion', () => {
-    expect(rule('.spotlight-card')).toMatch(/transition:\s*transform[^;]*box-shadow/)
+  it('leaves card transforms to GSAP (CSS animates only the shadow) and forces them off under reduced motion', () => {
+    expect(rule('.spotlight-card')).toMatch(/transition:\s*box-shadow/)
+    expect(rule('.spotlight-card')).not.toMatch(/transition:[^;]*transform/)
     const reduced = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'))
-    expect(reduced).toMatch(/\.spotlight-card:hover\s*\{\s*transform:\s*none/)
+    expect(reduced).toMatch(/\.spotlight-card:hover\s*\{\s*transform:\s*none !important/)
+  })
+
+  it('hides intro and reveal content before GSAP plays it only when scripts run and motion is welcome', () => {
+    const media = css.slice(css.indexOf('@media (prefers-reduced-motion: no-preference)'))
+    expect(media).toMatch(/html\.js:not\(\.intro-timeout\) \[data-intro\]\s*\{\s*visibility:\s*hidden/)
+    // Reveals fade with opacity, never visibility, so unrevealed content stays in the accessibility tree.
+    expect(media).toMatch(/html\.js:not\(\.intro-timeout\) \[data-reveal\]\s*\{\s*opacity:\s*0/)
   })
 })

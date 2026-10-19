@@ -1,22 +1,27 @@
 'use client'
 
 import { useSyncExternalStore } from 'react'
-import { useReducedMotion } from 'motion/react'
 
-const noSubscription = () => () => {}
+const QUERY = '(prefers-reduced-motion: reduce)'
+
+function query(): MediaQueryList | null {
+  return typeof window !== 'undefined' && typeof window.matchMedia === 'function' ? window.matchMedia(QUERY) : null
+}
+
+function subscribe(onChange: () => void) {
+  const list = query()
+  list?.addEventListener?.('change', onChange)
+  return () => list?.removeEventListener?.('change', onChange)
+}
 
 /**
- * Motion's useReducedMotion() is already true on the client's first render, but the server always renders
- * as "no preference" — branching markup on it causes a hydration mismatch. This reports false until mounted.
+ * True when the visitor asks for reduced motion. The server (and hydration) always render as "no preference",
+ * so markup never mismatches; the real value takes over right after hydration and follows live changes.
  */
 export function usePrefersReducedMotion(): boolean {
-  const reduced = useReducedMotion()
-  // false while server-rendering and hydrating, true once running on the client — without an extra
-  // setState-in-effect render.
-  const mounted = useSyncExternalStore(
-    noSubscription,
-    () => true,
+  return useSyncExternalStore(
+    subscribe,
+    () => query()?.matches === true,
     () => false
   )
-  return mounted && reduced === true
 }

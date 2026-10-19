@@ -15,7 +15,7 @@ export function LeadsTable({ leads }: { leads: Lead[] }) {
   }
 
   return (
-    <div className={`${adminCard} overflow-x-auto`}>
+    <div className={`${adminCard} relative overflow-x-auto`}>
       <table className={adminTable}>
         <thead>
           <tr>

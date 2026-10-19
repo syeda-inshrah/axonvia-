@@ -25,7 +25,7 @@ export function FaqsTable({ faqs, onEdit }: { faqs: Faq[]; onEdit: (faq: Faq) =>
   }
 
   return (
-    <div className={`${adminCard} overflow-x-auto`}>
+    <div className={`${adminCard} relative overflow-x-auto`}>
       <table className={adminTable}>
         <thead>
           <tr>

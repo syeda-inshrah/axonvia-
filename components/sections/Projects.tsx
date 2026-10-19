@@ -5,7 +5,6 @@ import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { Button } from '@/components/ui/Button'
 import { buttonClasses } from '@/components/ui/buttonStyles'
 import { ParallaxImage } from '@/components/motion/ParallaxImage'
-import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
 import { SpotlightCard } from '@/components/ui/SpotlightCard'
 import type { Project } from '@/lib/types'
 
@@ -113,7 +112,7 @@ export async function Projects() {
       )}
 
       {featured && (
-        <Reveal className="mt-14 md:mt-16">
+        <div data-reveal className="mt-14 md:mt-16">
           <article className="group relative grid grid-cols-1 gap-10 overflow-hidden rounded-3xl border border-[var(--rule)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-card)] sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-10">
             <div
               aria-hidden="true"
@@ -151,13 +150,13 @@ export async function Projects() {
               </div>
             </div>
           </article>
-        </Reveal>
+        </div>
       )}
 
       {rest.length > 0 && (
-        <Stagger data-testid="secondary-projects-grid" className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div data-testid="secondary-projects-grid" className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
           {rest.map((project) => (
-            <StaggerItem key={project.id} className="h-full">
+            <div data-reveal key={project.id} className="h-full">
               <SpotlightCard className="group flex h-full flex-col p-6 sm:p-8">
                 {!isShowcase(project) && project.imageUrl && (
                   <div className="mb-6 overflow-hidden rounded-xl border border-[var(--rule)]">
@@ -182,9 +181,9 @@ export async function Projects() {
                   </div>
                 )}
               </SpotlightCard>
-            </StaggerItem>
+            </div>
           ))}
-        </Stagger>
+        </div>
       )}
     </Section>
   )

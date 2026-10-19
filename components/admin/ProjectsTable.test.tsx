@@ -43,4 +43,24 @@ describe('ProjectsTable', () => {
     expect(deleteProject).not.toHaveBeenCalled()
     confirm.mockRestore()
   })
+
+  it('keeps its hidden column labels inside the scroll area, so the table never widens the page on phones', async () => {
+    const { ProjectsTable } = await import('./ProjectsTable')
+    const project = {
+      id: '1',
+      name: 'RevenueOS',
+      description: 'desc',
+      stats: [],
+      tags: [],
+      imageUrl: null,
+      link: null,
+      isFeatured: false,
+      status: 'live' as const,
+      sortOrder: 0,
+    }
+    render(<ProjectsTable projects={[project]} onEdit={() => {}} />)
+    // sr-only labels are absolutely positioned; without a positioned scroll container they escape its clipping.
+    const scrollArea = screen.getByRole('table').parentElement!
+    expect(scrollArea).toHaveClass('relative', 'overflow-x-auto')
+  })
 })

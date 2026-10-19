@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { useAnimate, useReducedMotion, type AnimationSequence } from 'motion/react'
+import { useRef, useState } from 'react'
 import { Check, RotateCcw, UserRound } from 'lucide-react'
-import { EASE } from '@/lib/motion'
+import { EASE, gsap, useGSAP, withMotion } from '@/lib/gsap'
 
 // An illustrative run of the kind of agent Axonvia builds: it reads a request, checks the business's systems,
 // acts, and hands off when a decision needs a person.
@@ -22,50 +21,50 @@ export const RUN = [
 ]
 
 /** Each step arrives, its marker pulses, then it settles to its result while the progress line advances. */
-function runSequence(startAt: number): AnimationSequence {
-  const sequence: AnimationSequence = [['[data-log-progress]', { scaleX: 0 }, { duration: 0 }]]
-  RUN.forEach((step, i) => {
-    const row = `[data-log-row="${i}"]`
-    sequence.push(
-      [row, { opacity: [0, 1], y: [10, 0] }, { duration: 0.4, ease: EASE, at: i === 0 ? startAt : '+0.12' }],
-      [`${row} [data-log-pending]`, { opacity: [1, 0], scale: [1, 2.6] }, { duration: 0.45, at: '<' }],
-      [`${row} [data-log-done]`, { opacity: [0, 1], scale: [0.4, 1] }, { duration: 0.3, ease: EASE, at: '+0.05' }],
-      ['[data-log-progress]', { scaleX: (i + 1) / RUN.length }, { duration: 0.45, ease: 'easeInOut', at: '<' }]
-    )
-    if (step.handoff) {
-      sequence.push([row, { backgroundColor: ['rgba(46,91,255,0)', 'rgba(46,91,255,0.16)'] }, { duration: 0.6, at: '<' }])
+function buildRun(scope: HTMLElement) {
+  const rows = gsap.utils.toArray<HTMLElement>('[data-log-row]', scope)
+  const tl = gsap.timeline({ paused: true, defaults: { ease: EASE } })
+  tl.set('[data-log-progress]', { scaleX: 0 })
+  rows.forEach((row, i) => {
+    const pending = row.querySelector('[data-log-pending]')
+    const done = row.querySelector('[data-log-done]')
+    tl.fromTo(row, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.45 }, i === 0 ? 0 : '>+0.1')
+      .fromTo(pending, { opacity: 1, scale: 1 }, { opacity: 0, scale: 2.6, duration: 0.45, ease: 'power2.out' }, '<')
+      .fromTo(done, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.3 }, '>-0.1')
+      .to('[data-log-progress]', { scaleX: (i + 1) / rows.length, duration: 0.45, ease: 'power2.inOut' }, '<')
+    if (row.hasAttribute('data-handoff')) {
+      tl.fromTo(row, { backgroundColor: 'rgba(46,91,255,0)' }, { backgroundColor: 'rgba(46,91,255,0.16)', duration: 0.5 }, '<')
     }
   })
-  return sequence
+  return tl
 }
 
 /**
- * The hero's example agent run. It plays once, step by step, after the hero intro; Replay plays it again.
- * Reduced-motion visitors, and the server render, get the finished run.
+ * The hero's example agent run. It plays once, step by step, `startAt` seconds after mount; Replay plays it
+ * again. Reduced-motion visitors, and the server render, get the finished run.
  */
 export function AgentRunLog({ startAt = 1.6 }: { startAt?: number }) {
-  const [scope, animate] = useAnimate<HTMLDivElement>()
-  const reduced = useReducedMotion()
-  // Starts as playing: the first run begins on mount, and Replay only shows once a run has finished.
-  const [playing, setPlaying] = useState(true)
+  const scope = useRef<HTMLDivElement>(null)
+  const run = useRef<gsap.core.Timeline | null>(null)
+  const [canReplay, setCanReplay] = useState(false)
 
-  function run(delay: number) {
-    animate('[data-log-row]', { opacity: 0 }, { duration: 0 })
-    animate('[data-log-done]', { opacity: 0 }, { duration: 0 })
-    return animate(runSequence(delay)).then(() => setPlaying(false))
-  }
+  useGSAP(
+    () =>
+      withMotion(() => {
+        run.current = buildRun(scope.current!).eventCallback('onComplete', () => setCanReplay(true))
+        gsap.delayedCall(startAt, () => void run.current?.play())
+        return () => {
+          run.current = null
+        }
+      }),
+    { scope }
+  )
 
+  // Restarts the existing timeline (no new tweens), so it needs no GSAP context.
   function replay() {
-    setPlaying(true)
-    void run(0.2)
+    setCanReplay(false)
+    run.current?.restart()
   }
-
-  useEffect(() => {
-    if (reduced) return
-    void run(startAt)
-    // Plays once on mount; replays come only from the button.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reduced])
 
   return (
     <figure>
@@ -75,7 +74,7 @@ export function AgentRunLog({ startAt = 1.6 }: { startAt?: number }) {
       >
         <div className="flex items-center justify-between gap-4 px-5 py-3.5">
           <p className="text-sm font-medium text-white">One request, handled end to end</p>
-          {!reduced && !playing ? (
+          {canReplay ? (
             <button
               type="button"
               onClick={replay}
@@ -100,10 +99,11 @@ export function AgentRunLog({ startAt = 1.6 }: { startAt?: number }) {
         </div>
 
         <ol className="divide-y divide-white/[0.08]">
-          {RUN.map((step, i) => (
+          {RUN.map((step) => (
             <li
               key={step.time}
-              data-log-row={i}
+              data-log-row
+              data-handoff={step.handoff ? '' : undefined}
               className={`grid grid-cols-[4.5rem_1fr_1.25rem] items-start gap-3 px-5 py-3.5 ${
                 step.handoff ? 'bg-[rgba(46,91,255,0.16)]' : ''
               }`}

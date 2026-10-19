@@ -25,7 +25,7 @@ export function ProjectsTable({ projects, onEdit }: { projects: Project[]; onEdi
   }
 
   return (
-    <div className={`${adminCard} overflow-x-auto`}>
+    <div className={`${adminCard} relative overflow-x-auto`}>
       <table className={adminTable}>
         <thead>
           <tr>
