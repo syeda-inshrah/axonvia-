@@ -1,6 +1,6 @@
 // components/sections/Projects.test.tsx
 import { render, screen, within } from '@testing-library/react'
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest'
 
 const getPublishedProjects = vi.fn()
 vi.mock('@/lib/queries/content', () => ({ getPublishedProjects }))
@@ -19,6 +19,11 @@ const cmsProject = {
 }
 
 describe('Projects', () => {
+  // The first import pulls in Motion and the icon set; on this slow, WSL-mounted drive that alone can exceed
+  // a single test's timeout, so it is paid once here.
+  beforeAll(async () => {
+    await import('./Projects')
+  }, 60_000)
   beforeEach(() => getPublishedProjects.mockReset())
 
   it('features the Todo App with an accurate description, its stack, a real preview, and a Live Demo button', async () => {

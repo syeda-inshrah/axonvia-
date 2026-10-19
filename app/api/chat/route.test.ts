@@ -7,6 +7,9 @@ const generateContentStream = vi.fn()
 const clientOptions: unknown[] = []
 let chunks: Chunk[] = []
 let failure: Error | null = null
+// Pause between streamed chunks, so a test can act (e.g. disconnect) while a reply is still arriving.
+let chunkDelayMs = 0
+let chunksRead = 0
 
 vi.mock('@google/genai', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@google/genai')>()
@@ -15,7 +18,11 @@ vi.mock('@google/genai', async (importOriginal) => {
       generateContentStream: async (params: unknown) => {
         generateContentStream(params)
         return (async function* () {
-          for (const chunk of chunks) yield chunk
+          for (const chunk of chunks) {
+            if (chunkDelayMs) await new Promise((resolve) => setTimeout(resolve, chunkDelayMs))
+            chunksRead++
+            yield chunk
+          }
           if (failure) throw failure
         })()
       },
@@ -49,6 +56,8 @@ describe('POST /api/chat (Gemini)', () => {
     clientOptions.length = 0
     chunks = [{ text: 'We build ' }, { text: 'AI agents.', candidates: [{ finishReason: 'STOP' }] }]
     failure = null
+    chunkDelayMs = 0
+    chunksRead = 0
   })
   afterEach(() => vi.unstubAllEnvs())
 
@@ -171,6 +180,22 @@ describe('POST /api/chat (Gemini)', () => {
     const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
     const { POST } = await import('./route')
     expect(await (await POST(chatRequest(oneQuestion))).text()).toMatch(/busy/i)
+    errorLog.mockRestore()
+  })
+
+  it('stops reading from Gemini, quietly, when the visitor disconnects mid-reply', async () => {
+    chunks = [{ text: 'one ' }, { text: 'two ' }, { text: 'three ' }, { text: 'four' }]
+    chunkDelayMs = 20
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    const reader = (await POST(chatRequest(oneQuestion))).body!.getReader()
+
+    await reader.read()
+    await reader.cancel()
+    await new Promise((resolve) => setTimeout(resolve, 150))
+
+    expect(chunksRead).toBeLessThan(chunks.length)
+    expect(errorLog).not.toHaveBeenCalled()
     errorLog.mockRestore()
   })
 })

@@ -1,7 +1,13 @@
 // components/sections/Process.test.tsx
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { Process } from './Process'
+
+const motionPrefs = vi.hoisted(() => ({ reduced: false }))
+vi.mock('motion/react', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('motion/react')>()),
+  useReducedMotion: () => motionPrefs.reduced,
+}))
 
 describe('Process', () => {
   it('renders all 5 engagement steps, in order', () => {
@@ -15,11 +21,21 @@ describe('Process', () => {
     expect(screen.getByRole('region', { name: 'From first call to live system' })).toHaveAttribute('id', 'how-it-works')
   })
 
-  it('shows the line drawn and every step filled when no scroll animation runs', () => {
+  it('draws the line with the scrollbar', () => {
     const { container } = render(<Process />)
-    expect(container.querySelector('[data-process-line]')).not.toHaveAttribute('style')
-    for (const marker of container.querySelectorAll('[data-step-marker]')) {
-      expect(marker).toHaveClass('bg-[var(--ink-panel)]')
+    expect(container.querySelector('[data-process-line]')).toHaveAttribute('data-scroll-linked', 'true')
+  })
+
+  it('shows the line drawn and every step lit for visitors who prefer reduced motion', () => {
+    motionPrefs.reduced = true
+    try {
+      const { container } = render(<Process />)
+      const line = container.querySelector('[data-process-line]')
+      expect(line).toHaveAttribute('data-scroll-linked', 'false')
+      expect(line).not.toHaveAttribute('style')
+      for (const lit of container.querySelectorAll('[data-step-lit]')) expect(lit).not.toHaveAttribute('style')
+    } finally {
+      motionPrefs.reduced = false
     }
   })
 })

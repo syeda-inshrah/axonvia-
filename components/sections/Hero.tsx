@@ -1,113 +1,113 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { Fragment, useRef, type PointerEvent } from 'react'
+import { m, useScroll, useTransform } from 'motion/react'
 import { Button } from '@/components/ui/Button'
 import { CalEmbed } from '@/components/CalEmbed'
+import { Aurora } from '@/components/motion/Aurora'
 import { AgentRunLog } from '@/components/sections/AgentRunLog'
-import { EASE, gsap, SplitText, useGSAP, withMotion } from '@/lib/gsap'
+import { EASE, stagger } from '@/lib/motion'
+import { usePrefersReducedMotion } from '@/lib/usePrefersReducedMotion'
 
 const HEADLINE = 'AI Automation & Intelligent Solutions for Modern Businesses'
 
-/** Plays the run log one step at a time: each row arrives, its marker pulses, then settles to its result. */
-function playRun(scope: HTMLElement) {
-  const rows = gsap.utils.toArray<HTMLElement>('[data-log-row]', scope)
-  // Its own paused timeline rather than a child of the intro, so Replay can restart it after the intro ends.
-  const tl = gsap.timeline({ paused: true, defaults: { ease: EASE } })
-  tl.set('[data-log-progress]', { scaleX: 0 })
-
-  rows.forEach((row, i) => {
-    const pending = row.querySelector('[data-log-pending]')
-    const done = row.querySelector('[data-log-done]')
-    const at = i === 0 ? '>' : '>+=0.15'
-    tl.fromTo(row, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, at)
-      .fromTo(done, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35 }, '>+=0.45')
-      .fromTo(pending, { opacity: 1, scale: 1 }, { opacity: 0, scale: 2.4, duration: 0.45, ease: 'power2.out' }, '<-0.45')
-      .to('[data-log-progress]', { scaleX: (i + 1) / rows.length, duration: 0.5, ease: 'power2.inOut' }, '<')
-    if (row.hasAttribute('data-handoff')) {
-      tl.fromTo(row, { backgroundColor: 'rgba(29,78,216,0)' }, { backgroundColor: 'rgba(29,78,216,0.06)', duration: 0.6 }, '<')
-    }
-  })
-  return tl
+// Each word rises out of its own mask, one after another: the page's single cinematic entrance.
+const word = {
+  hidden: { y: '110%' },
+  visible: { y: '0%', transition: { duration: 1, ease: EASE } },
+}
+const fade = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: EASE } },
 }
 
 export function Hero() {
-  const scope = useRef<HTMLElement>(null)
-  const run = useRef<gsap.core.Timeline | null>(null)
-  const [played, setPlayed] = useState(false)
+  const section = useRef<HTMLElement>(null)
+  const reduced = usePrefersReducedMotion()
 
-  // One orchestrated entrance: the headline rises line by line, the supporting copy follows, then the agent
-  // run plays through once. Reduced-motion visitors (and the server render) get the finished state.
-  useGSAP(
-    () =>
-      withMotion(() => {
-        const root = scope.current!
-        gsap.set('[data-intro]', { visibility: 'visible' })
+  // As the hero scrolls away, its content drifts down and fades, so the next section slides over it.
+  const { scrollYProgress } = useScroll({ target: section, offset: ['start start', 'end start'] })
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, 140])
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0])
 
-        const split = SplitText.create('[data-hero-title]', {
-          type: 'lines',
-          mask: 'lines',
-          autoSplit: true,
-          onSplit: (self) =>
-            gsap.from(self.lines, { yPercent: 105, duration: 1.1, stagger: 0.09, ease: EASE }),
-        })
-
-        const intro = gsap.timeline({ delay: 0.45, defaults: { ease: EASE } })
-        intro
-          .from('[data-hero-fade]', { opacity: 0, y: 14, duration: 0.9, stagger: 0.08 })
-          .from('[data-log-panel]', { opacity: 0, y: 24, duration: 1 }, '-=0.6')
-        run.current = playRun(root).eventCallback('onComplete', () => setPlayed(true))
-        intro.call(() => void run.current?.play(), [], '-=0.4')
-
-        return () => {
-          split.revert()
-          run.current = null
-          setPlayed(false)
-        }
-      }),
-    { scope }
-  )
-
-  // Restarts the existing timeline (no new tweens), so it needs no GSAP context.
-  function replay() {
-    setPlayed(false)
-    run.current?.restart()
+  // A soft light follows the pointer across the navy, set through CSS variables so nothing re-renders.
+  function trackLight(event: PointerEvent<HTMLElement>) {
+    if (event.pointerType !== 'mouse') return
+    const box = event.currentTarget.getBoundingClientRect()
+    event.currentTarget.style.setProperty('--light-x', `${event.clientX - box.left}px`)
+    event.currentTarget.style.setProperty('--light-y', `${event.clientY - box.top}px`)
   }
 
   return (
-    <section ref={scope} className="relative px-5 pb-20 pt-32 md:px-10 md:pb-28 md:pt-44">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-16 lg:grid-cols-12 lg:items-center lg:gap-12">
-        <div className="lg:col-span-7">
-          <h1
-            data-intro
-            data-hero-title
-            className="text-[clamp(2.5rem,4.4vw,3.75rem)] leading-[1.04] font-semibold tracking-[-0.035em] text-[var(--text-primary)]"
-          >
-            {HEADLINE}
-          </h1>
+    <section
+      ref={section}
+      onPointerMove={trackLight}
+      className="on-ink relative isolate flex min-h-[100svh] items-center overflow-hidden bg-[var(--ink-panel)] px-5 pb-20 pt-28 md:px-10 md:pt-32"
+    >
+      <Aurora />
+      <div aria-hidden="true" className="dot-grid absolute inset-0" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(520px_circle_at_var(--light-x,70%)_var(--light-y,30%),rgba(142,166,255,0.12),transparent_65%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,rgba(46,91,255,0.7),rgba(106,75,239,0.7),transparent)]"
+      />
 
-          <p data-intro data-hero-fade className="mt-7 max-w-[36rem] text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl">
+      <m.div
+        data-scroll-fade={!reduced}
+        style={reduced ? undefined : { y: contentY, opacity: contentOpacity }}
+        className="relative mx-auto grid w-full max-w-[1200px] grid-cols-1 gap-16 lg:grid-cols-12 lg:items-center lg:gap-12"
+      >
+        <m.div initial="hidden" animate="visible" variants={stagger(0.12, 0.2)} className="lg:col-span-7">
+          <m.h1
+            variants={stagger(0.06)}
+            className="text-[clamp(2.5rem,4.6vw,3.9rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-white"
+          >
+            {HEADLINE.split(' ').map((text, i) => (
+              <Fragment key={i}>
+                {i > 0 && ' '}
+                <span className="inline-block overflow-hidden pb-[0.08em] align-top">
+                  <m.span data-word variants={word} className="inline-block">
+                    {text}
+                  </m.span>
+                </span>
+              </Fragment>
+            ))}
+          </m.h1>
+
+          <m.p variants={fade} className="mt-7 max-w-[36rem] text-lg leading-relaxed text-[var(--on-ink-soft)] md:text-xl">
             Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business
             workflow automation — shaped around how your business actually works.
-          </p>
+          </m.p>
 
-          <div
-            data-intro
-            data-hero-fade
-            className="mt-10 flex flex-col items-center gap-3 min-[480px]:flex-row min-[480px]:flex-wrap"
-          >
+          <m.div variants={fade} className="mt-10 flex flex-col items-center gap-3 min-[480px]:flex-row min-[480px]:flex-wrap">
             <CalEmbed size="large" className="w-full min-[480px]:w-auto">
               Book a Free Strategy Call
             </CalEmbed>
-            <Button href="#projects" variant="secondary" size="large" className="w-full min-[480px]:w-auto">
+            <Button href="#projects" variant="outline-ink" size="large" className="w-full min-[480px]:w-auto">
               See Our Work
             </Button>
-          </div>
-        </div>
+          </m.div>
+        </m.div>
 
-        <div className="lg:col-span-5">
-          <AgentRunLog canReplay={played} onReplay={replay} />
-        </div>
-      </div>
+        <m.div
+          className="lg:col-span-5 [perspective:1400px]"
+          initial={{ opacity: 0, y: 48 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.7, ease: EASE }}
+        >
+          <m.div
+            initial={{ rotateX: 14, scale: 0.96 }}
+            animate={{ rotateX: 0, scale: 1 }}
+            transition={{ duration: 1.4, delay: 0.7, ease: EASE }}
+            style={{ transformOrigin: '50% 100%' }}
+          >
+            <AgentRunLog startAt={1.8} />
+          </m.div>
+        </m.div>
+      </m.div>
     </section>
   )
 }

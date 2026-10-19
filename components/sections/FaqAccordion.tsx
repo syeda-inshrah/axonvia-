@@ -1,7 +1,7 @@
 'use client'
 
 import { useId, useState } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { Plus } from 'lucide-react'
 import type { Faq } from '@/lib/types'
 
@@ -10,7 +10,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
   const baseId = useId()
 
   return (
-    <div className="border-y border-[var(--rule-strong)] divide-y divide-[var(--rule-strong)]">
+    <div className="divide-y divide-[var(--rule)] rounded-2xl border border-[var(--rule)] bg-[var(--bg-card)] px-6 shadow-[var(--shadow-card)]">
       {items.map((item) => {
         const isOpen = openId === item.id
         const triggerId = `${baseId}-trigger-${item.id}`
@@ -32,7 +32,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
             </button>
             <AnimatePresence initial={false}>
               {isOpen && (
-                <motion.div
+                <m.div
                   id={panelId}
                   role="region"
                   aria-labelledby={triggerId}
@@ -43,7 +43,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
                   className="overflow-hidden"
                 >
                   <p className="max-w-[40rem] pb-6 text-[var(--text-secondary)]">{item.answer}</p>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>

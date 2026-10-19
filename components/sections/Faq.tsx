@@ -2,6 +2,7 @@ import { getPublishedFaqs } from '@/lib/queries/content'
 import { Section } from '@/components/ui/SectionHeader'
 import { FaqAccordion } from '@/components/sections/FaqAccordion'
 import { siteConfig } from '@/lib/site'
+import { Reveal } from '@/components/motion/Reveal'
 
 function AskUs() {
   return (
@@ -25,7 +26,7 @@ export async function Faq() {
   return (
     <Section id="faq" wash labelledBy="faq-title">
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-4">
+        <Reveal className="lg:col-span-4">
           <h2 id="faq-title" className="text-[2rem] leading-[1.08] font-semibold text-[var(--text-primary)] md:text-[2.75rem]">
             Common questions
           </h2>
@@ -34,8 +35,8 @@ export async function Faq() {
               Something else on your mind? <AskUs />
             </p>
           )}
-        </div>
-        <div className="lg:col-span-7 lg:col-start-6">
+        </Reveal>
+        <Reveal className="lg:col-span-7 lg:col-start-6">
           {faqs.length > 0 ? (
             <FaqAccordion items={faqs} />
           ) : (
@@ -43,7 +44,7 @@ export async function Faq() {
               Have a question about your project? <AskUs />
             </p>
           )}
-        </div>
+        </Reveal>
       </div>
     </Section>
   )

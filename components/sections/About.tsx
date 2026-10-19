@@ -1,5 +1,6 @@
 import { Section } from '@/components/ui/SectionHeader'
 import { siteConfig } from '@/lib/site'
+import { Reveal } from '@/components/motion/Reveal'
 
 // Only facts the founder has confirmed; no headcount or client figures until they are.
 const facts = [
@@ -12,20 +13,20 @@ export function About() {
   return (
     <Section id="about" labelledBy="about-title">
       <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-7">
+        <Reveal className="lg:col-span-7">
           <h2 id="about-title" className="text-lg font-semibold text-[var(--text-primary)]">
             Built by engineers who&apos;ve shipped real AI systems
           </h2>
-          <blockquote className="mt-8">
+          <blockquote className="mt-8 border-l-2 border-[var(--accent-purple)] pl-6 md:pl-8">
             <p className="text-[1.75rem] leading-[1.25] font-medium tracking-[-0.02em] text-[var(--text-primary)] md:text-[2.5rem]">
               &ldquo;We don&apos;t just talk about automation — we build it, test it, and stand behind it after
               launch.&rdquo;
             </p>
             <footer className="mt-6 text-[var(--text-muted)]">Founder &amp; CEO, Axonvia</footer>
           </blockquote>
-        </div>
+        </Reveal>
 
-        <div className="lg:col-span-4 lg:col-start-9 lg:pt-1">
+        <Reveal className="lg:col-span-4 lg:col-start-9 lg:pt-1">
           <p className="text-[var(--text-secondary)]">
             Axonvia was founded to close the gap between AI hype and AI that actually works in production. We&apos;re
             a team of engineers and builders who design agentic systems grounded in real business logic — not demos.
@@ -38,7 +39,7 @@ export function About() {
               </div>
             ))}
           </dl>
-        </div>
+        </Reveal>
       </div>
     </Section>
   )

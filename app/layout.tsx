@@ -16,10 +16,6 @@ const plexMono = IBM_Plex_Mono({
   variable: '--font-plex-mono',
 })
 
-// Marks the page as scripted so the hero can hide its intro until GSAP plays it. If GSAP hasn't started
-// within 3s (slow device, blocked script), intro-timeout reveals everything as plain content.
-const scriptFlag = `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('intro-timeout')},3000)`
-
 const title = 'Axonvia — Intelligence that works for your business.'
 const description =
   'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.'
@@ -34,16 +30,13 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#FFFFFF',
+  themeColor: '#0A1530',
   colorScheme: 'light',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: scriptFlag }} />
-      </head>
+    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`}>
       <body>
         <MotionSafeProvider>{children}</MotionSafeProvider>
       </body>

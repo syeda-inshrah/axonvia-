@@ -81,6 +81,9 @@ export async function POST(request: Request) {
   }))
 
   const encoder = new TextEncoder()
+  // Set when the visitor disconnects (closes the chat or the tab): stop pulling tokens from Gemini, and don't
+  // treat the closed stream as a failure.
+  let disconnected = false
   const reply = new ReadableStream<Uint8Array>({
     async start(controller) {
       try {
@@ -98,6 +101,7 @@ export async function POST(request: Request) {
         let wroteText = false
         let blocked = false
         for await (const chunk of stream) {
+          if (disconnected) return
           const text = chunk.text
           if (text) {
             controller.enqueue(encoder.encode(text))
@@ -109,6 +113,7 @@ export async function POST(request: Request) {
 
         if (blocked) controller.enqueue(encoder.encode(wroteText ? `\n\n${DECLINED}` : DECLINED))
       } catch (error) {
+        if (disconnected) return
         // One JSON line per failure (Vercel → Logs): HTTP status and Gemini error status, plus the key's shape
         // so a mis-pasted key is obvious. Never the key itself, headers, or the visitor's messages.
         const failure = diagnoseChatError(error)
@@ -124,8 +129,11 @@ export async function POST(request: Request) {
         const transient = failure.kind === 'overloaded' || failure.kind === 'rate_limit'
         controller.enqueue(encoder.encode(transient ? BUSY : INTERRUPTED))
       } finally {
-        controller.close()
+        if (!disconnected) controller.close()
       }
+    },
+    cancel() {
+      disconnected = true
     },
   })
 

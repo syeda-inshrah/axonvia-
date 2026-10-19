@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion, useReducedMotion } from 'motion/react'
+import { m, useReducedMotion } from 'motion/react'
 import type { Testimonial } from '@/lib/types'
 
 const AUTO_ADVANCE_MS = 5000
@@ -68,7 +68,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
           else if (distance >= SWIPE_THRESHOLD_PX) goTo(current - 1)
         }}
       >
-        <motion.ul
+        <m.ul
           className="-mx-5 flex"
           animate={{ x: `-${(current * 100) / perView}%` }}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
@@ -82,7 +82,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
                 className="shrink-0 px-5"
                 style={{ width: `${100 / perView}%` }}
               >
-                <figure className="flex h-full flex-col border-t border-[var(--rule-strong)] pt-6">
+                <figure className="flex h-full flex-col rounded-2xl border border-[var(--rule)] bg-[var(--bg-card)] p-7 shadow-[var(--shadow-card)]">
                   <blockquote className="text-lg leading-relaxed text-[var(--text-primary)]">
                     <p className="before:content-['“'] after:content-['”']">{testimonial.quote}</p>
                   </blockquote>
@@ -102,7 +102,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               </li>
             )
           })}
-        </motion.ul>
+        </m.ul>
       </div>
 
       {positions > 1 && (

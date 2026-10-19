@@ -12,7 +12,7 @@ export async function Testimonials() {
 
       <div className="mt-14 md:mt-16">
         {testimonials.length === 0 ? (
-          <div className="max-w-xl border-t border-[var(--rule-strong)] pt-8">
+          <div className="max-w-xl rounded-2xl border border-[var(--rule)] bg-[var(--bg-card)] p-8">
             <h3 className="text-xl font-semibold text-[var(--text-primary)]">Early-stage and building in public</h3>
             <p className="mt-3 text-[var(--text-secondary)]">
               We&apos;re a new agency focused on shipping real systems before collecting testimonials. Be one of the

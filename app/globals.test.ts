@@ -29,9 +29,9 @@ describe('globals.css', () => {
     expect(wash).not.toContain('gradient')
   })
 
-  it('hides the hero intro before GSAP plays it only when scripts run and motion is welcome, with a timeout fallback', () => {
-    const media = css.slice(css.indexOf('@media (prefers-reduced-motion: no-preference)'))
-    expect(media).toMatch(/html\.js:not\(\.intro-timeout\) \[data-intro\]\s*\{\s*visibility:\s*hidden/)
-    expect(css).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[^}]*\[data-intro\]/)
+  it('lights spotlight cards with transform and opacity only, and keeps them still under reduced motion', () => {
+    expect(rule('.spotlight-card')).toMatch(/transition:\s*transform[^;]*box-shadow/)
+    const reduced = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'))
+    expect(reduced).toMatch(/\.spotlight-card:hover\s*\{\s*transform:\s*none/)
   })
 })

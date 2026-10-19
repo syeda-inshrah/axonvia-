@@ -5,6 +5,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const useReducedMotion = vi.fn()
 vi.mock('motion/react', () => ({
   useReducedMotion,
+  domAnimation: {},
+  LazyMotion: ({ strict, children }: { strict?: boolean; children: React.ReactNode }) => (
+    <div data-testid="lazy-motion" data-strict={String(Boolean(strict))}>
+      {children}
+    </div>
+  ),
   MotionConfig: ({ reducedMotion, children }: { reducedMotion?: string; children: React.ReactNode }) => (
     <div data-testid="motion-config" data-reduced-motion-config={reducedMotion}>
       {children}
@@ -37,5 +43,13 @@ describe('MotionSafeProvider', () => {
     render(<MotionSafeProvider>child</MotionSafeProvider>)
 
     expect(screen.getByTestId('motion-config')).toHaveAttribute('data-reduced-motion-config', 'user')
+  })
+
+  it('loads only the DOM animation features, and strictly, so no full motion component adds weight', async () => {
+    useReducedMotion.mockReturnValue(false)
+    const { MotionSafeProvider } = await import('./MotionSafeProvider')
+    render(<MotionSafeProvider>child</MotionSafeProvider>)
+
+    expect(screen.getByTestId('lazy-motion')).toHaveAttribute('data-strict', 'true')
   })
 })

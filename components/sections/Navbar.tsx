@@ -41,6 +41,9 @@ export function Navbar() {
     }
   }, [menuOpen])
 
+  // Over the navy hero the bar is transparent with light text; once scrolled it turns frosted off-white.
+  const onDark = !scrolled
+
   return (
     <header
       className={`fixed top-0 inset-x-0 z-50 h-16 md:h-[72px] border-b transition-colors duration-300 ${
@@ -48,7 +51,12 @@ export function Navbar() {
       }`}
     >
       <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 md:px-10">
-        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-primary)] font-semibold text-lg tracking-[-0.02em]">
+        <Link
+          href="/"
+          className={`flex items-center gap-2.5 font-semibold text-lg tracking-[-0.02em] transition-colors duration-300 ${
+            onDark ? 'text-white' : 'text-[var(--text-primary)]'
+          }`}
+        >
           <Logo className="h-7 w-7" />
           Axonvia
         </Link>
@@ -58,19 +66,23 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="link-underline text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+              className={`link-underline text-sm transition-colors duration-300 ${
+                onDark ? 'text-[var(--on-ink-soft)] hover:text-white' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+              }`}
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden md:block">
-          <Button href="#final-cta">Book a Call</Button>
+        <div className={`hidden md:block ${onDark ? 'on-ink' : ''}`}>
+          <Button href="#final-cta" variant={onDark ? 'inverse' : 'primary'}>
+            Book a Call
+          </Button>
         </div>
 
         <button
-          className="md:hidden text-[var(--text-primary)]"
+          className={`md:hidden ${onDark ? 'text-white' : 'text-[var(--text-primary)]'}`}
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setMenuOpen((open) => !open)}
         >

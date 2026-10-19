@@ -31,9 +31,10 @@ function contrast(a: string, b: string): number {
   return (hi + 0.05) / (lo + 0.05)
 }
 
-describe('light theme tokens', () => {
-  it('uses a white page with navy text', () => {
-    expect(token('bg-primary').toUpperCase()).toBe('#FFFFFF')
+describe('theme tokens', () => {
+  it('uses an off-white page with deep navy text', () => {
+    expect(Math.min(...hexToRgb(token('bg-primary')))).toBeGreaterThanOrEqual(0xf0) // off-white: near white
+    expect(token('bg-primary').toUpperCase()).not.toBe('#FFFFFF')
     const [r, , b] = hexToRgb(token('text-primary'))
     expect(b).toBeGreaterThan(r) // navy: blue-dominant and dark
     expect(luminance(token('text-primary'))).toBeLessThan(0.05)
