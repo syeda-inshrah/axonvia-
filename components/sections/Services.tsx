@@ -1,81 +1,58 @@
-'use client'
+import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 
-import { motion } from 'motion/react'
-import { Bot, Workflow, Layers, MessageCircle, Database, Compass } from 'lucide-react'
-import { GlassCard } from '@/components/ui/GlassCard'
-import { SectionHeader } from '@/components/ui/SectionHeader'
-import { rise, staggerContainer } from '@/lib/animations'
-
+// Footer's service links mirror these titles.
 const services = [
   {
-    icon: Bot,
     title: 'AI Agent Development',
     description:
       'Custom AI agents that handle lead qualification, customer queries, scheduling, and more — trained on your business logic.',
-    accent: 'cyan' as const,
   },
   {
-    icon: Workflow,
     title: 'Workflow Automation',
-    description:
-      'End-to-end automation of repetitive operations — from data entry to multi-step approval chains.',
-    accent: 'purple' as const,
+    description: 'End-to-end automation of repetitive operations — from data entry to multi-step approval chains.',
   },
   {
-    icon: Layers,
     title: 'AI-Powered Products',
     description: 'Full web applications with AI at the core, built and shipped from MVP to production.',
-    accent: 'cyan' as const,
   },
   {
-    icon: MessageCircle,
     title: 'Conversational AI & Chatbots',
-    description:
-      'Intelligent chat and voice interfaces integrated into WhatsApp, websites, and internal tools.',
-    accent: 'purple' as const,
+    description: 'Intelligent chat and voice interfaces integrated into WhatsApp, websites, and internal tools.',
   },
   {
-    icon: Database,
     title: 'Data & Integration',
     description: 'Connecting your tools, CRMs, and databases into one automated pipeline.',
-    accent: 'cyan' as const,
   },
   {
-    icon: Compass,
     title: 'AI Strategy & Consulting',
     description: 'Helping teams identify where AI delivers real ROI before a single line of code is written.',
-    accent: 'purple' as const,
   },
 ]
 
 export function Services() {
   return (
-    <section id="services" className="px-5 md:px-10 py-24 section-alt">
+    <Section id="services" labelledBy="services-title">
       <SectionHeader
-        eyebrow="What We Do"
-        title="AI Systems Built Around Your Business"
+        id="services-title"
+        title="AI systems built around your business"
         subtitle="From a single automated workflow to a full agentic system — we build what actually moves the needle."
       />
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={staggerContainer(0.08)}
-        className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1320px] mx-auto"
-      >
+      <ul className="mt-16 border-b border-[var(--rule)] md:mt-20">
         {services.map((service) => (
-          <motion.div key={service.title} variants={rise}>
-            <GlassCard accent={service.accent} className="h-full">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--accent-cyan)]/10">
-                <service.icon className="h-6 w-6 text-[var(--accent-cyan)]" />
-              </div>
-              <h3 className="mt-5 text-xl font-semibold text-[var(--text-primary)]">{service.title}</h3>
-              <p className="mt-2 text-[var(--text-secondary)]">{service.description}</p>
-            </GlassCard>
-          </motion.div>
+          <li
+            key={service.title}
+            className="grid grid-cols-1 gap-2 border-t border-[var(--rule)] py-7 md:grid-cols-12 md:gap-10 md:py-9"
+          >
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] md:col-span-5 md:text-2xl">
+              {service.title}
+            </h3>
+            <p className="max-w-[34rem] text-[var(--text-secondary)] md:col-span-6 md:col-start-7 md:pt-1">
+              {service.description}
+            </p>
+          </li>
         ))}
-      </motion.div>
-    </section>
+      </ul>
+    </Section>
   )
 }

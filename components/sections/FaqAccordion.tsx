@@ -10,7 +10,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
   const baseId = useId()
 
   return (
-    <div className="divide-y divide-[var(--border-glass)]">
+    <div className="border-y border-[var(--rule-strong)] divide-y divide-[var(--rule-strong)]">
       {items.map((item) => {
         const isOpen = openId === item.id
         const triggerId = `${baseId}-trigger-${item.id}`
@@ -21,7 +21,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
               id={triggerId}
               aria-expanded={isOpen}
               aria-controls={panelId}
-              className="flex w-full items-center justify-between gap-4 py-5 text-left text-[var(--text-primary)] font-medium"
+              className="flex w-full items-center justify-between gap-6 py-6 text-left text-lg text-[var(--text-primary)] font-medium hover:text-[var(--accent-cyan)] transition-colors"
               onClick={() => setOpenId(isOpen ? null : item.id)}
             >
               {item.question}
@@ -42,7 +42,7 @@ export function FaqAccordion({ items }: { items: Faq[] }) {
                   transition={{ duration: 0.25, ease: 'easeOut' }}
                   className="overflow-hidden"
                 >
-                  <p className="pb-5 text-[var(--text-secondary)]">{item.answer}</p>
+                  <p className="max-w-[40rem] pb-6 text-[var(--text-secondary)]">{item.answer}</p>
                 </motion.div>
               )}
             </AnimatePresence>

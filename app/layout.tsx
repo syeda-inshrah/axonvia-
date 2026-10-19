@@ -1,23 +1,24 @@
 import type { Metadata, Viewport } from 'next'
-import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
+import { Schibsted_Grotesk, IBM_Plex_Mono } from 'next/font/google'
 import { MotionSafeProvider } from '@/components/ui/MotionSafeProvider'
 import { siteConfig } from '@/lib/site'
 import './globals.css'
 
-const spaceGrotesk = Space_Grotesk({
+// One family for headings and body; the mono face is reserved for real data such as timestamps.
+const schibsted = Schibsted_Grotesk({
   subsets: ['latin'],
-  variable: '--font-heading',
+  variable: '--font-schibsted',
 })
 
-const inter = Inter({
+const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
-  variable: '--font-body',
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
 })
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-})
+// Marks the page as scripted so the hero can hide its intro until GSAP plays it. If GSAP hasn't started
+// within 3s (slow device, blocked script), intro-timeout reveals everything as plain content.
+const scriptFlag = `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('intro-timeout')},3000)`
 
 const title = 'Axonvia — Intelligence that works for your business.'
 const description =
@@ -39,7 +40,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: scriptFlag }} />
+      </head>
       <body>
         <MotionSafeProvider>{children}</MotionSafeProvider>
       </body>

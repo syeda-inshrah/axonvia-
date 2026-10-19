@@ -1,46 +1,45 @@
-import { UserRound } from 'lucide-react'
-import { Reveal } from '@/components/motion/Reveal'
+import { Section } from '@/components/ui/SectionHeader'
+import { siteConfig } from '@/lib/site'
+
+// Only facts the founder has confirmed; no headcount or client figures until they are.
+const facts = [
+  { label: 'What we focus on', value: 'Multi-agent systems' },
+  { label: 'How we deliver', value: 'Full-stack delivery' },
+  { label: 'Based in', value: siteConfig.location },
+]
 
 export function About() {
   return (
-    <section id="about" className="px-5 md:px-10 py-24 section-alt">
-      <Reveal className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10 items-center">
-        <div className="flex justify-center">
-          {/* Placeholder until the founder photo is supplied: gradient ring + glow halo per spec §9. */}
-          <div
-            data-testid="founder-photo-placeholder"
-            aria-hidden="true"
-            className="rounded-full bg-[image:var(--accent-gradient)] p-[2px] shadow-[0_0_60px_var(--glow)]"
-          >
-            <div className="flex h-48 w-48 items-center justify-center rounded-full bg-[var(--bg-card)]">
-              <UserRound className="h-20 w-20 text-[var(--text-muted)]" strokeWidth={1.25} />
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">About Axonvia</span>
-          <h2 className="mt-4 text-3xl font-semibold text-[var(--text-primary)]">
-            Built by Engineers Who&apos;ve Shipped Real AI Systems
+    <Section id="about" labelledBy="about-title">
+      <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-7">
+          <h2 id="about-title" className="text-lg font-semibold text-[var(--text-primary)]">
+            Built by engineers who&apos;ve shipped real AI systems
           </h2>
-          <p className="mt-4 text-[var(--text-secondary)]">
-            Axonvia was founded to close the gap between AI hype and AI that actually works in production. We&apos;re
-            a team of engineers and builders who design agentic systems grounded in real business logic — not
-            demos.
-          </p>
-
-          <blockquote className="mt-6 border-l-2 border-[var(--accent-cyan)] pl-4 italic text-lg text-[var(--text-primary)]">
-            &quot;We don&apos;t just talk about automation — we build it, test it, and stand behind it after
-            launch.&quot;
-            <footer className="mt-2 text-sm text-[var(--text-muted)]">— Founder &amp; CEO, Axonvia</footer>
+          <blockquote className="mt-8">
+            <p className="text-[1.75rem] leading-[1.25] font-medium tracking-[-0.02em] text-[var(--text-primary)] md:text-[2.5rem]">
+              &ldquo;We don&apos;t just talk about automation — we build it, test it, and stand behind it after
+              launch.&rdquo;
+            </p>
+            <footer className="mt-6 text-[var(--text-muted)]">Founder &amp; CEO, Axonvia</footer>
           </blockquote>
-
-          <div className="mt-6 flex gap-6 text-sm text-[var(--text-secondary)]">
-            <span>Multi-agent systems</span>
-            <span>Full-stack delivery</span>
-          </div>
         </div>
-      </Reveal>
-    </section>
+
+        <div className="lg:col-span-4 lg:col-start-9 lg:pt-1">
+          <p className="text-[var(--text-secondary)]">
+            Axonvia was founded to close the gap between AI hype and AI that actually works in production. We&apos;re
+            a team of engineers and builders who design agentic systems grounded in real business logic — not demos.
+          </p>
+          <dl className="mt-8 border-t border-[var(--rule)]">
+            {facts.map((fact) => (
+              <div key={fact.label} className="flex justify-between gap-6 border-b border-[var(--rule)] py-3 text-[0.9375rem]">
+                <dt className="text-[var(--text-muted)]">{fact.label}</dt>
+                <dd className="text-right font-medium text-[var(--text-primary)]">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </Section>
   )
 }

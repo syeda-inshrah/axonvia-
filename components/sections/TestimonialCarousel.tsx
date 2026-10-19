@@ -2,8 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion } from 'motion/react'
-import { Quote } from 'lucide-react'
-import { GlassCard } from '@/components/ui/GlassCard'
 import type { Testimonial } from '@/lib/types'
 
 const AUTO_ADVANCE_MS = 5000
@@ -71,7 +69,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
         }}
       >
         <motion.ul
-          className="-mx-3 flex"
+          className="-mx-5 flex"
           animate={{ x: `-${(current * 100) / perView}%` }}
           transition={{ duration: 0.5, ease: 'easeInOut' }}
         >
@@ -81,16 +79,14 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               <li
                 key={testimonial.id}
                 aria-hidden={!visible}
-                className="shrink-0 px-3"
+                className="shrink-0 px-5"
                 style={{ width: `${100 / perView}%` }}
               >
-                <GlassCard glow={false} className="relative h-full overflow-hidden">
-                  <Quote
-                    aria-hidden="true"
-                    className="absolute -top-1 -left-1 h-20 w-20 text-[var(--accent-cyan)] opacity-10"
-                  />
-                  <p className="relative text-lg text-[var(--text-primary)]">{testimonial.quote}</p>
-                  <div className="relative mt-6 flex items-center gap-3 border-t border-[var(--border-glass)] pt-4">
+                <figure className="flex h-full flex-col border-t border-[var(--rule-strong)] pt-6">
+                  <blockquote className="text-lg leading-relaxed text-[var(--text-primary)]">
+                    <p className="before:content-['“'] after:content-['”']">{testimonial.quote}</p>
+                  </blockquote>
+                  <figcaption className="mt-auto flex items-center gap-3 pt-6">
                     {testimonial.avatarUrl && (
                       // eslint-disable-next-line @next/next/no-img-element -- Plain <img>: CMS avatar URLs can be on any host, which next/image would need configured.
                       <img src={testimonial.avatarUrl} alt="" className="h-10 w-10 rounded-full object-cover" />
@@ -101,8 +97,8 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
                         <p className="text-sm text-[var(--text-muted)]">{testimonial.clientRole}</p>
                       )}
                     </div>
-                  </div>
-                </GlassCard>
+                  </figcaption>
+                </figure>
               </li>
             )
           })}
@@ -110,7 +106,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
       </div>
 
       {positions > 1 && (
-        <div className="mt-6 flex justify-center gap-1">
+        <div className="mt-10 flex gap-1">
           {Array.from({ length: positions }, (_, i) => (
             <button
               key={i}
@@ -122,7 +118,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
             >
               <span
                 className={`block h-1.5 rounded-full transition-all duration-300 ${
-                  i === current ? 'w-6 bg-[var(--accent-cyan)]' : 'w-1.5 bg-[var(--text-muted)]'
+                  i === current ? 'w-6 bg-[var(--ink-panel)]' : 'w-1.5 bg-[var(--text-muted)]'
                 }`}
               />
             </button>

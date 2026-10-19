@@ -14,7 +14,7 @@ describe('WhyAxonvia', () => {
 
   it('uses the spec headline as the H2 and the positioning line as supporting copy', () => {
     render(<WhyAxonvia />)
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Not Just Another AI Agency')
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Not just another AI agency')
     expect(screen.getByText(/We don.t sell hype/)).toBeInTheDocument()
   })
 })

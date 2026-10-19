@@ -12,7 +12,7 @@ describe('FinalCta', () => {
   it('renders the headline and the booking CTA', () => {
     const { container } = render(<FinalCta />)
 
-    expect(screen.getByRole('heading', { name: /Ready to Put AI to Work in Your Business\?/ })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /Ready to put AI to work in your business\?/ })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Book Your Free Call' })).toBeInTheDocument()
     expect(container.querySelector('button button')).toBeNull()
   })

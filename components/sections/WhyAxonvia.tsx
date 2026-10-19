@@ -1,5 +1,4 @@
-import { GlassCard } from '@/components/ui/GlassCard'
-import { Reveal, Stagger, StaggerItem } from '@/components/motion/Reveal'
+import { Section } from '@/components/ui/SectionHeader'
 
 const differentiators = [
   { title: 'Built, Not Templated', description: 'Every system is custom-architected for your workflows — no generic chatbot wrappers.' },
@@ -10,33 +9,33 @@ const differentiators = [
 
 export function WhyAxonvia() {
   return (
-    <section className="px-5 md:px-10 py-24">
-      <div className="max-w-[1320px] mx-auto grid grid-cols-1 lg:grid-cols-[40%_60%] gap-10">
-        <Reveal>
-          <span className="text-xs uppercase tracking-wider text-[var(--text-muted)]">Why Axonvia</span>
-          <h2 className="mt-4 text-3xl md:text-5xl font-semibold text-[var(--text-primary)]">
-            Not Just Another AI Agency
+    <Section wash labelledBy="why-title">
+      <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
+        <div className="lg:col-span-5">
+          <h2
+            id="why-title"
+            className="text-[2rem] leading-[1.08] font-semibold text-[var(--text-primary)] md:text-[2.75rem]"
+          >
+            Not just another AI agency
           </h2>
-          <h3 className="mt-6 text-xl font-semibold text-[var(--text-primary)]">
+          <p className="mt-6 text-xl font-medium leading-snug text-[var(--text-primary)]">
             We don&apos;t sell hype — we ship systems that work.
-          </h3>
-          <p className="mt-4 text-[var(--text-secondary)]">
-            Every agent we build is tested against real business scenarios, not demos. We stay hands-on from
-            strategy through to post-launch support.
           </p>
-        </Reveal>
+          <p className="mt-4 max-w-[30rem] text-[var(--text-secondary)]">
+            Every agent we build is tested against real business scenarios, not demos. We stay hands-on from strategy
+            through to post-launch support.
+          </p>
+        </div>
 
-        <Stagger className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <ul className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:col-span-6 lg:col-start-7">
           {differentiators.map((item) => (
-            <StaggerItem key={item.title}>
-              <GlassCard glow={false} className="p-6! h-full hover:border-[var(--border-glow)]">
-                <h3 className="font-semibold text-[var(--text-primary)]">{item.title}</h3>
-                <p className="mt-2 text-sm text-[var(--text-secondary)]">{item.description}</p>
-              </GlassCard>
-            </StaggerItem>
+            <li key={item.title} className="border-t border-[var(--rule-strong)] pt-5">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)]">{item.title}</h3>
+              <p className="mt-2 text-[0.9375rem] text-[var(--text-secondary)]">{item.description}</p>
+            </li>
           ))}
-        </Stagger>
+        </ul>
       </div>
-    </section>
+    </Section>
   )
 }

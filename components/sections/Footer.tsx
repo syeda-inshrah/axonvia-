@@ -7,8 +7,8 @@ import { siteConfig } from '@/lib/site'
 
 const navigateLinks = [
   { href: '#services', label: 'Services' },
-  { href: '#how-it-works', label: 'How It Works' },
-  { href: '#projects', label: 'Projects' },
+  { href: '#projects', label: 'Work' },
+  { href: '#how-it-works', label: 'Process' },
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
 ]
@@ -32,11 +32,11 @@ const linkClasses = 'link-underline w-fit hover:text-[var(--text-primary)]'
 
 export function Footer() {
   return (
-    <footer className="border-t border-[var(--border-glass)] px-5 md:px-10 pt-16 pb-28">
-      <div className="max-w-[1320px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10">
+    <footer className="px-5 md:px-10 pt-8 pb-28">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10">
         <div>
           <p className="flex items-center gap-2.5 font-semibold text-[var(--text-primary)]">
-            <Logo className="h-7 w-7" />
+            <Logo className="h-6 w-6" />
             {siteConfig.name}
           </p>
           <p className="mt-2 text-sm text-[var(--text-muted)]">{siteConfig.tagline}</p>
@@ -49,7 +49,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 aria-label={label}
                 title={label}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-glass)] text-[var(--text-secondary)] transition-all duration-200 hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)] hover:shadow-[0_0_16px_var(--glow)]"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-[var(--rule-strong)] text-[var(--text-secondary)] transition-colors duration-200 hover:border-[var(--text-primary)] hover:text-[var(--text-primary)]"
               >
                 <Icon className="h-4 w-4" />
               </a>
@@ -103,7 +103,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="mt-12 border-t border-[var(--border-glass)] pt-6 max-w-[1320px] mx-auto flex flex-col md:flex-row justify-between gap-2 text-xs text-[var(--text-muted)]">
+      <div className="mt-14 border-t border-[var(--rule)] pt-6 max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between gap-2 text-xs text-[var(--text-muted)]">
         <span>© 2026 Axonvia. All rights reserved.</span>
         <div className="flex gap-4">
           <Link href="/privacy" className={linkClasses}>

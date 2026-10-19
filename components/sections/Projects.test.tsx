@@ -26,7 +26,7 @@ describe('Projects', () => {
     const { Projects } = await import('./Projects')
     render(await Projects())
 
-    expect(screen.getByText('Featured Project')).toBeInTheDocument()
+    expect(screen.getByText('Featured project')).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 3, name: 'Todo App' })).toBeInTheDocument()
     expect(screen.getByText(/create, update, and organize tasks/i)).toBeInTheDocument()
     for (const tag of ['Next.js 16', 'FastAPI', 'PostgreSQL']) expect(screen.getByText(tag)).toBeInTheDocument()

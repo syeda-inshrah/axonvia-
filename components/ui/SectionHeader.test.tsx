@@ -1,21 +1,23 @@
 // components/ui/SectionHeader.test.tsx
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
-import { SectionHeader } from './SectionHeader'
+import { Section, SectionHeader } from './SectionHeader'
 
 describe('SectionHeader', () => {
-  it('renders the eyebrow, title, and subtitle', () => {
-    render(<SectionHeader eyebrow="What We Do" title="AI Systems Built Around Your Business" subtitle="A subtitle" />)
+  it('renders the title as the section heading and the supporting line beside it', () => {
+    render(<SectionHeader title="AI systems built around your business" subtitle="A subtitle" />)
 
-    expect(screen.getByText('What We Do')).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('AI Systems Built Around Your Business')
+    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('AI systems built around your business')
     expect(screen.getByText('A subtitle')).toBeInTheDocument()
   })
 
-  it('renders the highlighted phrase inside its own span', () => {
-    render(<SectionHeader eyebrow="e" title="We Build AI Agents That Run Your Business" highlight="AI Agents" />)
+  it('names its section through the heading id', () => {
+    render(
+      <Section id="services" labelledBy="services-title">
+        <SectionHeader id="services-title" title="What we build" />
+      </Section>
+    )
 
-    const heading = screen.getByRole('heading', { level: 2 })
-    expect(heading.querySelector('span')).toHaveTextContent('AI Agents')
+    expect(screen.getByRole('region', { name: 'What we build' })).toHaveAttribute('id', 'services')
   })
 })

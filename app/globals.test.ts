@@ -1,5 +1,5 @@
 // app/globals.test.ts
-import { readFileSync, readdirSync } from 'fs'
+import { readFileSync } from 'fs'
 import path from 'path'
 import { describe, it, expect } from 'vitest'
 
@@ -12,10 +12,9 @@ function rule(selector: string): string {
 }
 
 describe('globals.css', () => {
-  it('gives every focusable element a branded keyboard focus ring', () => {
-    const focus = rule(':focus-visible')
-    expect(focus).toMatch(/outline:\s*2px solid var\(--accent-cyan\)/)
-    expect(focus).toMatch(/box-shadow:[^;]*var\(--border-glow\)/)
+  it('gives every focusable element a solid blue keyboard focus ring, switched to white on the navy panel', () => {
+    expect(rule(':focus-visible')).toMatch(/outline:\s*2px solid var\(--accent-cyan\)/)
+    expect(rule('.on-ink :focus-visible')).toMatch(/outline-color:\s*#FFFFFF/i)
   })
 
   it('animates text-link underlines in from the left on hover', () => {
@@ -24,26 +23,15 @@ describe('globals.css', () => {
     expect(rule('.link-underline:hover')).toMatch(/background-size:\s*100% 1px/)
   })
 
-  it('blends alternate sections into their neighbours with 100px gradient zones, not a hard cut', () => {
-    const blend = rule('.section-alt')
-    expect(blend).toMatch(/linear-gradient\(\s*to bottom/)
-    expect(blend).toContain('var(--bg-secondary) 100px')
-    expect(blend).toContain('var(--bg-secondary) calc(100% - 100px)')
+  it('gives alternate sections a flat wash rather than a gradient', () => {
+    const wash = rule('.section-alt')
+    expect(wash).toMatch(/background-color:\s*var\(--bg-secondary\)/)
+    expect(wash).not.toContain('gradient')
   })
 
-  it('uses the blended background on every alternate section instead of a flat colour', () => {
-    const dir = path.join(__dirname, '..', 'components', 'sections')
-    const sources = readdirSync(dir)
-      .filter((file) => file.endsWith('.tsx') && !file.endsWith('.test.tsx'))
-      .map((file) => readFileSync(path.join(dir, file), 'utf8'))
-    const sectionTags = sources.flatMap((source) => source.match(/<section[^>]*>/g) ?? [])
-
-    expect(sectionTags.filter((tag) => tag.includes('bg-[var(--bg-secondary)]'))).toEqual([])
-    expect(sectionTags.filter((tag) => tag.includes('section-alt'))).toHaveLength(5)
-  })
-
-  it('never blurs the animated headline words for visitors who prefer reduced motion', () => {
-    const media = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'))
-    expect(media).toMatch(/\[data-word\]\s*\{[^}]*filter:\s*none\s*!important/)
+  it('hides the hero intro before GSAP plays it only when scripts run and motion is welcome, with a timeout fallback', () => {
+    const media = css.slice(css.indexOf('@media (prefers-reduced-motion: no-preference)'))
+    expect(media).toMatch(/html\.js:not\(\.intro-timeout\) \[data-intro\]\s*\{\s*visibility:\s*hidden/)
+    expect(css).not.toMatch(/@media \(prefers-reduced-motion: reduce\)[^}]*\[data-intro\]/)
   })
 })

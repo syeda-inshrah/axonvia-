@@ -1,44 +1,35 @@
-'use client'
-
-import { motion } from 'motion/react'
-import { GradientBlob } from '@/components/ui/GradientBlob'
 import { CalEmbed } from '@/components/CalEmbed'
 import { ContactForm } from '@/components/ContactForm'
-import { GlassCard } from '@/components/ui/GlassCard'
-import { fadeUp } from '@/lib/animations'
 
 export function FinalCta() {
   return (
-    <section id="final-cta" className="relative px-5 md:px-10 py-32 overflow-hidden">
-      <GradientBlob color="cyan" className="w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+    <section id="final-cta" aria-labelledby="final-cta-title" className="px-5 py-16 md:px-10 md:py-24">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-12 rounded-2xl bg-[var(--ink-panel)] px-6 py-12 sm:px-10 md:py-16 lg:grid-cols-12 lg:gap-10 lg:px-16 lg:py-20">
+        <div className="on-ink lg:col-span-6">
+          <h2
+            id="final-cta-title"
+            className="max-w-[16ch] text-[2.25rem] leading-[1.05] font-semibold text-white md:text-[3.25rem]"
+          >
+            Ready to put AI to work in your business?
+          </h2>
+          <p className="mt-6 max-w-[30rem] text-lg text-[#C3CDE0]">
+            Book a free strategy call — we&apos;ll show you exactly where automation can save you time and grow
+            revenue.
+          </p>
+          <CalEmbed variant="inverse" size="large" className="mt-9">
+            Book Your Free Call
+          </CalEmbed>
+          <p className="mt-4 text-sm text-[#AEBAD1]">No commitment. 20-minute call. Real answers.</p>
+        </div>
 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={fadeUp}
-        className="relative z-10 text-center max-w-2xl mx-auto"
-      >
-        <h2 className="text-3xl md:text-5xl font-semibold text-[var(--text-primary)]">
-          Ready to Put AI to Work in Your Business?
-        </h2>
-        <p className="mt-4 text-[var(--text-secondary)] text-lg">
-          Book a free strategy call — we&apos;ll show you exactly where automation can save you time and grow
-          revenue.
-        </p>
-        <CalEmbed size="large" className="mt-8">
-          Book Your Free Call
-        </CalEmbed>
-        <p className="mt-4 text-xs text-[var(--text-muted)]">No commitment. 20-minute call. Real answers.</p>
-
-        <GlassCard glow={false} className="mt-14 text-left">
+        <div className="rounded-xl bg-white p-6 sm:p-8 lg:col-span-6">
           <h3 className="text-xl font-semibold text-[var(--text-primary)]">Send us a message</h3>
-          <p className="mt-2 mb-6 text-sm text-[var(--text-secondary)]">
+          <p className="mt-2 mb-6 text-[0.9375rem] text-[var(--text-secondary)]">
             Prefer to write? Tell us what you&apos;d like to automate and we&apos;ll reply by email.
           </p>
           <ContactForm />
-        </GlassCard>
-      </motion.div>
+        </div>
+      </div>
     </section>
   )
 }

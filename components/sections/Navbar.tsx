@@ -8,8 +8,8 @@ import { Logo } from '@/components/ui/Logo'
 
 const navLinks = [
   { href: '#services', label: 'Services' },
-  { href: '#how-it-works', label: 'How It Works' },
-  { href: '#projects', label: 'Projects' },
+  { href: '#projects', label: 'Work' },
+  { href: '#how-it-works', label: 'Process' },
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
 ]
@@ -43,13 +43,13 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 h-16 md:h-20 transition-colors duration-300 ${
-        scrolled ? 'bg-[var(--nav-bg)] backdrop-blur-xl border-b border-[var(--border-glass)] shadow-[var(--shadow-card)]' : 'bg-transparent'
+      className={`fixed top-0 inset-x-0 z-50 h-16 md:h-[72px] border-b transition-colors duration-300 ${
+        scrolled ? 'bg-[var(--nav-bg)] backdrop-blur-xl border-[var(--rule)]' : 'bg-transparent border-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full max-w-[1320px] items-center justify-between px-5 md:px-10">
-        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-primary)] font-semibold text-lg">
-          <Logo className="h-8 w-8" />
+      <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 md:px-10">
+        <Link href="/" className="flex items-center gap-2.5 text-[var(--text-primary)] font-semibold text-lg tracking-[-0.02em]">
+          <Logo className="h-7 w-7" />
           Axonvia
         </Link>
 
@@ -65,11 +65,8 @@ export function Navbar() {
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center gap-4">
-          <Button href="#final-cta" variant="secondary">
-            Book a Call
-          </Button>
-          <Button href="#final-cta">Get Started</Button>
+        <div className="hidden md:block">
+          <Button href="#final-cta">Book a Call</Button>
         </div>
 
         <button
@@ -89,20 +86,15 @@ export function Navbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="h-14 flex items-center text-[var(--text-primary)] text-lg"
+                className="h-14 flex items-center border-b border-[var(--rule)] text-[var(--text-primary)] text-xl font-medium"
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="mt-6 flex flex-col gap-3">
-            <Button href="#final-cta" variant="secondary" className="w-full">
-              Book a Call
-            </Button>
-            <Button href="#final-cta" className="w-full">
-              Get Started
-            </Button>
-          </div>
+          <Button href="#final-cta" size="large" className="mt-6 w-full">
+            Book a Call
+          </Button>
         </div>
       )}
     </header>

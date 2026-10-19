@@ -1,52 +1,80 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
 :root {
-  /* Premium light theme: white page, navy text, subtle blue accents.
-     Token names are kept from the original theme (e.g. --accent-cyan is now the primary blue). */
+  --font-heading: var(--font-schibsted);
+  --font-body: var(--font-schibsted);
+
+  /* White page, navy ink, one signal blue. Token names are kept from the original theme
+     (e.g. --accent-cyan is the signal blue, --accent-gradient is the near-flat navy of primary buttons). */
   --bg-primary: #FFFFFF;
-  --bg-secondary: #F4F7FC;
+  --bg-secondary: #F6F8FB;
   --bg-card: #FFFFFF;
-  --accent-cyan: #2563EB;
-  --accent-purple: #1E40AF;
-  --accent-gradient: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+  --accent-cyan: #1D4ED8;
+  --accent-purple: #1E3A8A;
+  --accent-gradient: linear-gradient(180deg, #132A5C 0%, #0B1B3F 100%);
   --on-accent: #FFFFFF;
   --text-primary: #0B1B3F;
-  --text-secondary: #3D4B66;
-  --text-muted: #4F5B73;
-  --border-glass: rgba(11,27,63,0.10);
-  --border-glow: rgba(37,99,235,0.40);
-  --border-glow-alt: rgba(30,64,175,0.40);
+  --text-secondary: #3F4B63;
+  --text-muted: #56627A;
+  --border-glass: #E2E7EF;
+  --border-glow: rgba(29,78,216,0.45);
+  --border-glow-alt: rgba(30,58,138,0.45);
   --success: #15803D;
   --danger: #B91C1C;
 
-  /* Surfaces, depth, and decoration */
-  --surface: rgba(255,255,255,0.88);
-  --tint: rgba(37,99,235,0.07);
-  --tint-strong: rgba(37,99,235,0.12);
-  --shadow-card: 0 1px 2px rgba(11,27,63,0.04), 0 10px 30px -12px rgba(11,27,63,0.12);
-  --shadow-raised: 0 2px 4px rgba(11,27,63,0.05), 0 22px 44px -16px rgba(37,99,235,0.28);
-  --glow: rgba(37,99,235,0.22);
-  --nav-bg: rgba(255,255,255,0.82);
+  /* Surfaces and depth: kept deliberately flat. */
+  --rule: #E2E7EF;
+  --rule-strong: #C9D2E0;
+  --ink-panel: #0B1B3F;
+  --surface: #FFFFFF;
+  --tint: rgba(29,78,216,0.06);
+  --tint-strong: rgba(29,78,216,0.10);
+  --shadow-card: 0 1px 2px rgba(11,27,63,0.05);
+  --shadow-raised: 0 1px 2px rgba(11,27,63,0.06), 0 24px 48px -24px rgba(11,27,63,0.22);
+  --glow: rgba(11,27,63,0.20);
+  --nav-bg: rgba(255,255,255,0.92);
   --grid-line: rgba(11,27,63,0.045);
   --chrome-dot: rgba(11,27,63,0.16);
-  --blob-opacity: 0.08;
+  --blob-opacity: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body), sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
 }
 
 h1, h2, h3, h4 {
   font-family: var(--font-heading), sans-serif;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-/* Solid cyan keeps the ring above 3:1 contrast; --border-glow alone (35% alpha) is too faint. */
+p {
+  text-wrap: pretty;
+}
+
+/* Solid blue keeps the ring above 3:1 contrast on white and on the navy panel. */
 :focus-visible {
   outline: 2px solid var(--accent-cyan);
   outline-offset: 3px;
-  box-shadow: 0 0 0 6px var(--border-glow);
+}
+
+/* On the navy panel the blue ring would vanish; white keeps it visible. */
+.on-ink :focus-visible {
+  outline-color: #FFFFFF;
 }
 
 /* Underline grows in from the left; content-box origin keeps it under the text, not the padding. */
@@ -63,15 +91,9 @@ h1, h2, h3, h4 {
   background-size: 100% 1px;
 }
 
-/* Alternate sections fade in and out of --bg-primary over 100px instead of a hard colour cut (spec §0.9). */
+/* Alternate sections: a flat wash, separated from neighbours by the section rule rather than a fade. */
 .section-alt {
-  background-image: linear-gradient(
-    to bottom,
-    var(--bg-primary),
-    var(--bg-secondary) 100px,
-    var(--bg-secondary) calc(100% - 100px),
-    var(--bg-primary)
-  );
+  background-color: var(--bg-secondary);
 }
 
 .grid-texture {
@@ -81,23 +103,10 @@ h1, h2, h3, h4 {
   background-size: 48px 48px;
 }
 
-.gradient-blob {
-  animation: blob-drift 20s ease-in-out infinite;
-}
-
-@keyframes blob-drift {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(40px, -30px) scale(1.1); }
-  66% { transform: translate(-30px, 20px) scale(0.95); }
-}
-
-[data-reduced-motion='true'] .gradient-blob {
-  animation: none;
-}
-
-/* The Hero headline reveal animates a blur; reduced-motion visitors never see it, even during hydration. */
-@media (prefers-reduced-motion: reduce) {
-  [data-word] {
-    filter: none !important;
+/* Hero intro: hidden before GSAP plays it, but only when scripts run and motion is welcome.
+   html.js is set by an inline script in the layout; html.intro-timeout shows everything if GSAP never starts. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.intro-timeout) [data-intro] {
+    visibility: hidden;
   }
 }

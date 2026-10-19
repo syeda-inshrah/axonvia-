@@ -1,21 +1,22 @@
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'inverse'
 export type ButtonSize = 'default' | 'large'
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary:
-    'bg-[image:var(--accent-gradient)] text-[var(--on-accent)] shadow-[0_8px_24px_-8px_var(--glow)] hover:scale-[1.03] hover:shadow-[0_14px_32px_-10px_var(--glow)]',
+  primary: 'bg-[var(--ink-panel)] text-[var(--on-accent)] hover:bg-[var(--accent-cyan)]',
   secondary:
-    'bg-transparent border border-[var(--border-glass)] text-[var(--text-primary)] hover:border-[var(--border-glow)] hover:text-[var(--accent-cyan)]',
+    'bg-transparent border border-[var(--rule-strong)] text-[var(--text-primary)] hover:border-[var(--text-primary)]',
   ghost: 'bg-transparent text-[var(--accent-cyan)] link-underline',
+  // For use on the navy panel.
+  inverse: 'bg-white text-[var(--text-primary)] hover:bg-[#DCE6FF]',
 }
 
 const sizeClasses: Record<ButtonSize, string> = {
-  default: 'px-7 py-3.5 rounded-xl text-base',
-  large: 'px-9 py-[18px] rounded-xl text-lg',
+  default: 'h-11 px-5 rounded-lg text-[0.9375rem]',
+  large: 'h-[52px] px-6 rounded-lg text-base',
 }
 
 const baseClasses =
-  'inline-flex items-center justify-center font-medium transition-all duration-200 ease-out'
+  'inline-flex items-center justify-center font-medium transition-colors duration-200 ease-out'
 
 export function buttonClasses(
   variant: ButtonVariant = 'primary',

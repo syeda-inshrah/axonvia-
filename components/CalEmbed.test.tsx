@@ -37,7 +37,7 @@ describe('CalEmbed', () => {
     render(<CalEmbed size="large">Book a Call</CalEmbed>)
 
     const trigger = screen.getByTestId('cal-trigger')
-    expect(trigger).toHaveClass('bg-[image:var(--accent-gradient)]', 'px-9')
+    expect(trigger).toHaveClass('bg-[var(--ink-panel)]', 'h-[52px]')
     expect(trigger.querySelector('button')).toBeNull()
   })
 

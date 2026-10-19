@@ -1,36 +1,25 @@
 // components/sections/Process.test.tsx
 import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { Process } from './Process'
 
-const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('motion/react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('motion/react')>()),
-  useReducedMotion: () => motionPrefs.reduced,
-}))
-
 describe('Process', () => {
-  it('renders all 5 engagement steps', () => {
+  it('renders all 5 engagement steps, in order', () => {
     render(<Process />)
-    expect(screen.getByText('Discovery Call')).toBeInTheDocument()
-    expect(screen.getByText('Proposal & Scope')).toBeInTheDocument()
-    expect(screen.getByText('Build Sprint')).toBeInTheDocument()
-    expect(screen.getByText('Testing & Handoff')).toBeInTheDocument()
-    expect(screen.getByText('Support & Iteration')).toBeInTheDocument()
+    const steps = screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)
+    expect(steps).toEqual(['Discovery Call', 'Proposal & Scope', 'Build Sprint', 'Testing & Handoff', 'Support & Iteration'])
   })
 
-  it('draws the connecting line as the visitor scrolls', () => {
+  it('is the target of the "How it works" navigation link', () => {
+    render(<Process />)
+    expect(screen.getByRole('region', { name: 'From first call to live system' })).toHaveAttribute('id', 'how-it-works')
+  })
+
+  it('shows the line drawn and every step filled when no scroll animation runs', () => {
     const { container } = render(<Process />)
-    expect(container.querySelector('[data-timeline-fill="vertical"]')).toHaveAttribute('data-scroll-linked', 'true')
-  })
-
-  it('shows the line fully drawn for visitors who prefer reduced motion', () => {
-    motionPrefs.reduced = true
-    try {
-      const { container } = render(<Process />)
-      expect(container.querySelector('[data-timeline-fill="vertical"]')).toHaveAttribute('data-scroll-linked', 'false')
-    } finally {
-      motionPrefs.reduced = false
+    expect(container.querySelector('[data-process-line]')).not.toHaveAttribute('style')
+    for (const marker of container.querySelectorAll('[data-step-marker]')) {
+      expect(marker).toHaveClass('bg-[var(--ink-panel)]')
     }
   })
 })

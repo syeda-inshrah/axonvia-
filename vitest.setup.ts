@@ -14,3 +14,22 @@ if (typeof window !== 'undefined' && !('IntersectionObserver' in window)) {
   Object.defineProperty(window, 'IntersectionObserver', { writable: true, value: IntersectionObserverStub })
   Object.defineProperty(globalThis, 'IntersectionObserver', { writable: true, value: IntersectionObserverStub })
 }
+
+// jsdom has no matchMedia; GSAP's ScrollTrigger calls it when registered. Matching nothing keeps every
+// motion-gated animation off, so tests see the finished, static page. Tests may still replace it.
+if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
+  Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    configurable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addListener() {},
+      removeListener() {},
+      addEventListener() {},
+      removeEventListener() {},
+      dispatchEvent: () => false,
+    }),
+  })
+}

@@ -1,46 +1,28 @@
 // components/sections/TechStack.test.tsx
-import { render, screen } from '@testing-library/react'
-import { describe, it, expect, vi } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
+import { describe, it, expect } from 'vitest'
 import { TechStack } from './TechStack'
 
-const motionPrefs = vi.hoisted(() => ({ reduced: false }))
-vi.mock('motion/react', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('motion/react')>()),
-  useReducedMotion: () => motionPrefs.reduced,
-}))
-
 describe('TechStack', () => {
-  it('renders the stack chips, including Neon in place of the unused Supabase', () => {
+  it('lists the stack, including Neon in place of the unused Supabase', () => {
     render(<TechStack />)
-
     expect(screen.getByText('Claude API')).toBeInTheDocument()
     expect(screen.getByText('Neon')).toBeInTheDocument()
     expect(screen.queryByText('Supabase')).not.toBeInTheDocument()
     expect(screen.getByText('WhatsApp API')).toBeInTheDocument()
+    expect(screen.getAllByRole('listitem')).toHaveLength(14)
   })
 
-  it('floats every chip with its own phase', () => {
-    const { container } = render(<TechStack />)
-    const floating = container.querySelectorAll('[data-floating="true"]')
-    expect(floating).toHaveLength(14)
-    const delays = new Set(Array.from(floating, (chip) => chip.getAttribute('data-float-delay')))
-    expect(delays.size).toBeGreaterThan(1)
-  })
-
-  it('keeps chips still for visitors who prefer reduced motion', () => {
-    motionPrefs.reduced = true
-    try {
-      const { container } = render(<TechStack />)
-      expect(container.querySelectorAll('[data-floating="true"]')).toHaveLength(0)
-    } finally {
-      motionPrefs.reduced = false
-    }
-  })
-
-  it('renders chip labels in their real casing, without the eyebrow-badge uppercase styling', () => {
+  it('groups each tool under the layer of the system it belongs to', () => {
     render(<TechStack />)
-    const chip = screen.getByText('Claude API')
-    expect(chip).not.toHaveClass('uppercase')
-    expect(chip).not.toHaveClass('text-xs')
+    const data = screen.getByRole('heading', { name: 'Data' }).parentElement!
+    expect(within(data).getAllByRole('listitem').map((item) => item.textContent)).toEqual(['PostgreSQL', 'Neon'])
+  })
+
+  it('renders tool names in their real casing, without uppercase label styling', () => {
+    render(<TechStack />)
+    const tool = screen.getByText('Claude API')
+    expect(tool).not.toHaveClass('uppercase')
+    expect(tool).not.toHaveClass('text-xs')
   })
 })
