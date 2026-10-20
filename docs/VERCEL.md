@@ -31,7 +31,10 @@ variable is present. `NEXT_PUBLIC_*` values are inlined at build time, so redepl
 
 ## After the first deploy
 
-1. Apply migrations to the production database: `npm run db:migrate` with `DATABASE_URL` pointing at it.
+1. Apply migrations to the production database, with `DATABASE_URL` pointing at it: check with
+   `npm run db:status` (read-only), apply with `npm run db:migrate`, then run `npm run db:status` again; it should
+   say "Up to date". Migrations only `CREATE TABLE IF NOT EXISTS`, so existing tables and data are never touched.
+   Repeat after any deploy that adds a migration in `drizzle/`.
 2. Create the first admin (`scripts/create-admin.ts`, see `docs/ENVIRONMENT.md`) and sign in at `/admin/login`.
 3. Send one test contact message and one newsletter signup and confirm the emails arrive.
 

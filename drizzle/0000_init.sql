@@ -1,4 +1,6 @@
-CREATE TABLE "admin_users" (
+-- IF NOT EXISTS: safe on a database where some tables were created outside the migrations; existing tables
+-- and their data are left untouched. Definitions are otherwise exactly as generated from lib/db/schema.ts.
+CREATE TABLE IF NOT EXISTS "admin_users" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" text NOT NULL,
 	"password_hash" text NOT NULL,
@@ -6,7 +8,7 @@ CREATE TABLE "admin_users" (
 	CONSTRAINT "admin_users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE "faqs" (
+CREATE TABLE IF NOT EXISTS "faqs" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"question" text NOT NULL,
 	"answer" text NOT NULL,
@@ -14,7 +16,7 @@ CREATE TABLE "faqs" (
 	"sort_order" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "leads" (
+CREATE TABLE IF NOT EXISTS "leads" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"email" text NOT NULL,
@@ -25,7 +27,7 @@ CREATE TABLE "leads" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "newsletter_subscribers" (
+CREATE TABLE IF NOT EXISTS "newsletter_subscribers" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"email" text NOT NULL,
 	"status" text DEFAULT 'subscribed' NOT NULL,
@@ -33,7 +35,7 @@ CREATE TABLE "newsletter_subscribers" (
 	CONSTRAINT "newsletter_subscribers_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
-CREATE TABLE "projects" (
+CREATE TABLE IF NOT EXISTS "projects" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
 	"description" text NOT NULL,
@@ -46,7 +48,7 @@ CREATE TABLE "projects" (
 	"sort_order" integer DEFAULT 0 NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE "testimonials" (
+CREATE TABLE IF NOT EXISTS "testimonials" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"quote" text NOT NULL,
 	"client_name" text NOT NULL,
