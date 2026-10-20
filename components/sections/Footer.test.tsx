@@ -38,9 +38,9 @@ describe('Footer', () => {
 
   it('links the configured contact email', () => {
     render(<Footer />)
-    expect(screen.getByRole('link', { name: 'hello@axonvia.example' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute(
       'href',
-      'mailto:hello@axonvia.example'
+      'mailto:axonvia@gmail.com'
     )
   })
 

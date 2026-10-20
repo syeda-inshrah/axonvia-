@@ -46,9 +46,9 @@ describe('Faq', () => {
     const { Faq } = await import('./Faq')
     render(await Faq())
 
-    expect(screen.getByRole('link', { name: 'hello@axonvia.example' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute(
       'href',
-      'mailto:hello@axonvia.example'
+      'mailto:axonvia@gmail.com'
     )
     expect(screen.getByRole('link', { name: 'book a call' })).toHaveAttribute('href', '#final-cta')
   })

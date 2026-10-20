@@ -12,9 +12,9 @@ describe.each([
     render(<Page />)
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /Back to home/ })).toHaveAttribute('href', '/')
-    expect(screen.getByRole('link', { name: 'hello@axonvia.example' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute(
       'href',
-      'mailto:hello@axonvia.example'
+      'mailto:axonvia@gmail.com'
     )
     expect(screen.getByText(/being finalised/)).toBeInTheDocument()
   })

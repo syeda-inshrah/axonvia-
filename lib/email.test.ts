@@ -12,7 +12,7 @@ vi.mock('resend', () => ({
 describe('email helpers', () => {
   beforeEach(() => {
     process.env.RESEND_API_KEY = 'test-key'
-    process.env.RESEND_FROM_EMAIL = 'Axonvia <hello@axonvia.example>'
+    process.env.RESEND_FROM_EMAIL = 'Axonvia <axonvia@gmail.com>'
     process.env.ADMIN_NOTIFICATION_EMAIL = 'admin@axonvia.example'
     process.env.AUTH_SECRET = 'test-secret'
     send.mockClear()

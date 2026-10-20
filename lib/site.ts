@@ -14,8 +14,8 @@ function resolveSiteUrl(): string {
 export const siteConfig = {
   name: 'Axonvia',
   tagline: 'Intelligence that works for your business.',
-  // Placeholder (.example never resolves) until the real inbox exists; set NEXT_PUBLIC_CONTACT_EMAIL to replace it everywhere.
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'hello@axonvia.example',
+  // The real inbox. NEXT_PUBLIC_CONTACT_EMAIL overrides it everywhere (e.g. for a domain address later).
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'axonvia@gmail.com',
   location: 'Karachi, Pakistan',
   social: {
     instagram: 'https://www.instagram.com/axonvia_automate/',

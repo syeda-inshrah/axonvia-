@@ -7,10 +7,10 @@ describe('siteConfig', () => {
     vi.resetModules()
   })
 
-  it('falls back to a clearly non-real placeholder inbox until one is configured', async () => {
+  it('uses the real Axonvia inbox when no contact email is configured', async () => {
     vi.stubEnv('NEXT_PUBLIC_CONTACT_EMAIL', '')
     const { siteConfig } = await import('./site')
-    expect(siteConfig.contactEmail).toBe('hello@axonvia.example')
+    expect(siteConfig.contactEmail).toBe('axonvia@gmail.com')
   })
 
   it('uses NEXT_PUBLIC_CONTACT_EMAIL when set, so one variable updates every contact link', async () => {
