@@ -27,4 +27,16 @@ describe('siteConfig', () => {
     vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
     expect((await import('./site')).siteConfig.url).toBe('http://localhost:3000')
   })
+
+  it('falls back to Vercel’s production domain when NEXT_PUBLIC_SITE_URL is not set, so deploys never point at localhost', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'axonvia.vercel.app')
+    expect((await import('./site')).siteConfig.url).toBe('https://axonvia.vercel.app')
+  })
+
+  it('prefers an explicit NEXT_PUBLIC_SITE_URL (e.g. a custom domain) over Vercel’s domain', async () => {
+    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://axonvia.com')
+    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'axonvia.vercel.app')
+    expect((await import('./site')).siteConfig.url).toBe('https://axonvia.com')
+  })
 })
