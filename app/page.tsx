@@ -1,6 +1,8 @@
 import { connection } from 'next/server'
 import { Navbar } from '@/components/sections/Navbar'
 import { Hero } from '@/components/sections/Hero'
+import { AgentStory } from '@/components/sections/AgentStory'
+import { AmbientBackground } from '@/components/motion/AmbientBackground'
 import { Services } from '@/components/sections/Services'
 import { Projects } from '@/components/sections/Projects'
 import { TechStack } from '@/components/sections/TechStack'
@@ -20,9 +22,11 @@ export default async function HomePage() {
 
   return (
     <>
+      <AmbientBackground />
       <Navbar />
       <main>
         <Hero />
+        <AgentStory />
         <Services />
         <Projects />
         <Process />

@@ -1,10 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
+import { m } from 'motion/react'
 import { MessageCircle, Send, X } from 'lucide-react'
 import { Logo } from '@/components/ui/Logo'
 
 type ChatMessage = { role: 'user' | 'assistant'; content: string }
+
+/** Dispatch on window to open the assistant from anywhere on the page (e.g. the hero's "Ask our AI assistant"). */
+export const OPEN_CHAT_EVENT = 'axonvia:open-chat'
 
 const GREETING =
   'Hi! I can answer questions about Axonvia’s AI automation services and how we work. What would you like to know?'
@@ -49,6 +53,12 @@ export function ChatWidget() {
   useEffect(() => {
     endRef.current?.scrollIntoView?.({ block: 'end' })
   }, [messages])
+
+  useEffect(() => {
+    const openChat = () => setOpen(true)
+    window.addEventListener(OPEN_CHAT_EVENT, openChat)
+    return () => window.removeEventListener(OPEN_CHAT_EVENT, openChat)
+  }, [])
 
   async function send(text: string) {
     const content = text.trim().slice(0, MAX_LENGTH)
@@ -111,23 +121,31 @@ export function ChatWidget() {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Chat with Axonvia"
-          className="fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[image:var(--accent-gradient)] text-[var(--on-accent)] shadow-[0_10px_30px_-8px_var(--glow)] transition-transform duration-200 hover:scale-105"
+          className="group fixed bottom-5 right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[image:var(--accent-gradient)] text-[var(--on-accent)] shadow-[0_14px_36px_-10px_rgba(45,91,255,0.6)] transition-transform duration-300 hover:scale-105"
         >
-          <MessageCircle aria-hidden="true" className="h-6 w-6" />
+          <span aria-hidden="true" className="absolute inset-0 rounded-full bg-[image:var(--accent-gradient)] opacity-40 motion-safe:animate-ping [animation-duration:2.4s]" />
+          <MessageCircle aria-hidden="true" className="relative h-6 w-6" />
         </button>
       )}
 
       {open && (
-        <div
+        <m.div
           role="dialog"
           aria-label="Axonvia assistant"
-          className="fixed inset-0 z-[60] flex flex-col bg-[var(--bg-secondary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(600px,calc(100vh-2.5rem))] sm:w-[380px] sm:rounded-2xl sm:border sm:border-[var(--border-glass)] sm:shadow-[var(--shadow-raised)]"
+          initial={{ opacity: 0, y: 24, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformOrigin: 'bottom right' }}
+          className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-[var(--bg-primary)] sm:inset-auto sm:bottom-5 sm:right-5 sm:h-[min(620px,calc(100vh-2.5rem))] sm:w-[400px] sm:rounded-3xl sm:border sm:border-white/80 sm:bg-white/85 sm:shadow-[0_40px_90px_-30px_rgba(30,40,120,0.45)] sm:backdrop-blur-xl"
         >
-          <header className="flex items-center justify-between gap-3 border-b border-[var(--border-glass)] px-4 py-3">
+          <header className="flex items-center justify-between gap-3 border-b border-[var(--border-glass)] bg-[image:var(--accent-gradient-soft)] px-4 py-3">
             <div className="flex items-center gap-2.5">
-              <Logo className="h-7 w-7" />
+              <Logo className="h-8 w-8" />
               <div>
-                <p className="text-sm font-semibold text-[var(--text-primary)]">Axonvia assistant</p>
+                <p className="flex items-center gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
+                  Axonvia assistant
+                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#16A34A]" />
+                </p>
                 <p className="text-xs text-[var(--text-muted)]">AI answers. A person replies to the contact form.</p>
               </div>
             </div>
@@ -201,7 +219,7 @@ export function ChatWidget() {
               </button>
             </form>
           </div>
-        </div>
+        </m.div>
       )}
     </>
   )
@@ -214,7 +232,7 @@ function Bubble({ role, children }: { role: ChatMessage['role']; children: React
       <p
         className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
           mine
-            ? 'bg-[var(--tint-strong)] text-[var(--text-primary)]'
+            ? 'bg-[image:var(--accent-gradient)] text-white'
             : 'border border-[var(--border-glass)] bg-[var(--bg-card)] text-[var(--text-secondary)]'
         }`}
       >

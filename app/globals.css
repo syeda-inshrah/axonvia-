@@ -2,6 +2,7 @@
 
 @theme inline {
   --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), ui-serif, Georgia, serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
@@ -9,42 +10,43 @@
   --font-heading: var(--font-schibsted);
   --font-body: var(--font-schibsted);
 
-  /* Off-white page, deep navy ink, electric blue for action, violet as a quiet second accent.
+  /* Premium light: cool off-white, deep navy ink, electric blue for action, violet as the second accent.
      Token names are kept from the original theme: --accent-cyan is the electric blue, --accent-purple the violet. */
-  --bg-primary: #F7F8FB;
-  --bg-secondary: #EEF1F8;
+  --bg-primary: #F6F7FC;
+  --bg-secondary: #EDF0F9;
   --bg-card: #FFFFFF;
-  --accent-cyan: #2A52F2;
-  --accent-purple: #6A4BEF;
-  --accent-gradient: linear-gradient(120deg, #2E5BFF 0%, #6A4BEF 100%);
+  --accent-cyan: #2950F0;
+  --accent-purple: #6A3FF0;
+  --accent-gradient: linear-gradient(120deg, #2D5BFF 0%, #6A3FF0 100%);
+  --accent-gradient-soft: linear-gradient(120deg, rgba(45,91,255,0.12) 0%, rgba(122,77,255,0.12) 100%);
   --on-accent: #FFFFFF;
-  --text-primary: #0A1530;
-  --text-secondary: #3B4763;
-  --text-muted: #556079;
-  --border-glass: #E1E5EF;
-  --border-glow: rgba(46,91,255,0.45);
-  --border-glow-alt: rgba(106,75,239,0.45);
+  --text-primary: #0A1433;
+  --text-secondary: #3C4766;
+  --text-muted: #535E7A;
+  --border-glass: #E0E4F0;
+  --border-glow: rgba(45,91,255,0.45);
+  --border-glow-alt: rgba(106,63,240,0.45);
   --success: #166534;
   --danger: #B91C1C;
 
   /* Surfaces */
-  --rule: #E1E5EF;
-  --rule-strong: #C8D0E0;
-  --ink-panel: #0A1530;
-  --ink-raised: #111F44;
+  --rule: #E0E4F0;
+  --rule-strong: #C7CFE2;
+  --ink-panel: #0A1433;
   --on-ink: #FFFFFF;
-  --on-ink-soft: #B9C3DA;
-  --on-ink-blue: #8EA6FF;
+  --on-ink-soft: #C2CBE3;
+  --on-ink-blue: #9AB0FF;
   --surface: #FFFFFF;
-  --tint: rgba(46,91,255,0.06);
-  --tint-strong: rgba(46,91,255,0.11);
-  --tint-violet: rgba(106,75,239,0.08);
-  --shadow-card: 0 1px 2px rgba(10,21,48,0.04), 0 8px 24px -12px rgba(10,21,48,0.10);
-  --shadow-raised: 0 1px 2px rgba(10,21,48,0.05), 0 30px 60px -30px rgba(10,21,48,0.30);
-  --glow: rgba(46,91,255,0.28);
-  --nav-bg: rgba(247,248,251,0.85);
-  --grid-line: rgba(10,21,48,0.05);
-  --chrome-dot: rgba(10,21,48,0.16);
+  --glass: rgba(255,255,255,0.72);
+  --tint: rgba(45,91,255,0.06);
+  --tint-strong: rgba(45,91,255,0.11);
+  --tint-violet: rgba(106,63,240,0.08);
+  --shadow-card: 0 1px 2px rgba(10,20,51,0.04), 0 12px 32px -16px rgba(10,20,51,0.14);
+  --shadow-raised: 0 2px 4px rgba(10,20,51,0.04), 0 40px 80px -40px rgba(30,40,120,0.35);
+  --glow: rgba(45,91,255,0.30);
+  --nav-bg: rgba(255,255,255,0.72);
+  --grid-line: rgba(10,20,51,0.05);
+  --chrome-dot: rgba(10,20,51,0.16);
 }
 
 html {
@@ -77,13 +79,17 @@ p {
   text-wrap: pretty;
 }
 
+::selection {
+  background: rgba(45,91,255,0.18);
+}
+
 /* Solid blue keeps the ring above 3:1 contrast on the light page. */
 :focus-visible {
   outline: 2px solid var(--accent-cyan);
   outline-offset: 3px;
 }
 
-/* On navy surfaces the blue ring would vanish; white keeps it visible. */
+/* On dark or gradient surfaces the blue ring would vanish; white keeps it visible. */
 .on-ink :focus-visible {
   outline-color: #FFFFFF;
 }
@@ -102,23 +108,86 @@ p {
   background-size: 100% 1px;
 }
 
-/* Alternate sections: a flat wash, separated from neighbours by the section rule rather than a fade. */
 .section-alt {
   background-color: var(--bg-secondary);
 }
 
-/* Faint dot grid for navy surfaces, faded out towards the edges. */
+/* Gradient text for the few places the brand gradient carries a word or numeral. */
+.text-gradient {
+  background-image: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Hairline grid used on light panels, faded at the edges. */
+.grid-lines {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 25%, transparent 75%);
+}
+
 .dot-grid {
-  background-image: radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px);
   background-size: 28px 28px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+
+/* Ambient background: three soft light fields drift slowly behind the whole page. Plain radial gradients
+   moved with transforms only, so the compositor does the work. Paused for reduced motion. */
+@keyframes ambient-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-8vw, 6vh, 0) scale(1.08); }
+}
+@keyframes ambient-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(10vw, -5vh, 0) scale(0.94); }
+}
+@keyframes ambient-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-6vw, -8vh, 0); }
+}
+
+.ambient-a { animation: ambient-a 28s ease-in-out infinite; }
+.ambient-b { animation: ambient-b 34s ease-in-out infinite; }
+.ambient-c { animation: ambient-c 40s ease-in-out infinite; }
+
+/* The services feature card's pulse travelling along its pipeline. */
+@keyframes pipeline {
+  0% { left: 4%; }
+  50% { left: calc(96% - 0.5rem); }
+  100% { left: 4%; }
+}
+
+.pipeline-pulse {
+  left: 4%;
+  animation: pipeline 3.2s ease-in-out infinite;
+}
+
+/* Tech marquee: two rows slide in opposite directions; hovering pauses them. */
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.marquee-track {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.marquee-track[data-reverse] {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
 }
 
 /* Hero intro and scroll reveals: hidden until GSAP plays them, but only when scripts run and motion is
    welcome. html.js is set by an inline script in the layout; html.intro-timeout shows everything as plain
    content if GSAP hasn't started within 3s. GSAP's inline styles take over once it runs.
-   Reveals use opacity, not visibility, so content further down stays in the accessibility tree (headings
-   and landmarks remain navigable) before it has scrolled into view. */
+   Reveals use opacity, not visibility, so content further down stays in the accessibility tree. */
 @media (prefers-reduced-motion: no-preference) {
   html.js:not(.intro-timeout) [data-intro] {
     visibility: hidden;
@@ -129,54 +198,12 @@ p {
   }
 }
 
-/* Spotlight card: a soft light follows the pointer (--spot-x/--spot-y set by SpotlightCard) and a
-   blue-to-violet hairline appears on hover; GSAP adds the lift and tilt. */
-.spotlight-card {
-  position: relative;
-  isolation: isolate;
-  transition: box-shadow 400ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.spotlight-card::before,
-.spotlight-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 300ms ease-out;
-}
-
-.spotlight-card::before {
-  z-index: -1;
-  background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, 0%), rgba(46,91,255,0.08), transparent 60%);
-}
-
-.spotlight-card::after {
-  padding: 1px;
-  background: linear-gradient(140deg, rgba(46,91,255,0.55), rgba(106,75,239,0.45) 60%, transparent);
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
-}
-
-@media (hover: hover) {
-  .spotlight-card:hover {
-    box-shadow: var(--shadow-raised);
-  }
-
-  .spotlight-card:hover::before,
-  .spotlight-card:hover::after {
-    opacity: 1;
-  }
-}
-
-.spotlight-card:focus-within::after {
-  opacity: 1;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .spotlight-card,
-  .spotlight-card:hover {
-    transform: none !important;
+  .ambient-a,
+  .ambient-b,
+  .ambient-c,
+  .pipeline-pulse,
+  .marquee-track {
+    animation: none !important;
   }
 }

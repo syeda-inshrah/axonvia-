@@ -33,3 +33,9 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
     }),
   })
 }
+
+// jsdom has no canvas; NeuralCore checks for a 2D context and draws nothing without one. Returning null here
+// instead of jsdom's "not implemented" keeps test output quiet.
+if (typeof HTMLCanvasElement !== 'undefined') {
+  Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', { configurable: true, writable: true, value: () => null })
+}

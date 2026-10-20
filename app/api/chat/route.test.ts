@@ -9,6 +9,9 @@ let chunks: Chunk[] = []
 let failure: Error | null = null
 // Pause between streamed chunks, so a test can act (e.g. disconnect) while a reply is still arriving.
 let chunkDelayMs = 0
+// Number of upcoming calls that fail with Gemini's 503 "high demand" before any text, then calls succeed.
+let overloadedCalls = 0
+let callCount = 0
 let chunksRead = 0
 
 vi.mock('@google/genai', async (importOriginal) => {
@@ -17,7 +20,16 @@ vi.mock('@google/genai', async (importOriginal) => {
     models = {
       generateContentStream: async (params: unknown) => {
         generateContentStream(params)
+        callCount++
+        const overloaded = overloadedCalls > 0
+        if (overloaded) overloadedCalls--
         return (async function* () {
+          if (overloaded) {
+            throw new actual.ApiError({
+              status: 503,
+              message: JSON.stringify({ error: { code: 503, message: 'This model is currently experiencing high demand.', status: 'UNAVAILABLE' } }),
+            })
+          }
           for (const chunk of chunks) {
             if (chunkDelayMs) await new Promise((resolve) => setTimeout(resolve, chunkDelayMs))
             chunksRead++
@@ -58,6 +70,8 @@ describe('POST /api/chat (Gemini)', () => {
     failure = null
     chunkDelayMs = 0
     chunksRead = 0
+    overloadedCalls = 0
+    callCount = 0
   })
   afterEach(() => vi.unstubAllEnvs())
 
@@ -196,6 +210,42 @@ describe('POST /api/chat (Gemini)', () => {
 
     expect(chunksRead).toBeLessThan(chunks.length)
     expect(errorLog).not.toHaveBeenCalled()
+    errorLog.mockRestore()
+  })
+
+  it('retries quietly when Gemini is briefly overloaded before replying, then streams the answer', async () => {
+    overloadedCalls = 2
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    const text = await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(text).toBe('We build AI agents.')
+    expect(callCount).toBe(3)
+    expect(errorLog).not.toHaveBeenCalled()
+    errorLog.mockRestore()
+  })
+
+  it('gives up after three overloaded attempts and asks the visitor to try again shortly', async () => {
+    overloadedCalls = 5
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    const text = await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(text).toMatch(/busy/i)
+    expect(callCount).toBe(3)
+    expect(errorLog).toHaveBeenCalledTimes(1)
+    errorLog.mockRestore()
+  })
+
+  it('does not retry a quota error, which a retry cannot fix', async () => {
+    const { ApiError } = await import('@google/genai')
+    chunks = []
+    failure = new ApiError({ status: 429, message: JSON.stringify({ error: { code: 429, message: 'Quota exceeded', status: 'RESOURCE_EXHAUSTED' } }) })
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(callCount).toBe(1)
     errorLog.mockRestore()
   })
 })

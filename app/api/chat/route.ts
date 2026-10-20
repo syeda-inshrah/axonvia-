@@ -28,6 +28,10 @@ const DECLINED = 'I can’t help with that here. For anything about working with
 const INTERRUPTED = '\n\nSorry, something went wrong while answering. Please try again, or use the contact form below.'
 const BUSY = '\n\nThe assistant is busy right now. Please try again in a moment, or use the contact form below.'
 
+// Gemini's "high demand" 503s are usually gone within a second or two. Before any text has been sent, an
+// overloaded attempt is retried after these pauses; quota and other errors are not, since retrying can't help.
+const OVERLOAD_RETRY_DELAYS_MS = [500, 1200]
+
 // 20 messages per visitor per 10 minutes: plenty for a conversation, a ceiling on API spend.
 const limiter = createRateLimiter({ limit: 20, windowMs: 10 * 60 * 1000 })
 
@@ -86,32 +90,41 @@ export async function POST(request: Request) {
   let disconnected = false
   const reply = new ReadableStream<Uint8Array>({
     async start(controller) {
+      let wroteText = false
       try {
-        const stream = await ai.models.generateContentStream({
-          model: MODEL,
-          contents,
-          config: {
-            systemInstruction,
-            maxOutputTokens: MAX_OUTPUT_TOKENS,
-            // Short website answers don't need deep reasoning; low thinking keeps replies fast and cheap.
-            thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-          },
-        })
+        for (let attempt = 0; ; attempt++) {
+          try {
+            const stream = await ai.models.generateContentStream({
+              model: MODEL,
+              contents,
+              config: {
+                systemInstruction,
+                maxOutputTokens: MAX_OUTPUT_TOKENS,
+                // Short website answers don't need deep reasoning; low thinking keeps replies fast and cheap.
+                thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
+              },
+            })
 
-        let wroteText = false
-        let blocked = false
-        for await (const chunk of stream) {
-          if (disconnected) return
-          const text = chunk.text
-          if (text) {
-            controller.enqueue(encoder.encode(text))
-            wroteText = true
+            let blocked = false
+            for await (const chunk of stream) {
+              if (disconnected) return
+              const text = chunk.text
+              if (text) {
+                controller.enqueue(encoder.encode(text))
+                wroteText = true
+              }
+              const finishReason = chunk.candidates?.[0]?.finishReason
+              if (chunk.promptFeedback?.blockReason || (finishReason && BLOCKED.includes(finishReason))) blocked = true
+            }
+
+            if (blocked) controller.enqueue(encoder.encode(wroteText ? `\n\n${DECLINED}` : DECLINED))
+            return
+          } catch (error) {
+            const retryable = !wroteText && attempt < OVERLOAD_RETRY_DELAYS_MS.length && diagnoseChatError(error).kind === 'overloaded'
+            if (!retryable || disconnected) throw error
+            await new Promise((resolve) => setTimeout(resolve, OVERLOAD_RETRY_DELAYS_MS[attempt]))
           }
-          const finishReason = chunk.candidates?.[0]?.finishReason
-          if (chunk.promptFeedback?.blockReason || (finishReason && BLOCKED.includes(finishReason))) blocked = true
         }
-
-        if (blocked) controller.enqueue(encoder.encode(wroteText ? `\n\n${DECLINED}` : DECLINED))
       } catch (error) {
         if (disconnected) return
         // One JSON line per failure (Vercel → Logs): HTTP status and Gemini error status, plus the key's shape

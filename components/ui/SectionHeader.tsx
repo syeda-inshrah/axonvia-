@@ -8,7 +8,10 @@ export function SectionHeader({ title, subtitle, id }: { title: string; subtitle
   return (
     <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:items-end md:gap-10">
       <div data-reveal className="md:col-span-6">
-        <h2 id={id} className="text-[2rem] leading-[1.08] font-semibold text-[var(--text-primary)] md:text-[2.75rem]">
+        <h2
+          id={id}
+          className="text-[clamp(2.2rem,4.6vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.035em] text-[var(--text-primary)]"
+        >
           {title}
         </h2>
       </div>

@@ -23,7 +23,7 @@ export function Navbar() {
       setScrolled(window.scrollY > 50)
     }
     handleScroll()
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -41,48 +41,39 @@ export function Navbar() {
     }
   }, [menuOpen])
 
-  // Over the navy hero the bar is transparent with light text; once scrolled it turns frosted off-white.
-  const onDark = !scrolled
-
+  // A floating glass bar: transparent over the hero, then frosted with a hairline and soft shadow once scrolled.
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 h-16 md:h-[72px] border-b transition-colors duration-300 ${
-        scrolled ? 'bg-[var(--nav-bg)] backdrop-blur-xl border-[var(--rule)]' : 'bg-transparent border-transparent'
+      className={`fixed inset-x-3 top-3 z-50 mx-auto h-14 max-w-[1160px] rounded-2xl border transition-[background-color,border-color,box-shadow] duration-500 md:top-4 md:h-16 ${
+        scrolled
+          ? 'border-white/70 bg-[var(--nav-bg)] shadow-[0_10px_40px_-20px_rgba(10,20,51,0.35)] backdrop-blur-xl'
+          : 'border-transparent bg-transparent'
       }`}
     >
-      <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-5 md:px-10">
-        <Link
-          href="/"
-          className={`flex items-center gap-2.5 font-semibold text-lg tracking-[-0.02em] transition-colors duration-300 ${
-            onDark ? 'text-white' : 'text-[var(--text-primary)]'
-          }`}
-        >
+      <div className="flex h-full items-center justify-between pl-4 pr-2 md:pl-5">
+        <Link href="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-[-0.02em] text-[var(--text-primary)]">
           <Logo className="h-7 w-7" />
           Axonvia
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8" aria-label="Primary">
+        <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className={`link-underline text-sm transition-colors duration-300 ${
-                onDark ? 'text-[var(--on-ink-soft)] hover:text-white' : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
-              }`}
+              className="link-underline rounded-lg px-3 py-2 text-sm text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className={`hidden md:block ${onDark ? 'on-ink' : ''}`}>
-          <Button href="#final-cta" variant={onDark ? 'inverse' : 'primary'}>
-            Book a Call
-          </Button>
+        <div className="hidden md:block">
+          <Button href="#final-cta">Book a Call</Button>
         </div>
 
         <button
-          className={`md:hidden ${onDark ? 'text-white' : 'text-[var(--text-primary)]'}`}
+          className="flex h-10 w-10 items-center justify-center text-[var(--text-primary)] md:hidden"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
           onClick={() => setMenuOpen((open) => !open)}
         >
@@ -91,14 +82,14 @@ export function Navbar() {
       </div>
 
       {menuOpen && (
-        <div className="md:hidden fixed inset-0 top-16 bg-[var(--bg-primary)] px-5 py-8">
+        <div className="fixed inset-x-0 bottom-0 top-[4.25rem] bg-[var(--bg-primary)]/95 px-5 py-8 backdrop-blur-xl md:hidden">
           <nav className="flex flex-col gap-2" aria-label="Mobile">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMenuOpen(false)}
-                className="h-14 flex items-center border-b border-[var(--rule)] text-[var(--text-primary)] text-xl font-medium"
+                className="flex h-14 items-center border-b border-[var(--rule)] text-xl font-medium text-[var(--text-primary)]"
               >
                 {link.label}
               </Link>

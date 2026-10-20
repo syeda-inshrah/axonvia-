@@ -1,15 +1,20 @@
 import { LoginForm } from '@/components/admin/LoginForm'
 import { Logo } from '@/components/ui/Logo'
-import { adminCard } from '@/components/admin/ui'
-import { Aurora } from '@/components/motion/Aurora'
+import { AmbientBackground } from '@/components/motion/AmbientBackground'
+import { NeuralCore } from '@/components/motion/NeuralCore'
 import { ScrollReveals } from '@/components/motion/ScrollReveals'
 
 export default function AdminLoginPage() {
   return (
-    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-[var(--ink-panel)] px-5 py-16">
-      <Aurora />
-      <div aria-hidden="true" className="dot-grid absolute inset-0" />
-      <div data-reveal className={`${adminCard} relative w-full max-w-sm p-8 shadow-[0_40px_80px_-40px_rgba(0,0,0,0.6)]`}>
+    <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden px-5 py-16">
+      <AmbientBackground />
+      <div aria-hidden="true" className="absolute left-1/2 top-1/2 -z-10 aspect-square w-[min(120vw,900px)] -translate-x-1/2 -translate-y-1/2 opacity-70">
+        <NeuralCore />
+      </div>
+      <div
+        data-reveal
+        className="relative w-full max-w-sm rounded-[2rem] border border-white/80 bg-white/80 p-8 shadow-[var(--shadow-raised)] backdrop-blur-xl"
+      >
         <div className="mb-8 flex items-center gap-2.5 font-semibold text-[var(--text-primary)]">
           <Logo className="h-8 w-8" />
           Axonvia <span className="text-sm font-normal text-[var(--text-muted)]">Admin</span>

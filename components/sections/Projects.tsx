@@ -4,8 +4,8 @@ import { showcaseProjects, type ShowcaseProject } from '@/lib/showcase-projects'
 import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { Button } from '@/components/ui/Button'
 import { buttonClasses } from '@/components/ui/buttonStyles'
-import { ParallaxImage } from '@/components/motion/ParallaxImage'
-import { SpotlightCard } from '@/components/ui/SpotlightCard'
+import { ShowcaseStage } from '@/components/motion/ShowcaseStage'
+import { TiltCard } from '@/components/ui/TiltCard'
 import type { Project } from '@/lib/types'
 
 type DisplayProject = Project | ShowcaseProject
@@ -65,7 +65,7 @@ function Screenshot({ project }: { project: DisplayProject }) {
   if (!image) return null
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--rule)] bg-[var(--bg-card)] shadow-[var(--shadow-raised)]">
+    <div className="overflow-hidden rounded-2xl border border-white/80 bg-[var(--bg-card)] shadow-[0_50px_100px_-40px_rgba(30,40,120,0.45)] ring-1 ring-[var(--rule)]">
       {isShowcase(project) && (
         <div className="flex items-center gap-3 border-b border-[var(--rule)] px-4 py-2.5">
           <span aria-hidden="true" className="flex gap-1.5">
@@ -79,7 +79,8 @@ function Screenshot({ project }: { project: DisplayProject }) {
           <span aria-hidden="true" className="w-[46px]" />
         </div>
       )}
-      <ParallaxImage src={image.src} alt={image.alt} width={image.width} height={image.height} />
+      {/* eslint-disable-next-line @next/next/no-img-element -- Plain <img>: admin image URLs can be on any host, which next/image would need configured. */}
+      <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" className="block h-auto w-full" />
     </div>
   )
 }
@@ -91,7 +92,7 @@ export async function Projects() {
   const rest = projects.filter((project) => project !== featured)
 
   return (
-    <Section id="projects" wash labelledBy="projects-title">
+    <Section id="projects" labelledBy="projects-title">
       <SectionHeader
         id="projects-title"
         title="Systems we’ve built"
@@ -112,26 +113,24 @@ export async function Projects() {
       )}
 
       {featured && (
-        <div data-reveal className="mt-14 md:mt-16">
-          <article className="group relative grid grid-cols-1 gap-10 overflow-hidden rounded-3xl border border-[var(--rule)] bg-[var(--bg-card)] p-5 shadow-[var(--shadow-card)] sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-10">
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-[radial-gradient(circle,rgba(106,75,239,0.12),transparent_65%)]"
-            />
-            <div className="lg:col-span-7">
+        <article className="relative mt-14 md:mt-20">
+          <div className="mx-auto max-w-[1000px]">
+            <ShowcaseStage labels={featured.stats}>
               <Screenshot project={featured} />
-            </div>
-            <div className="relative lg:col-span-5">
+            </ShowcaseStage>
+          </div>
+
+          <div data-reveal className="mx-auto mt-14 grid max-w-[1000px] grid-cols-1 gap-10 md:mt-20 lg:grid-cols-12">
+            <div className="lg:col-span-7">
               <p className="text-sm font-medium text-[var(--accent-cyan)]">Featured project</p>
-              <h3 className="mt-3 text-3xl font-semibold text-[var(--text-primary)] md:text-4xl">{featured.name}</h3>
-              <p className="mt-4 text-[var(--text-secondary)]">{featured.description}</p>
+              <h3 className="mt-3 text-4xl font-semibold tracking-[-0.03em] text-[var(--text-primary)] md:text-5xl">{featured.name}</h3>
+              <p className="mt-5 text-lg text-[var(--text-secondary)]">{featured.description}</p>
+            </div>
+            <div className="lg:col-span-4 lg:col-start-9">
               {featured.stats.length > 0 && (
-                <ul className="mt-6 border-t border-[var(--rule)]">
+                <ul className="border-t border-[var(--rule)]">
                   {featured.stats.map((stat) => (
-                    <li
-                      key={stat}
-                      className="border-b border-[var(--rule)] py-2.5 text-[0.9375rem] text-[var(--text-primary)]"
-                    >
+                    <li key={stat} className="border-b border-[var(--rule)] py-3 text-[0.9375rem] text-[var(--text-primary)]">
                       {stat}
                     </li>
                   ))}
@@ -149,15 +148,15 @@ export async function Projects() {
                 )}
               </div>
             </div>
-          </article>
-        </div>
+          </div>
+        </article>
       )}
 
       {rest.length > 0 && (
-        <div data-testid="secondary-projects-grid" className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div data-testid="secondary-projects-grid" className="mx-auto mt-20 grid max-w-[1000px] grid-cols-1 gap-6 md:grid-cols-2">
           {rest.map((project) => (
             <div data-reveal key={project.id} className="h-full">
-              <SpotlightCard className="group flex h-full flex-col p-6 sm:p-8">
+              <TiltCard className="flex flex-col p-6 sm:p-8">
                 {!isShowcase(project) && project.imageUrl && (
                   <div className="mb-6 overflow-hidden rounded-xl border border-[var(--rule)]">
                     {/* eslint-disable-next-line @next/next/no-img-element -- Plain <img>: admin image URLs can be on any host. */}
@@ -180,7 +179,7 @@ export async function Projects() {
                     <LiveDemoButton project={project} variant="secondary" />
                   </div>
                 )}
-              </SpotlightCard>
+              </TiltCard>
             </div>
           ))}
         </div>

@@ -29,11 +29,10 @@ describe('globals.css', () => {
     expect(wash).not.toContain('gradient')
   })
 
-  it('leaves card transforms to GSAP (CSS animates only the shadow) and forces them off under reduced motion', () => {
-    expect(rule('.spotlight-card')).toMatch(/transition:\s*box-shadow/)
-    expect(rule('.spotlight-card')).not.toMatch(/transition:[^;]*transform/)
+  it('stops every looping background animation for reduced motion', () => {
     const reduced = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'))
-    expect(reduced).toMatch(/\.spotlight-card:hover\s*\{\s*transform:\s*none !important/)
+    for (const loop of ['.ambient-a', '.ambient-b', '.ambient-c', '.pipeline-pulse', '.marquee-track']) expect(reduced).toContain(loop)
+    expect(reduced).toMatch(/animation:\s*none !important/)
   })
 
   it('hides intro and reveal content before GSAP plays it only when scripts run and motion is welcome', () => {

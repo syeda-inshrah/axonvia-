@@ -1,12 +1,21 @@
 import type { Metadata, Viewport } from 'next'
-import { Schibsted_Grotesk, IBM_Plex_Mono } from 'next/font/google'
+import { Schibsted_Grotesk, Instrument_Serif, IBM_Plex_Mono } from 'next/font/google'
 import { siteConfig } from '@/lib/site'
+import { MotionProvider } from '@/components/ui/MotionProvider'
 import './globals.css'
 
 // One family for headings and body; the mono face is reserved for real data such as timestamps.
 const schibsted = Schibsted_Grotesk({
   subsets: ['latin'],
   variable: '--font-schibsted',
+})
+
+// Serif for large editorial statements only; everything else is set in Schibsted Grotesk.
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
 })
 
 const plexMono = IBM_Plex_Mono({
@@ -33,17 +42,19 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0A1530',
+  themeColor: '#F6F7FC',
   colorScheme: 'light',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${schibsted.variable} ${plexMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${schibsted.variable} ${instrument.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: scriptFlag }} />
       </head>
-      <body>{children}</body>
+      <body>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   )
 }

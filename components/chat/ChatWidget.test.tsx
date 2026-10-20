@@ -102,4 +102,13 @@ describe('ChatWidget', () => {
     open()
     expect(screen.getByLabelText('Your message')).toHaveAttribute('name', 'message')
   })
+
+  it('opens when another part of the page asks for it (the hero’s "Ask our AI assistant")', () => {
+    render(<ChatWidget />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    act(() => {
+      window.dispatchEvent(new Event('axonvia:open-chat'))
+    })
+    expect(screen.getByRole('dialog', { name: 'Axonvia assistant' })).toBeInTheDocument()
+  })
 })

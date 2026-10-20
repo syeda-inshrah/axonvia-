@@ -11,8 +11,12 @@ const facts = [
 export function About() {
   return (
     <Section id="about" labelledBy="about-title">
-      <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:gap-10">
-        <div data-reveal className="lg:col-span-7">
+      <div className="relative grid grid-cols-1 gap-14 overflow-hidden rounded-[2rem] border border-white/80 bg-white/70 p-8 shadow-[var(--shadow-raised)] backdrop-blur-xl md:p-14 lg:grid-cols-12 lg:gap-10">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[radial-gradient(closest-side,rgba(122,77,255,0.18),transparent)]"
+        />
+        <div data-reveal className="relative lg:col-span-7">
           <h2 id="about-title" className="text-lg font-semibold text-[var(--text-primary)]">
             Built by engineers who&apos;ve shipped real AI systems
           </h2>

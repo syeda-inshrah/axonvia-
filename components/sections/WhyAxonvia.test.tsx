@@ -15,6 +15,8 @@ describe('WhyAxonvia', () => {
   it('uses the spec headline as the H2 and the positioning line as supporting copy', () => {
     render(<WhyAxonvia />)
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Not just another AI agency')
-    expect(screen.getByText(/We don.t sell hype/)).toBeInTheDocument()
+    // The statement is split into words for the scroll highlight, but reads as one passage.
+    const statement = document.querySelector('[data-statement]')
+    expect(statement).toHaveTextContent(/^We don.t sell hype — we ship systems that work\. Every agent we build/)
   })
 })

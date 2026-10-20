@@ -1,5 +1,5 @@
 // components/sections/Hero.test.tsx
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { Hero } from './Hero'
 
@@ -41,35 +41,24 @@ describe('Hero', () => {
     expect(container).not.toHaveTextContent(/sales|lead generation|Trusted by/i)
   })
 
-  it('shows an example agent run that ends by handing a decision to a person', () => {
+  it('opens the AI assistant from the hero', () => {
+    const opened = vi.fn()
+    window.addEventListener('axonvia:open-chat', opened)
     render(<Hero />)
-    const run = screen.getByRole('figure')
-    const steps = within(run).getAllByRole('listitem')
-    expect(steps).toHaveLength(6)
-    expect(steps[0]).toHaveTextContent('Message received on WhatsApp')
-    expect(within(steps[5]).getByLabelText('Handed to a person')).toBeInTheDocument()
-    expect(run).toHaveTextContent(/An example of the agents we build/)
+    fireEvent.click(screen.getByRole('button', { name: 'Ask our AI assistant' }))
+    expect(opened).toHaveBeenCalledTimes(1)
+    window.removeEventListener('axonvia:open-chat', opened)
   })
 
-  it('shows the finished run, with no Replay control, when no animation has played', () => {
-    render(<Hero />)
-    expect(screen.queryByRole('button', { name: 'Replay' })).not.toBeInTheDocument()
-    for (const done of screen.getAllByLabelText(/^(Done|Handed to a person)$/)) {
-      expect(done).not.toHaveAttribute('style')
-    }
+  it('draws the 3D neural core as decoration, hidden from assistive tech', () => {
+    const { container } = render(<Hero />)
+    expect(container.querySelector('canvas[data-neural-core]')).toHaveAttribute('aria-hidden', 'true')
   })
 
   it('reveals the headline word by word while keeping its exact text for screen readers and search', () => {
     const { container } = render(<Hero />)
     const words = Array.from(container.querySelectorAll('h1 [data-word]'), (word) => word.textContent)
     expect(words).toEqual('AI Automation & Intelligent Solutions for Modern Businesses'.split(' '))
-  })
-
-  it('marks only the intro elements for the motion-safe hide-until-played rule', () => {
-    const { container } = render(<Hero />)
-    const intro = Array.from(container.querySelectorAll('[data-intro]'), (el) => el.tagName)
-    expect(intro).toEqual(['H1', 'P', 'DIV', 'DIV'])
-    expect(container.querySelector('[data-hero-panel]')).toHaveAttribute('data-intro')
   })
 
   it('renders the finished state when no animation runs: nothing hidden or moved inline', () => {
