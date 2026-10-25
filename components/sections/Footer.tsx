@@ -1,30 +1,24 @@
 import Link from 'next/link'
-import { CalEmbed } from '@/components/CalEmbed'
+import { BookingButton } from '@/components/ui/BookingButton'
 import { NewsletterForm } from '@/components/NewsletterForm'
 import { Logo } from '@/components/ui/Logo'
-import { InstagramIcon, LinkedInIcon } from '@/components/ui/SocialIcons'
-import { siteConfig } from '@/lib/site'
+import { FacebookIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/ui/SocialIcons'
+import { services, siteConfig } from '@/lib/site'
 
 const navigateLinks = [
   { href: '#services', label: 'Services' },
-  { href: '#projects', label: 'Work' },
-  { href: '#how-it-works', label: 'Process' },
+  { href: '#how-it-works', label: 'How it works' },
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
 ]
 
-// Mirrors the Services section card titles.
-const serviceLinks = [
-  'AI Agent Development',
-  'Workflow Automation',
-  'AI-Powered Products',
-  'Conversational AI & Chatbots',
-  'Data & Integration',
-  'AI Strategy & Consulting',
-]
+// The same five services as the Services section (lib/site.ts).
+const serviceLinks = services.map((service) => service.title)
 
 const socialLinks = [
   { href: siteConfig.social.instagram, label: 'Axonvia on Instagram', Icon: InstagramIcon },
+  { href: siteConfig.social.facebook, label: 'Axonvia on Facebook', Icon: FacebookIcon },
+  { href: siteConfig.social.x, label: 'Axonvia on X', Icon: XIcon },
   { href: siteConfig.social.linkedin, label: 'Axonvia founder on LinkedIn', Icon: LinkedInIcon },
 ]
 
@@ -95,10 +89,14 @@ export function Footer() {
             <a href={`mailto:${siteConfig.contactEmail}`} className={linkClasses}>
               {siteConfig.contactEmail}
             </a>
-            <span>{siteConfig.location}</span>
-            <CalEmbed variant="secondary" className="mt-2 w-fit">
-              Book a Call
-            </CalEmbed>
+            <span>
+              {siteConfig.location}
+              <br />
+              {siteConfig.serviceArea}
+            </span>
+            <BookingButton variant="secondary" className="mt-2 w-fit">
+              Book a Free Audit
+            </BookingButton>
           </div>
         </div>
       </div>

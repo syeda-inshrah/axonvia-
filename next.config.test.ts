@@ -18,13 +18,13 @@ describe('security headers', () => {
     expect(headers['Permissions-Policy']).toContain('camera=()')
   })
 
-  it('sets a Content-Security-Policy that blocks framing, plugins and foreign scripts but allows the Cal.com embed', async () => {
+  it('sets a Content-Security-Policy that blocks framing, plugins, frames and foreign scripts', async () => {
     const csp = (await headersFor('/:path*'))['Content-Security-Policy']
     expect(csp).toContain("default-src 'self'")
     expect(csp).toContain("frame-ancestors 'none'")
     expect(csp).toContain("object-src 'none'")
-    expect(csp).toMatch(/script-src [^;]*https:\/\/app\.cal\.com/)
-    expect(csp).toMatch(/frame-src [^;]*https:\/\/app\.cal\.com/)
+    expect(csp).toContain("frame-src 'none'")
+    expect(csp).not.toMatch(/cal\.com/)
     expect(csp).not.toContain("'unsafe-eval'")
   })
 

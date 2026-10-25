@@ -7,7 +7,7 @@ describe('Process', () => {
   it('renders all 5 engagement steps, in order', () => {
     render(<Process />)
     const steps = screen.getAllByRole('heading', { level: 3 }).map((heading) => heading.textContent)
-    expect(steps).toEqual(['Discovery Call', 'Proposal & Scope', 'Build Sprint', 'Testing & Handoff', 'Support & Iteration'])
+    expect(steps).toEqual(['Free Discovery Call', 'Proposal & Scope', 'Build Sprint', 'Testing & Handoff', 'Support & Iteration'])
   })
 
   it('is the target of the "How it works" navigation link', () => {

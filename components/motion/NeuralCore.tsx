@@ -69,6 +69,9 @@ export function NeuralCore({ className = '' }: { className?: string }) {
     const reduced =
       typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     const small = window.innerWidth < 768
+    // Phones get one still, assembled frame: a continuous canvas loop costs too much main-thread time on a
+    // phone CPU (and the sphere sits faintly behind the text there anyway).
+    const still = reduced || small
     const points = buildPoints(small ? 130 : 230)
     const edges = buildEdges(points, 3)
     const signals: Signal[] = Array.from({ length: small ? 10 : 22 }, () => ({
@@ -77,7 +80,7 @@ export function NeuralCore({ className = '' }: { className?: string }) {
       speed: 0.006 + Math.random() * 0.01,
     }))
 
-    const state = { assemble: reduced ? 1 : 0, spin: 0.6, tiltX: -0.25, tiltY: 0, targetX: -0.25, targetY: 0 }
+    const state = { assemble: still ? 1 : 0, spin: 0.6, tiltX: -0.25, tiltY: 0, targetX: -0.25, targetY: 0 }
     let width = 0
     let height = 0
     let frame = 0
@@ -185,7 +188,7 @@ export function NeuralCore({ className = '' }: { className?: string }) {
     })
     resizeObserver.observe(canvas)
 
-    if (reduced) {
+    if (still) {
       return () => resizeObserver.disconnect()
     }
 

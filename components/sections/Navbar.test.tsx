@@ -54,11 +54,22 @@ describe('Navbar', () => {
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('points every Book a Call link at the booking section, not a missing anchor', () => {
+  it('points every Book a Free Audit link at the booking destination, not a missing anchor', () => {
     render(<Navbar />)
-    for (const link of screen.getAllByRole('link', { name: 'Book a Call' })) {
-      expect(link).toHaveAttribute('href', '#final-cta')
-    }
+    const links = screen.getAllByRole('link', { name: 'Book a Free Audit' })
+    expect(links.length).toBeGreaterThan(0)
+    for (const link of links) expect(link).toHaveAttribute('href', '#final-cta')
+  })
+
+  it('links Services, How it works, About and FAQ, and no longer links the removed Work section', () => {
+    render(<Navbar />)
+    const nav = screen.getByRole('navigation', { name: 'Primary' })
+    expect(Array.from(nav.querySelectorAll('a'), (a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['Services', '#services'],
+      ['How it works', '#how-it-works'],
+      ['About', '#about'],
+      ['FAQ', '#faq'],
+    ])
   })
 
   it('shows the brand mark beside the wordmark', () => {

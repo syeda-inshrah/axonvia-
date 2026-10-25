@@ -1,15 +1,15 @@
 'use client'
 
 import { Fragment, useRef } from 'react'
-import { ArrowDown, Sparkles } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { CalEmbed } from '@/components/CalEmbed'
+import { Sparkles } from 'lucide-react'
+import { buttonClasses } from '@/components/ui/buttonStyles'
+import { BookingButton } from '@/components/ui/BookingButton'
 import { MagneticButton } from '@/components/ui/MagneticButton'
 import { NeuralCore } from '@/components/motion/NeuralCore'
 import { OPEN_CHAT_EVENT } from '@/components/chat/ChatWidget'
 import { EASE, gsap, useGSAP, withMotion } from '@/lib/gsap'
 
-const HEADLINE = 'AI Automation & Intelligent Solutions for Modern Businesses'
+const HEADLINE = 'AI automation that runs your operations, so your team can focus on growth.'
 
 export function Hero() {
   const section = useRef<HTMLElement>(null)
@@ -35,7 +35,9 @@ export function Hero() {
           })
           .to('[data-hero-content]', { y: -90, autoAlpha: 0 }, 0)
           .to('[data-hero-core]', { scale: 1.3, y: 120, autoAlpha: 0.25 }, 0)
-      }),
+        // Tablets and up only: on phones the headline shows at once, so the largest paint isn't held back by
+        // script and animation on a slower CPU.
+      }, '(min-width: 768px)'),
     { scope: section }
   )
 
@@ -65,7 +67,7 @@ export function Hero() {
 
         <h1
           data-intro
-          className="mt-7 max-w-[15ch] text-[clamp(2.75rem,6.4vw,5.6rem)] leading-[0.98] font-semibold tracking-[-0.045em] text-[var(--text-primary)]"
+          className="mt-7 max-w-[19ch] text-[clamp(2.5rem,5.4vw,4.75rem)] leading-[1.02] font-semibold tracking-[-0.04em] text-[var(--text-primary)]"
         >
           {HEADLINE.split(' ').map((text, i) => (
             <Fragment key={i}>
@@ -84,8 +86,8 @@ export function Hero() {
           data-hero-fade
           className="mt-8 max-w-[34rem] text-lg leading-relaxed text-[var(--text-secondary)] md:text-xl"
         >
-          Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business
-          workflow automation — shaped around how your business actually works.
+          Axonvia automates repetitive work, manages your leads intelligently, and builds AI-powered systems around how
+          your business actually works.
         </p>
 
         <div
@@ -94,25 +96,17 @@ export function Hero() {
           className="mt-10 flex flex-col items-center gap-3 min-[480px]:flex-row min-[480px]:flex-wrap"
         >
           <MagneticButton className="w-full min-[480px]:w-auto">
-            <CalEmbed size="large" className="w-full min-[480px]:w-auto">
-              Book a Free Strategy Call
-            </CalEmbed>
+            <BookingButton size="large" className="w-full min-[480px]:w-auto" />
           </MagneticButton>
-          <Button href="#projects" variant="secondary" size="large" className="w-full min-[480px]:w-auto">
-            See Our Work
-          </Button>
+          <a href="#story" className={buttonClasses('secondary', 'large', 'w-full min-[480px]:w-auto')}>
+            See how it works
+          </a>
         </div>
-      </div>
 
-      <a
-        href="#story"
-        data-intro
-        data-hero-fade
-        className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-sm text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)] md:flex"
-      >
-        <ArrowDown aria-hidden="true" className="h-4 w-4 motion-safe:animate-bounce" />
-        See an agent at work
-      </a>
+        <p data-intro data-hero-fade className="mt-5 text-sm text-[var(--text-muted)]">
+          Free 20-minute call · No commitment · We work in your time zone
+        </p>
+      </div>
     </section>
   )
 }

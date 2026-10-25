@@ -3,42 +3,32 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, it, expect, vi } from 'vitest'
 import { Hero } from './Hero'
 
-vi.mock('@/components/CalEmbed', () => ({
-  CalEmbed: ({ children, className }: { children: React.ReactNode; className?: string }) => (
-    <button data-testid="cal-trigger" className={className}>
-      {children}
-    </button>
-  ),
-}))
+const HEADLINE = 'AI automation that runs your operations, so your team can focus on growth.'
 
 describe('Hero', () => {
-  it('renders the headline, subheadline, and both CTAs', () => {
-    const { container } = render(<Hero />)
+  it('renders the headline, subheadline, both CTAs and the trust line', () => {
+    render(<Hero />)
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('AI Automation & Intelligent Solutions for Modern Businesses')
-    expect(screen.getByText(/Axonvia designs and builds/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Book a Free Strategy Call' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'See Our Work' })).toHaveAttribute('href', '#projects')
-    expect(container.querySelector('button button')).toBeNull()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(HEADLINE)
+    expect(
+      screen.getByText(/Axonvia automates repetitive work, manages your leads intelligently, and builds AI-powered systems/)
+    ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Book a Free Automation Audit' })).toHaveAttribute('href', '#final-cta')
+    expect(screen.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#story')
+    expect(screen.getByText('Free 20-minute call · No commitment · We work in your time zone')).toBeInTheDocument()
   })
 
   it('stacks both CTAs full-width below 480px', () => {
     render(<Hero />)
-    for (const cta of [
-      screen.getByRole('button', { name: 'Book a Free Strategy Call' }),
-      screen.getByRole('link', { name: 'See Our Work' }),
-    ]) {
-      expect(cta).toHaveClass('w-full', 'min-[480px]:w-auto')
+    for (const name of ['Book a Free Automation Audit', 'See how it works']) {
+      expect(screen.getByRole('link', { name })).toHaveClass('w-full', 'min-[480px]:w-auto')
     }
   })
 
-  it('describes the four service areas without sales-agency framing or unverified claims', () => {
+  it('does not lead with calling, and makes no unverified claims', () => {
     const { container } = render(<Hero />)
-    const subheadline = screen.getByText(/Axonvia designs and builds/)
-    for (const area of ['AI automation', 'agentic AI', 'custom AI-powered applications', 'business workflow automation']) {
-      expect(subheadline).toHaveTextContent(area)
-    }
-    expect(container).not.toHaveTextContent(/sales|lead generation|Trusted by/i)
+    expect(screen.getByRole('heading', { level: 1 })).not.toHaveTextContent(/call|voice/i)
+    expect(container).not.toHaveTextContent(/Trusted by|clients served|\d+%/i)
   })
 
   it('opens the AI assistant from the hero', () => {
@@ -58,7 +48,7 @@ describe('Hero', () => {
   it('reveals the headline word by word while keeping its exact text for screen readers and search', () => {
     const { container } = render(<Hero />)
     const words = Array.from(container.querySelectorAll('h1 [data-word]'), (word) => word.textContent)
-    expect(words).toEqual('AI Automation & Intelligent Solutions for Modern Businesses'.split(' '))
+    expect(words).toEqual(HEADLINE.split(' '))
   })
 
   it('renders the finished state when no animation runs: nothing hidden or moved inline', () => {

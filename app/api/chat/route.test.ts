@@ -30,8 +30,10 @@ vi.mock('@google/genai', async (importOriginal) => {
               message: JSON.stringify({ error: { code: 503, message: 'This model is currently experiencing high demand.', status: 'UNAVAILABLE' } }),
             })
           }
+          const signal = (params as { config?: { abortSignal?: AbortSignal } }).config?.abortSignal
           for (const chunk of chunks) {
             if (chunkDelayMs) await new Promise((resolve) => setTimeout(resolve, chunkDelayMs))
+            if (signal?.aborted) throw Object.assign(new Error('This operation was aborted'), { name: 'AbortError' })
             chunksRead++
             yield chunk
           }
@@ -102,13 +104,14 @@ describe('POST /api/chat (Gemini)', () => {
     await (await POST(chatRequest(history))).text()
 
     const params = generateContentStream.mock.calls[0][0]
-    expect(params.model).toBe('gemini-3.8-flash')
+    expect(params.model).toBe('gemini-3.5-flash')
     expect(params.contents).toEqual([
       { role: 'user', parts: [{ text: 'Hi' }] },
       { role: 'model', parts: [{ text: 'Hello! How can I help?' }] },
       { role: 'user', parts: [{ text: 'What services do you offer?' }] },
     ])
-    expect(params.config.systemInstruction).toContain('AI Agent Development')
+    expect(params.config.systemInstruction).toContain('Intelligent Lead Management')
+    expect(params.config.systemInstruction).toContain('What kind of businesses do you work with?')
     expect(params.config.maxOutputTokens).toBe(2048)
     expect(params.config.thinkingConfig).toEqual({ thinkingLevel: 'LOW' })
   })
@@ -182,7 +185,7 @@ describe('POST /api/chat (Gemini)', () => {
     expect(text).toMatch(/^We build AI agents\./)
     expect(text).toMatch(/contact form/i)
     const entry = JSON.parse(errorLog.mock.calls.find((call) => String(call[0]).includes('chat_api_error'))![0])
-    expect(entry).toMatchObject({ event: 'chat_api_error', provider: 'gemini', model: 'gemini-3.8-flash', kind: 'server', status: 500, keyFormat: 'ok' })
+    expect(entry).toMatchObject({ event: 'chat_api_error', provider: 'gemini', model: 'gemini-3.5-flash', kind: 'server', status: 500, keyFormat: 'ok' })
     expect(errorLog.mock.calls.flat().join(' ')).not.toContain(TEST_KEY)
     errorLog.mockRestore()
   })
@@ -246,6 +249,35 @@ describe('POST /api/chat (Gemini)', () => {
     await (await POST(chatRequest(oneQuestion))).text()
 
     expect(callCount).toBe(1)
+    errorLog.mockRestore()
+  })
+
+  it('gives up within its time budget when Gemini is too slow, with the friendly busy message instead of a timeout', async () => {
+    vi.stubEnv('CHAT_REPLY_DEADLINE_MS', '150')
+    chunks = [{ text: 'never ' }, { text: 'arrives' }]
+    chunkDelayMs = 400
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+
+    const started = Date.now()
+    const text = await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(Date.now() - started).toBeLessThan(2000)
+    expect(text).toMatch(/busy/i)
+    expect(JSON.parse(errorLog.mock.calls[0][0] as string)).toMatchObject({ event: 'chat_api_error', kind: 'timeout' })
+    errorLog.mockRestore()
+  })
+
+  it('keeps the part of an answer that already arrived when the time budget runs out', async () => {
+    vi.stubEnv('CHAT_REPLY_DEADLINE_MS', '300')
+    chunks = [{ text: 'We build ' }, { text: 'AI agents.' }]
+    chunkDelayMs = 200
+    const errorLog = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { POST } = await import('./route')
+    const text = await (await POST(chatRequest(oneQuestion))).text()
+
+    expect(text).toMatch(/^We build /)
+    expect(text).toMatch(/contact form/i)
     errorLog.mockRestore()
   })
 })

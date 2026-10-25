@@ -18,6 +18,7 @@ export async function submitContactForm(formData: FormData): Promise<ActionResul
     name: formData.get('name'),
     email: formData.get('email'),
     company: formData.get('company') ?? '',
+    automate: formData.get('automate') ?? '',
     message: formData.get('message') ?? '',
   })
 
@@ -25,7 +26,9 @@ export async function submitContactForm(formData: FormData): Promise<ActionResul
     return { success: false, error: parsed.error.issues[0]?.message ?? 'Invalid input' }
   }
 
-  const { name, email, company, message } = parsed.data
+  const { name, email, company, automate } = parsed.data
+  // "What would you like to automate?" is stored at the top of the message, so no database change is needed.
+  const message = [automate && `What they'd like to automate: ${automate}`, parsed.data.message].filter(Boolean).join('\n\n')
 
   // Bots get a normal-looking success so they don't learn they were caught.
   if (looksAutomated(formData)) return { success: true }

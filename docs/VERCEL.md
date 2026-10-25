@@ -23,11 +23,10 @@ deployments). Never commit real values. See `docs/ENVIRONMENT.md` for details on
 | `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox for new-lead alerts, e.g. `axonvia@gmail.com`. |
 | `GEMINI_API_KEY` | For the chat assistant | Google Gemini API key (server-only). Without it the chat replies that it's unavailable and points to the contact form. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Yes | Public contact address, e.g. `axonvia@gmail.com`. |
-| `NEXT_PUBLIC_SITE_URL` | Yes | Production origin without trailing slash, e.g. `https://axonvia.vercel.app` or your domain. |
-| `NEXT_PUBLIC_CAL_LINK` | Optional | Cal.com event path; without it booking buttons open an email instead. |
 
 `AUTH_URL` is **not** needed on Vercel: Auth.js trusts the host automatically when the `VERCEL` environment
 variable is present. `NEXT_PUBLIC_*` values are inlined at build time, so redeploy after changing them.
+The site URL (`SITE_URL`) and booking destination (`BOOKING_URL`) live in `lib/site.ts`, not in Vercel.
 
 ## After the first deploy
 
@@ -40,7 +39,7 @@ variable is present. `NEXT_PUBLIC_*` values are inlined at build time, so redepl
 
 ## Notes
 
-- The chat assistant (`app/api/chat`) calls Google Gemini (`gemini-3.8-flash`) and streams the reply. Each visitor
+- The chat assistant (`app/api/chat`) calls Google Gemini (`gemini-3.5-flash`) and streams the reply. Each visitor
   is limited to 20 messages per 10 minutes and each reply is capped at 2,048 tokens; set usage limits for the key's
   project in Google AI Studio as well. Failures are logged as one `chat_api_error` JSON line (no secrets).
 - Sign-in lockouts and form rate limits (`lib/rate-limit.ts`) are kept in function memory, so on Vercel each

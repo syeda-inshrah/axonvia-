@@ -4,16 +4,15 @@ const isDev = process.env.NODE_ENV === 'development'
 
 // No nonces: the site has no user-generated script, and nonce-based CSP would force every page to render
 // dynamically. 'unsafe-inline' scripts are needed for Next's inline bootstrap without nonces.
-// Cal.com: the booking embed loads its script from app.cal.com and opens cal.com in an iframe.
 // img-src allows any https host because testimonial avatars are CMS-supplied URLs.
 const contentSecurityPolicy = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://app.cal.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
-  "font-src 'self' data: https://cal.com",
-  "connect-src 'self' https://app.cal.com https://*.cal.com",
-  'frame-src https://app.cal.com https://cal.com',
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "frame-src 'none'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",

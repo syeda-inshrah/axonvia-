@@ -3,13 +3,12 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
+import { BookingButton } from '@/components/ui/BookingButton'
 import { Logo } from '@/components/ui/Logo'
 
 const navLinks = [
   { href: '#services', label: 'Services' },
-  { href: '#projects', label: 'Work' },
-  { href: '#how-it-works', label: 'Process' },
+  { href: '#how-it-works', label: 'How it works' },
   { href: '#about', label: 'About' },
   { href: '#faq', label: 'FAQ' },
 ]
@@ -69,7 +68,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden md:block">
-          <Button href="#final-cta">Book a Call</Button>
+          <BookingButton>Book a Free Audit</BookingButton>
         </div>
 
         <button
@@ -95,9 +94,9 @@ export function Navbar() {
               </Link>
             ))}
           </nav>
-          <Button href="#final-cta" size="large" className="mt-6 w-full">
-            Book a Call
-          </Button>
+          <BookingButton size="large" className="mt-6 w-full" onClick={() => setMenuOpen(false)}>
+            Book a Free Audit
+          </BookingButton>
         </div>
       )}
     </header>

@@ -1,62 +1,45 @@
 import { Section } from '@/components/ui/SectionHeader'
 
-// Each tool carries the layer of a system it sits in, shown as a quiet label on its chip.
-const stack = [
-  { layer: 'AI and agents', tools: ['Claude API', 'OpenAI', 'Agentic AI', 'LangChain', 'Vector Databases'] },
-  { layer: 'Applications', tools: ['Next.js', 'React', 'Node.js', 'Python', 'FastAPI'] },
-  { layer: 'Data', tools: ['PostgreSQL', 'Neon'] },
-  { layer: 'Integrations', tools: ['REST & Webhooks', 'WhatsApp API'] },
+const tools = [
+  'Claude API',
+  'OpenAI',
+  'n8n',
+  'Make',
+  'LangChain',
+  'Python',
+  'Next.js',
+  'React',
+  'Node.js',
+  'FastAPI',
+  'PostgreSQL',
+  'WhatsApp API',
+  'REST & Webhooks',
 ]
 
-const chips = stack.flatMap((group) => group.tools.map((tool) => ({ tool, layer: group.layer })))
-const rows = [chips.filter((_, i) => i % 2 === 0), chips.filter((_, i) => i % 2 === 1)]
-
-function Chip({ tool, layer }: { tool: string; layer: string }) {
-  return (
-    <span className="flex shrink-0 items-baseline gap-2.5 whitespace-nowrap rounded-2xl border border-[var(--rule)] bg-[var(--glass)] px-5 py-3 shadow-[var(--shadow-card)] backdrop-blur-md">
-      <span className="text-lg font-medium text-[var(--text-primary)]">{tool}</span>
-      <span className="text-xs text-[var(--text-muted)]">{layer}</span>
-    </span>
-  )
-}
-
-/**
- * Two rows of the stack slide past in opposite directions (CSS marquee, transform only) and pause on hover.
- * Each row is a real list read once by assistive tech; the second copy that makes the loop seamless is hidden
- * from it. Reduced motion stops the slide.
- */
+/** One clean row of badges (it wraps onto more lines on narrow screens; nothing scrolls or repeats). */
 export function TechStack() {
   return (
-    <Section labelledBy="stack-title" className="overflow-hidden">
-      <div data-reveal className="max-w-2xl">
-        <h2 id="stack-title" className="text-[2rem] leading-[1.08] font-semibold text-[var(--text-primary)] md:text-[2.75rem]">
+    <Section labelledBy="stack-title">
+      <div data-reveal className="mx-auto max-w-2xl text-center">
+        <h2
+          id="stack-title"
+          className="text-[clamp(2rem,4.2vw,3.25rem)] leading-[1.05] font-semibold tracking-[-0.035em] text-[var(--text-primary)]"
+        >
           Built on proven, modern technology
         </h2>
         <p className="mt-4 text-[var(--text-secondary)]">Chosen per project for reliability and long-term upkeep, not novelty.</p>
       </div>
 
-      <div className="marquee relative -mx-5 mt-14 space-y-4 [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)] md:-mx-10">
-        {rows.map((row, r) => (
-          <div key={r} className="flex">
-            <div className="marquee-track flex w-max gap-4 pr-4" data-reverse={r === 1 ? '' : undefined} style={{ ['--marquee-duration' as string]: `${46 + r * 8}s` }}>
-              <ul className="flex gap-4" aria-label={r === 0 ? 'Technologies we use' : 'More technologies we use'}>
-                {row.map((chip) => (
-                  <li key={chip.tool}>
-                    <Chip {...chip} />
-                  </li>
-                ))}
-              </ul>
-              <ul className="flex gap-4" aria-hidden="true">
-                {row.map((chip) => (
-                  <li key={chip.tool}>
-                    <Chip {...chip} />
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+      <ul data-reveal className="mx-auto mt-12 flex max-w-[1000px] flex-wrap justify-center gap-3" aria-label="Technologies we use">
+        {tools.map((tool) => (
+          <li
+            key={tool}
+            className="whitespace-nowrap rounded-xl border border-[var(--rule)] bg-[var(--glass)] px-4 py-2.5 text-[0.9375rem] font-medium text-[var(--text-primary)] shadow-[var(--shadow-card)] backdrop-blur-md"
+          >
+            {tool}
+          </li>
         ))}
-      </div>
+      </ul>
     </Section>
   )
 }

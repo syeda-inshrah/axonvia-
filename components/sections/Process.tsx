@@ -5,11 +5,11 @@ import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { gsap, useGSAP, withMotion } from '@/lib/gsap'
 
 const steps = [
-  { title: 'Discovery Call', when: 'Week 0', description: 'We understand your business, bottlenecks, and goals — no obligation, no jargon.' },
-  { title: 'Proposal & Scope', when: 'Week 0–1', description: 'You receive a clear scope, timeline, and fixed-price or milestone-based quote.' },
-  { title: 'Build Sprint', when: 'Weeks 1–3, varies by project', description: 'Our team builds in focused sprints, with regular check-ins and demos.' },
-  { title: 'Testing & Handoff', when: 'Final week', description: 'Rigorous testing, documentation, and a walkthrough before go-live.' },
-  { title: 'Support & Iteration', when: 'Ongoing', description: 'Post-launch monitoring, optimization, and support as your needs evolve.' },
+  { title: 'Free Discovery Call', when: 'Week 0', description: 'A 20-minute call about your business, your bottlenecks and your goals. No obligation.' },
+  { title: 'Proposal & Scope', when: 'Week 0–1', description: 'A clear scope, timeline and fixed-price or milestone-based quote.' },
+  { title: 'Build Sprint', when: 'Weeks 1–3, varies by project', description: 'Focused sprints with regular check-ins and demos.' },
+  { title: 'Testing & Handoff', when: 'Final week', description: 'Thorough testing, documentation and a walkthrough before go-live.' },
+  { title: 'Support & Iteration', when: 'Ongoing', description: 'Monitoring, fixes and improvements as your needs grow.' },
 ]
 
 export function Process() {

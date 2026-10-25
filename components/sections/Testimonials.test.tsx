@@ -4,9 +4,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const getPublishedTestimonials = vi.fn()
 vi.mock('@/lib/queries/content', () => ({ getPublishedTestimonials }))
-vi.mock('@/components/CalEmbed', () => ({
-  CalEmbed: ({ children }: { children: React.ReactNode }) => <button data-testid="cal-trigger">{children}</button>,
-}))
 
 describe('Testimonials', () => {
   beforeEach(() => getPublishedTestimonials.mockReset())
@@ -18,7 +15,7 @@ describe('Testimonials', () => {
 
     expect(container.querySelector('button button')).toBeNull()
     expect(screen.getByText(/Early-stage and building in public/)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /Be one of our first case studies/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Be one of our first case studies/i })).toHaveAttribute('href', '#final-cta')
   })
 
   it('shows testimonial cards when published testimonials exist', async () => {

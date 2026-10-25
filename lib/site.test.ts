@@ -19,24 +19,37 @@ describe('siteConfig', () => {
     expect(siteConfig.contactEmail).toBe('team@axonvia.com')
   })
 
-  it('uses NEXT_PUBLIC_SITE_URL (without a trailing slash) for absolute links, falling back to localhost', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://axonvia.example/')
-    expect((await import('./site')).siteConfig.url).toBe('https://axonvia.example')
-
-    vi.resetModules()
-    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
-    expect((await import('./site')).siteConfig.url).toBe('http://localhost:3000')
+  it('keeps the canonical site URL in one constant, without a trailing slash', async () => {
+    const { SITE_URL, siteConfig } = await import('./site')
+    expect(SITE_URL).toBe('https://axonviaai.com')
+    expect(siteConfig.url).toBe(SITE_URL)
   })
 
-  it('falls back to Vercel’s production domain when NEXT_PUBLIC_SITE_URL is not set, so deploys never point at localhost', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_URL', '')
-    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'axonvia.vercel.app')
-    expect((await import('./site')).siteConfig.url).toBe('https://axonvia.vercel.app')
+  it('sends booking buttons to the contact form until a booking page exists', async () => {
+    const { BOOKING_URL } = await import('./site')
+    expect(BOOKING_URL).toBe('#final-cta')
   })
 
-  it('prefers an explicit NEXT_PUBLIC_SITE_URL (e.g. a custom domain) over Vercel’s domain', async () => {
-    vi.stubEnv('NEXT_PUBLIC_SITE_URL', 'https://axonvia.com')
-    vi.stubEnv('VERCEL_PROJECT_PRODUCTION_URL', 'axonvia.vercel.app')
-    expect((await import('./site')).siteConfig.url).toBe('https://axonvia.com')
+  it('uses the exact tagline and the official social profiles', async () => {
+    const { siteConfig } = await import('./site')
+    expect(siteConfig.tagline).toBe('AI that works for your business.')
+    expect(siteConfig.social).toEqual({
+      instagram: 'https://www.instagram.com/axonvia.ai/',
+      facebook: 'https://www.facebook.com/Axonvia/',
+      x: 'https://x.com/axonvia_ai',
+      linkedin: 'https://www.linkedin.com/in/syedainshrahkhatoon/',
+    })
+  })
+
+  it('offers exactly the five services, each with example bullets', async () => {
+    const { services } = await import('./site')
+    expect(services.map((service) => service.title)).toEqual([
+      'Business Process Automation',
+      'Intelligent Lead Management',
+      'AI Agents & Intelligent Assistants',
+      'Custom AI-Powered Software',
+      'System Integration & Workflow Design',
+    ])
+    for (const service of services) expect(service.examples.length).toBeGreaterThanOrEqual(2)
   })
 })

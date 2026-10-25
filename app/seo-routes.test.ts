@@ -1,55 +1,27 @@
 // app/seo-routes.test.ts
-import { afterEach, describe, expect, it, vi } from 'vitest'
-
-// The site URL is read when lib/site loads, so each case sets the environment and then imports fresh.
-async function load(env: Record<string, string>) {
-  vi.resetModules()
-  for (const [name, value] of Object.entries(env)) vi.stubEnv(name, value)
-  return { robots: (await import('./robots')).default, sitemap: (await import('./sitemap')).default }
-}
-
-const LOCAL = { NEXT_PUBLIC_SITE_URL: '', VERCEL_PROJECT_PRODUCTION_URL: '' }
-const PRODUCTION = { NEXT_PUBLIC_SITE_URL: '', VERCEL_PROJECT_PRODUCTION_URL: 'axonvia.vercel.app' }
+import { describe, expect, it } from 'vitest'
+import robots from './robots'
+import sitemap from './sitemap'
 
 describe('robots.txt', () => {
-  afterEach(() => vi.unstubAllEnvs())
-
-  it('keeps crawlers out of the admin area and the unsubscribe page, and points at the sitemap', async () => {
-    const { robots } = await load(LOCAL)
+  it('keeps crawlers out of the admin area and the unsubscribe page, and points at the production sitemap', () => {
     const rules = robots()
     const rule = Array.isArray(rules.rules) ? rules.rules[0] : rules.rules
     expect(rule.disallow).toEqual(expect.arrayContaining(['/admin', '/newsletter/unsubscribe']))
-    expect(rules.sitemap).toBe('http://localhost:3000/sitemap.xml')
-  })
-
-  it('points at the production sitemap on Vercel', async () => {
-    const { robots } = await load(PRODUCTION)
-    expect(robots().sitemap).toBe('https://axonvia.vercel.app/sitemap.xml')
+    expect(rules.sitemap).toBe('https://axonviaai.com/sitemap.xml')
   })
 })
 
 describe('sitemap.xml', () => {
-  afterEach(() => vi.unstubAllEnvs())
-
-  it('lists exactly the public pages as canonical production URLs on Vercel', async () => {
-    const { sitemap } = await load(PRODUCTION)
+  it('lists exactly the public pages as canonical URLs on SITE_URL', () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
-      'https://axonvia.vercel.app/',
-      'https://axonvia.vercel.app/privacy',
-      'https://axonvia.vercel.app/terms',
+      'https://axonviaai.com/',
+      'https://axonviaai.com/privacy',
+      'https://axonviaai.com/terms',
     ])
   })
 
-  it('never lists localhost, admin or unsubscribe pages in production', async () => {
-    const { sitemap } = await load(PRODUCTION)
-    for (const { url } of sitemap()) {
-      expect(url).toMatch(/^https:\/\/axonvia\.vercel\.app\//)
-      expect(url).not.toMatch(/localhost|\/admin|unsubscribe/)
-    }
-  })
-
-  it('uses the configured site URL, so a custom domain only needs NEXT_PUBLIC_SITE_URL', async () => {
-    const { sitemap } = await load({ NEXT_PUBLIC_SITE_URL: 'https://axonvia.com/', VERCEL_PROJECT_PRODUCTION_URL: 'axonvia.vercel.app' })
-    expect(sitemap()[0].url).toBe('https://axonvia.com/')
+  it('never lists localhost, the old Vercel address, admin or unsubscribe pages', () => {
+    for (const { url } of sitemap()) expect(url).not.toMatch(/localhost|vercel\.app|\/admin|unsubscribe|#/)
   })
 })

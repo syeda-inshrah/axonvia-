@@ -1,7 +1,8 @@
 import { getPublishedFaqs } from '@/lib/queries/content'
 import { Section } from '@/components/ui/SectionHeader'
 import { FaqAccordion } from '@/components/sections/FaqAccordion'
-import { siteConfig } from '@/lib/site'
+import { BOOKING_URL, siteConfig } from '@/lib/site'
+import { withCoreFaqs } from '@/lib/faq-content'
 
 function AskUs() {
   return (
@@ -11,8 +12,8 @@ function AskUs() {
         {siteConfig.contactEmail}
       </a>{' '}
       or{' '}
-      <a href="#final-cta" className="link-underline text-[var(--accent-cyan)]">
-        book a call
+      <a href={BOOKING_URL} className="link-underline text-[var(--accent-cyan)]">
+        book a free automation audit
       </a>
       .
     </>
@@ -20,7 +21,8 @@ function AskUs() {
 }
 
 export async function Faq() {
-  const faqs = await getPublishedFaqs()
+  // The core FAQ is always present; admin-published FAQs follow it.
+  const faqs = withCoreFaqs(await getPublishedFaqs())
 
   return (
     <Section id="faq" wash labelledBy="faq-title">
@@ -32,20 +34,12 @@ export async function Faq() {
           >
             Common questions
           </h2>
-          {faqs.length > 0 && (
-            <p className="mt-5 max-w-[22rem] text-[var(--text-secondary)]">
-              Something else on your mind? <AskUs />
-            </p>
-          )}
+          <p className="mt-5 max-w-[22rem] text-[var(--text-secondary)]">
+            Something else on your mind? <AskUs />
+          </p>
         </div>
         <div data-reveal className="lg:col-span-7 lg:col-start-6">
-          {faqs.length > 0 ? (
-            <FaqAccordion items={faqs} />
-          ) : (
-            <p className="text-lg text-[var(--text-secondary)]">
-              Have a question about your project? <AskUs />
-            </p>
-          )}
+          <FaqAccordion items={faqs} />
         </div>
       </div>
     </Section>

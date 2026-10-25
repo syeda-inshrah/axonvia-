@@ -1,8 +1,10 @@
 import { getPublishedTestimonials } from '@/lib/queries/content'
 import { Section, SectionHeader } from '@/components/ui/SectionHeader'
-import { CalEmbed } from '@/components/CalEmbed'
+import { BookingButton } from '@/components/ui/BookingButton'
 import { TestimonialCarousel } from '@/components/sections/TestimonialCarousel'
 
+// Not on the homepage for now: FoundingClients replaces it while Axonvia is early-stage. Restore it in
+// app/page.tsx (where FoundingClients is) once real testimonials are published from the admin.
 export async function Testimonials() {
   const testimonials = await getPublishedTestimonials()
 
@@ -18,9 +20,9 @@ export async function Testimonials() {
               We&apos;re a new agency focused on shipping real systems before collecting testimonials. Be one of the
               first businesses we partner with.
             </p>
-            <CalEmbed variant="secondary" className="mt-6">
+            <BookingButton variant="secondary" className="mt-6">
               Be one of our first case studies
-            </CalEmbed>
+            </BookingButton>
           </div>
         ) : (
           <TestimonialCarousel items={testimonials} />

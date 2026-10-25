@@ -5,16 +5,19 @@ import { buildSystemPrompt, SITE_KNOWLEDGE } from './system-prompt'
 describe('chatbot system prompt', () => {
   it('covers every service and the engagement process the site publishes', () => {
     for (const service of [
-      'AI Agent Development',
-      'Workflow Automation',
-      'AI-Powered Products',
-      'Conversational AI & Chatbots',
-      'Data & Integration',
-      'AI Strategy & Consulting',
+      'Business Process Automation',
+      'Intelligent Lead Management',
+      'AI Agents & Intelligent Assistants',
+      'Custom AI-Powered Software',
+      'System Integration & Workflow Design',
     ]) {
       expect(SITE_KNOWLEDGE).toContain(service)
     }
-    expect(SITE_KNOWLEDGE).toContain('Discovery Call')
+    expect(SITE_KNOWLEDGE).toContain('Free Discovery Call')
+    expect(SITE_KNOWLEDGE).toContain('AI that works for your business.')
+    expect(SITE_KNOWLEDGE).toMatch(/free automation audit/i)
+    // Calling is an option inside AI Agents, not the headline.
+    expect(SITE_KNOWLEDGE).toMatch(/voice or calling agents are available as part of AI Agents/i)
   })
 
   it('steers visitors to the contact form and forbids inventing prices, clients, or results', () => {

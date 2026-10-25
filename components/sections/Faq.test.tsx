@@ -41,15 +41,44 @@ describe('Faq', () => {
     expect(panel).toHaveTextContent('We build AI agents.')
   })
 
-  it('points visitors to email or a call when no FAQs are published yet', async () => {
+  it('always shows the eight core questions, even when the database has no FAQs (or is unavailable)', async () => {
     getPublishedFaqs.mockResolvedValue([])
     const { Faq } = await import('./Faq')
     render(await Faq())
 
-    expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute(
-      'href',
-      'mailto:axonvia@gmail.com'
-    )
-    expect(screen.getByRole('link', { name: 'book a call' })).toHaveAttribute('href', '#final-cta')
+    const questions = screen.getAllByRole('button').map((b) => b.textContent)
+    expect(questions).toEqual([
+      'What kind of businesses do you work with?',
+      'How much does a project cost?',
+      'How long does a typical project take?',
+      'Do I need technical knowledge?',
+      'Which tools can you connect?',
+      'Do you work with international clients and time zones?',
+      'What happens after launch?',
+      'Is my data secure?',
+    ])
+    fireEvent.click(screen.getByRole('button', { name: 'How much does a project cost?' }))
+    expect(screen.getByText(/fixed-price or milestone-based quote before any work begins/)).toBeInTheDocument()
+  })
+
+  it('lists admin-published FAQs after the core ones, without repeating a core question', async () => {
+    getPublishedFaqs.mockResolvedValue([
+      { id: 'a', question: 'Is my data secure?', answer: 'duplicate', isPublished: true, sortOrder: 0 },
+      { id: 'b', question: 'Do you offer training?', answer: 'Yes.', isPublished: true, sortOrder: 1 },
+    ])
+    const { Faq } = await import('./Faq')
+    render(await Faq())
+    const questions = screen.getAllByRole('button').map((b) => b.textContent)
+    expect(questions.filter((q) => q === 'Is my data secure?')).toHaveLength(1)
+    expect(questions.at(-1)).toBe('Do you offer training?')
+  })
+
+  it('points visitors to email or the free audit for anything else', async () => {
+    getPublishedFaqs.mockResolvedValue([])
+    const { Faq } = await import('./Faq')
+    render(await Faq())
+
+    expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute('href', 'mailto:axonvia@gmail.com')
+    expect(screen.getByRole('link', { name: 'book a free automation audit' })).toHaveAttribute('href', '#final-cta')
   })
 })

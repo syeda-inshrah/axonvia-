@@ -1,3 +1,4 @@
+import { MapPin } from 'lucide-react'
 import { Section } from '@/components/ui/SectionHeader'
 import { siteConfig } from '@/lib/site'
 
@@ -5,7 +6,6 @@ import { siteConfig } from '@/lib/site'
 const facts = [
   { label: 'What we focus on', value: 'Multi-agent systems' },
   { label: 'How we deliver', value: 'Full-stack delivery' },
-  { label: 'Based in', value: siteConfig.location },
 ]
 
 export function About() {
@@ -32,7 +32,9 @@ export function About() {
         <div data-reveal className="lg:col-span-4 lg:col-start-9 lg:pt-1">
           <p className="text-[var(--text-secondary)]">
             Axonvia was founded to close the gap between AI hype and AI that actually works in production. We&apos;re
-            a team of engineers and builders who design agentic systems grounded in real business logic — not demos.
+            a team of engineers who design practical automation and agentic systems grounded in real business logic.
+            We&apos;re early-stage by choice: we&apos;re partnering closely with our first clients and building every
+            system as if our reputation depends on it, because it does.
           </p>
           <dl className="mt-8 border-t border-[var(--rule)]">
             {facts.map((fact) => (
@@ -42,6 +44,10 @@ export function About() {
               </div>
             ))}
           </dl>
+          <p className="mt-5 flex items-start gap-2 text-[0.9375rem] text-[var(--text-primary)]">
+            <MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-[var(--accent-cyan)]" />
+            Based in {siteConfig.location} · {siteConfig.serviceArea}
+          </p>
         </div>
       </div>
     </Section>

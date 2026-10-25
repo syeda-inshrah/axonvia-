@@ -1,40 +1,14 @@
-import { ExternalLink } from 'lucide-react'
+// NOT ON THE HOMEPAGE FOR NOW. This "Systems we've built" section sat between Services and Process in
+// app/page.tsx (with id="projects", linked as "Work" from the navbar and footer). It was removed while Axonvia
+// focuses on founding clients; the Todo App showcase data and screenshot were deleted with it (see git history).
+// To restore: render <Projects /> in app/page.tsx and add { href: '#projects', label: 'Work' } back to the
+// navbar and footer links. It lists the projects published as "Live" from Admin → Projects.
 import { getPublishedProjects } from '@/lib/queries/content'
-import { showcaseProjects, type ShowcaseProject } from '@/lib/showcase-projects'
 import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { Button } from '@/components/ui/Button'
-import { buttonClasses } from '@/components/ui/buttonStyles'
 import { ShowcaseStage } from '@/components/motion/ShowcaseStage'
 import { TiltCard } from '@/components/ui/TiltCard'
 import type { Project } from '@/lib/types'
-
-type DisplayProject = Project | ShowcaseProject
-
-function isShowcase(project: DisplayProject): project is ShowcaseProject {
-  return 'demoUrl' in project
-}
-
-// External demo link: opens in a new tab, and says so to screen readers.
-function LiveDemoButton({
-  project,
-  variant = 'primary',
-}: {
-  project: ShowcaseProject
-  variant?: 'primary' | 'secondary'
-}) {
-  return (
-    <a
-      href={project.demoUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Live Demo: ${project.name} (opens in a new tab)`}
-      className={buttonClasses(variant, 'default', 'gap-2')}
-    >
-      Live Demo
-      <ExternalLink aria-hidden="true" className="h-4 w-4" />
-    </a>
-  )
-}
 
 function Tags({ tags }: { tags: string[] }) {
   if (tags.length === 0) return null
@@ -47,57 +21,24 @@ function Tags({ tags }: { tags: string[] }) {
   )
 }
 
-function hostOf(url: string) {
-  try {
-    return new URL(url).host
-  } catch {
-    return url
-  }
-}
-
-// A thin browser frame with the real address, so the screenshot reads as a live site rather than a mock-up.
-function Screenshot({ project }: { project: DisplayProject }) {
-  const image = isShowcase(project)
-    ? project.image
-    : project.imageUrl
-      ? { src: project.imageUrl, alt: project.name, width: undefined, height: undefined }
-      : null
-  if (!image) return null
-
+function Screenshot({ project }: { project: Project }) {
+  if (!project.imageUrl) return null
   return (
     <div className="overflow-hidden rounded-2xl border border-white/80 bg-[var(--bg-card)] shadow-[0_50px_100px_-40px_rgba(30,40,120,0.45)] ring-1 ring-[var(--rule)]">
-      {isShowcase(project) && (
-        <div className="flex items-center gap-3 border-b border-[var(--rule)] px-4 py-2.5">
-          <span aria-hidden="true" className="flex gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
-            <span className="h-2.5 w-2.5 rounded-full bg-[var(--chrome-dot)]" />
-          </span>
-          <span className="flex-1 truncate rounded-md bg-[var(--bg-secondary)] px-3 py-1 text-center font-mono text-xs text-[var(--text-muted)]">
-            {hostOf(project.demoUrl)}
-          </span>
-          <span aria-hidden="true" className="w-[46px]" />
-        </div>
-      )}
       {/* eslint-disable-next-line @next/next/no-img-element -- Plain <img>: admin image URLs can be on any host, which next/image would need configured. */}
-      <img src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" className="block h-auto w-full" />
+      <img src={project.imageUrl} alt={project.name} loading="lazy" decoding="async" className="block h-auto w-full" />
     </div>
   )
 }
 
 export async function Projects() {
-  // Showcase projects lead (the Todo App is the featured project); admin-managed projects follow in the grid.
-  const projects: DisplayProject[] = [...showcaseProjects, ...(await getPublishedProjects())]
+  const projects = await getPublishedProjects()
   const featured = projects.find((project) => project.isFeatured) ?? projects[0]
   const rest = projects.filter((project) => project !== featured)
 
   return (
     <Section id="projects" labelledBy="projects-title">
-      <SectionHeader
-        id="projects-title"
-        title="Systems we’ve built"
-        subtitle="Live work you can open and try, not mock-ups."
-      />
+      <SectionHeader id="projects-title" title="Systems we’ve built" subtitle="Live work you can open and try, not mock-ups." />
 
       {!featured && (
         <div className="mt-14 max-w-xl rounded-2xl border border-[var(--rule)] bg-[var(--bg-card)] p-8">
@@ -114,12 +55,13 @@ export async function Projects() {
 
       {featured && (
         <article className="relative mt-14 md:mt-20">
-          <div className="mx-auto max-w-[1000px]">
-            <ShowcaseStage labels={featured.stats}>
-              <Screenshot project={featured} />
-            </ShowcaseStage>
-          </div>
-
+          {featured.imageUrl && (
+            <div className="mx-auto max-w-[1000px]">
+              <ShowcaseStage labels={featured.stats}>
+                <Screenshot project={featured} />
+              </ShowcaseStage>
+            </div>
+          )}
           <div data-reveal className="mx-auto mt-14 grid max-w-[1000px] grid-cols-1 gap-10 md:mt-20 lg:grid-cols-12">
             <div className="lg:col-span-7">
               <p className="text-sm font-medium text-[var(--accent-cyan)]">Featured project</p>
@@ -127,26 +69,12 @@ export async function Projects() {
               <p className="mt-5 text-lg text-[var(--text-secondary)]">{featured.description}</p>
             </div>
             <div className="lg:col-span-4 lg:col-start-9">
-              {featured.stats.length > 0 && (
-                <ul className="border-t border-[var(--rule)]">
-                  {featured.stats.map((stat) => (
-                    <li key={stat} className="border-b border-[var(--rule)] py-3 text-[0.9375rem] text-[var(--text-primary)]">
-                      {stat}
-                    </li>
-                  ))}
-                </ul>
+              <Tags tags={featured.tags} />
+              {featured.link && (
+                <Button href={featured.link} variant="ghost" className="mt-6">
+                  View details
+                </Button>
               )}
-              <div className="mt-5">
-                <Tags tags={featured.tags} />
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-6">
-                {isShowcase(featured) && <LiveDemoButton project={featured} />}
-                {featured.link && (
-                  <Button href={featured.link} variant="ghost">
-                    View details
-                  </Button>
-                )}
-              </div>
             </div>
           </div>
         </article>
@@ -156,17 +84,11 @@ export async function Projects() {
         <div data-testid="secondary-projects-grid" className="mx-auto mt-20 grid max-w-[1000px] grid-cols-1 gap-6 md:grid-cols-2">
           {rest.map((project) => (
             <div data-reveal key={project.id} className="h-full">
-              <TiltCard className="flex flex-col p-6 sm:p-8">
-                {!isShowcase(project) && project.imageUrl && (
+              <TiltCard className="p-6 sm:p-8">
+                {project.imageUrl && (
                   <div className="mb-6 overflow-hidden rounded-xl border border-[var(--rule)]">
                     {/* eslint-disable-next-line @next/next/no-img-element -- Plain <img>: admin image URLs can be on any host. */}
-                    <img
-                      src={project.imageUrl}
-                      alt={project.name}
-                      loading="lazy"
-                      decoding="async"
-                      className="block aspect-[16/10] w-full object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover:scale-[1.03]"
-                    />
+                    <img src={project.imageUrl} alt={project.name} loading="lazy" decoding="async" className="block aspect-[16/10] w-full object-cover" />
                   </div>
                 )}
                 <h4 className="text-xl font-semibold text-[var(--text-primary)]">{project.name}</h4>
@@ -174,11 +96,6 @@ export async function Projects() {
                 <div className="mt-4">
                   <Tags tags={project.tags} />
                 </div>
-                {isShowcase(project) && (
-                  <div className="mt-auto pt-6">
-                    <LiveDemoButton project={project} variant="secondary" />
-                  </div>
-                )}
               </TiltCard>
             </div>
           ))}

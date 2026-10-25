@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Schibsted_Grotesk, Instrument_Serif, IBM_Plex_Mono } from 'next/font/google'
-import { siteConfig } from '@/lib/site'
+import { SITE_URL, siteConfig } from '@/lib/site'
 import { MotionProvider } from '@/components/ui/MotionProvider'
 import './globals.css'
 
@@ -16,29 +16,34 @@ const instrument = Instrument_Serif({
   weight: '400',
   style: ['normal', 'italic'],
   variable: '--font-instrument',
+  // Used only below the fold; not preloading it leaves bandwidth for the headline font on slow connections.
+  preload: false,
 })
 
 const plexMono = IBM_Plex_Mono({
   subsets: ['latin'],
   weight: ['400', '500'],
   variable: '--font-plex-mono',
+  preload: false,
 })
 
 // Marks the page as scripted so the hero intro and scroll reveals can stay hidden until GSAP plays them. If
 // GSAP hasn't started within 3s (slow device, blocked script), intro-timeout reveals everything as plain content.
 const scriptFlag = `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('intro-timeout')},3000)`
 
-const title = 'Axonvia — Intelligence that works for your business.'
+const title = 'Axonvia | AI Automation Agency: Workflow Automation, Lead Management & AI Agents'
 const description =
-  'Axonvia designs and builds AI automation, agentic AI systems, custom AI-powered applications, and business workflow automation — shaped around how your business actually works.'
+  'Axonvia helps businesses automate operations, manage leads intelligently, and build AI-powered systems that save time and support growth. Book a free automation audit.'
 
-// metadataBase comes from NEXT_PUBLIC_SITE_URL; until it's set, share links resolve to localhost.
+// All absolute URLs (Open Graph, canonical, share images) resolve against SITE_URL (lib/site.ts). Canonical
+// URLs are set per page, so no page inherits the homepage's. The share image is app/opengraph-image.tsx.
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title,
+  metadataBase: new URL(SITE_URL),
+  title: { default: title, template: '%s | Axonvia' },
   description,
-  openGraph: { title, description, siteName: 'Axonvia', type: 'website', locale: 'en_US', url: '/' },
-  twitter: { card: 'summary', title, description },
+  applicationName: siteConfig.name,
+  openGraph: { title, description, siteName: siteConfig.name, type: 'website', locale: 'en_US', url: '/' },
+  twitter: { card: 'summary_large_image', site: siteConfig.xHandle, title, description },
 }
 
 export const viewport: Viewport = {

@@ -4,9 +4,6 @@ import { describe, it, expect, vi } from 'vitest'
 import { Footer } from './Footer'
 
 vi.mock('@/app/actions/newsletter', () => ({ subscribeNewsletter: vi.fn() }))
-vi.mock('@/components/CalEmbed', () => ({
-  CalEmbed: ({ children }: { children: React.ReactNode }) => <button>{children}</button>,
-}))
 
 describe('Footer', () => {
   it('renders all 4 columns and the copyright line', () => {
@@ -27,12 +24,11 @@ describe('Footer', () => {
     render(<Footer />)
     const services = screen.getByRole('navigation', { name: 'Services' })
     expect(Array.from(services.querySelectorAll('a'), (link) => link.textContent)).toEqual([
-      'AI Agent Development',
-      'Workflow Automation',
-      'AI-Powered Products',
-      'Conversational AI & Chatbots',
-      'Data & Integration',
-      'AI Strategy & Consulting',
+      'Business Process Automation',
+      'Intelligent Lead Management',
+      'AI Agents & Intelligent Assistants',
+      'Custom AI-Powered Software',
+      'System Integration & Workflow Design',
     ])
   })
 
@@ -50,16 +46,27 @@ describe('Footer', () => {
     expect(note.querySelector('a[href="/privacy"]')).not.toBeNull()
   })
 
-  it('links Axonvia on Instagram and LinkedIn with accessible icon buttons that open in a new tab', () => {
+  it('links Axonvia on Instagram, Facebook, X and LinkedIn with accessible icon buttons that open in a new tab', () => {
     render(<Footer />)
-    const instagram = screen.getByRole('link', { name: 'Axonvia on Instagram' })
-    const linkedin = screen.getByRole('link', { name: 'Axonvia founder on LinkedIn' })
-    expect(instagram).toHaveAttribute('href', 'https://www.instagram.com/axonvia_automate/')
-    expect(linkedin).toHaveAttribute('href', 'https://www.linkedin.com/in/syedainshrahkhatoon/')
-    for (const link of [instagram, linkedin]) {
+    const expected: [string, string][] = [
+      ['Axonvia on Instagram', 'https://www.instagram.com/axonvia.ai/'],
+      ['Axonvia on Facebook', 'https://www.facebook.com/Axonvia/'],
+      ['Axonvia on X', 'https://x.com/axonvia_ai'],
+      ['Axonvia founder on LinkedIn', 'https://www.linkedin.com/in/syedainshrahkhatoon/'],
+    ]
+    for (const [name, href] of expected) {
+      const link = screen.getByRole('link', { name })
+      expect(link).toHaveAttribute('href', href)
       expect(link).toHaveAttribute('target', '_blank')
       expect(link).toHaveAttribute('rel', 'noopener noreferrer')
       expect(link.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
     }
+  })
+
+  it('has no link to the removed Work section, and shows the tagline and service area', () => {
+    const { container } = render(<Footer />)
+    expect(container.querySelector('a[href="#projects"]')).toBeNull()
+    expect(screen.getByText('AI that works for your business.')).toBeInTheDocument()
+    expect(screen.getByText(/Serving clients worldwide/)).toBeInTheDocument()
   })
 })

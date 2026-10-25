@@ -1,4 +1,5 @@
-import { CalEmbed } from '@/components/CalEmbed'
+import { BookingButton } from '@/components/ui/BookingButton'
+import { BOOKING_URL } from '@/lib/site'
 import { ContactForm } from '@/components/ContactForm'
 import { Aurora } from '@/components/motion/Aurora'
 
@@ -21,13 +22,18 @@ export function FinalCta() {
               Ready to put AI to work in your business?
             </h2>
             <p className="mt-6 max-w-[30rem] text-lg text-white/90">
-              Book a free strategy call — we&apos;ll show you exactly where automation can save you time and grow
-              revenue.
+              Book a free automation audit. We&apos;ll show you exactly what to automate first.
             </p>
-            <CalEmbed variant="inverse" size="large" className="mt-9">
-              Book Your Free Call
-            </CalEmbed>
-            <p className="mt-4 text-sm text-white/85">No commitment. 20-minute call. Real answers.</p>
+            {/* With a booking page, a button opens it; until then the booking buttons lead here, to the form. */}
+            {BOOKING_URL.startsWith('#') ? (
+              <p className="mt-6 max-w-[30rem] text-white/90">
+                Tell us a little about your business in the form and we&apos;ll arrange your free 20-minute audit at a
+                time that suits your time zone.
+              </p>
+            ) : (
+              <BookingButton variant="inverse" size="large" className="mt-9" />
+            )}
+            <p className="mt-4 text-sm text-white/85">Free 20-minute call · No commitment · We work in your time zone</p>
           </div>
 
           <div className="rounded-3xl bg-white/95 p-6 shadow-[0_40px_80px_-40px_rgba(10,10,60,0.6)] backdrop-blur-xl sm:p-8 lg:col-span-6">

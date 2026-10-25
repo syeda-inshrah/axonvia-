@@ -19,4 +19,17 @@ describe('LoginForm', () => {
 
     await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Too many sign-in attempts'))
   })
+
+  it('keeps the typed email after a failed sign-in, so only the password needs retyping', async () => {
+    signInAction.mockResolvedValue({ error: 'Invalid email or password.' })
+    const { LoginForm } = await import('./LoginForm')
+    render(<LoginForm />)
+
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'admin@axonvia.example' } })
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'wrong' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent('Invalid email or password.'))
+    expect(screen.getByLabelText('Email')).toHaveValue('admin@axonvia.example')
+  })
 })

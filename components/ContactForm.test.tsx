@@ -57,4 +57,25 @@ describe('ContactForm', () => {
       expect(screen.getByLabelText(label)).toBeInTheDocument()
     }
   })
+
+  it('keeps what the visitor typed when sending fails, and clears it only after a successful send', async () => {
+    submitContactForm.mockResolvedValueOnce({ success: false, error: 'Too many messages. Please try again later.' })
+    const { ContactForm } = await import('./ContactForm')
+    render(<ContactForm />)
+
+    fireEvent.change(screen.getByPlaceholderText('Name'), { target: { value: 'Jane' } })
+    fireEvent.change(screen.getByPlaceholderText('Email'), { target: { value: 'jane@example.com' } })
+    fireEvent.change(screen.getByPlaceholderText('What would you like to automate?'), { target: { value: 'Lead follow-ups' } })
+    fireEvent.change(screen.getByPlaceholderText('Message'), { target: { value: 'A long message.' } })
+    fireEvent.click(screen.getByRole('button', { name: /send/i }))
+    await waitFor(() => expect(screen.getByTestId('form-error')).toBeInTheDocument())
+    expect(screen.getByPlaceholderText('Message')).toHaveValue('A long message.')
+    expect(screen.getByPlaceholderText('Email')).toHaveValue('jane@example.com')
+
+    submitContactForm.mockResolvedValueOnce({ success: true })
+    fireEvent.click(screen.getByRole('button', { name: /send/i }))
+    await waitFor(() => expect(screen.getByTestId('form-success')).toBeInTheDocument())
+    expect(screen.getByPlaceholderText('Message')).toHaveValue('')
+    expect((submitContactForm.mock.calls[0][0] as FormData).get('automate')).toBe('Lead follow-ups')
+  })
 })

@@ -154,44 +154,18 @@ p {
 .ambient-b { animation: ambient-b 34s ease-in-out infinite; }
 .ambient-c { animation: ambient-c 40s ease-in-out infinite; }
 
-/* The services feature card's pulse travelling along its pipeline. */
-@keyframes pipeline {
-  0% { left: 4%; }
-  50% { left: calc(96% - 0.5rem); }
-  100% { left: 4%; }
-}
-
-.pipeline-pulse {
-  left: 4%;
-  animation: pipeline 3.2s ease-in-out infinite;
-}
-
-/* Tech marquee: two rows slide in opposite directions; hovering pauses them. */
-@keyframes marquee {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
-
-.marquee-track {
-  animation: marquee var(--marquee-duration, 40s) linear infinite;
-}
-
-.marquee-track[data-reverse] {
-  animation-direction: reverse;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
 /* Hero intro and scroll reveals: hidden until GSAP plays them, but only when scripts run and motion is
    welcome. html.js is set by an inline script in the layout; html.intro-timeout shows everything as plain
    content if GSAP hasn't started within 3s. GSAP's inline styles take over once it runs.
    Reveals use opacity, not visibility, so content further down stays in the accessibility tree. */
-@media (prefers-reduced-motion: no-preference) {
+/* The hero intro only plays from 768px up (phones show the hero immediately), so only hide it there. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
   html.js:not(.intro-timeout) [data-intro] {
     visibility: hidden;
   }
+}
+
+@media (prefers-reduced-motion: no-preference) {
 
   html.js:not(.intro-timeout) [data-reveal] {
     opacity: 0;
@@ -201,9 +175,7 @@ p {
 @media (prefers-reduced-motion: reduce) {
   .ambient-a,
   .ambient-b,
-  .ambient-c,
-  .pipeline-pulse,
-  .marquee-track {
+  .ambient-c {
     animation: none !important;
   }
 }

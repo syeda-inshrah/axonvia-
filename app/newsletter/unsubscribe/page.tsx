@@ -2,7 +2,7 @@ import { SimplePage } from '@/components/layout/SimplePage'
 import { UnsubscribeForm } from '@/components/UnsubscribeForm'
 import { siteConfig } from '@/lib/site'
 
-export const metadata = { title: 'Unsubscribe — Axonvia', robots: { index: false } }
+export const metadata = { title: 'Unsubscribe', robots: { index: false } }
 
 function first(value: string | string[] | undefined): string {
   return (Array.isArray(value) ? value[0] : value) ?? ''

@@ -11,10 +11,13 @@ Never commit real values. `.env.local.example` lists every name with an empty va
 | `RESEND_API_KEY` | **Yes** | Sending contact notifications, contact confirmations, and newsletter welcome emails. | Submissions are saved but no emails go out (errors are logged). |
 | `RESEND_FROM_EMAIL` | **Yes** | Sender, e.g. `Axonvia <hello@your-domain>`. The domain must be verified in Resend. | Falls back to Resend's test sender `onboarding@resend.dev`, which only delivers to your own Resend account. |
 | `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox that receives "New lead" notifications. | Falls back to `NEXT_PUBLIC_CONTACT_EMAIL`, then to `axonvia@gmail.com`. |
-| `GEMINI_API_KEY` | Recommended | Google Gemini API key for the website chat assistant (`app/api/chat`, model `gemini-3.8-flash`). Server-only: never prefix it with `NEXT_PUBLIC_`. Create one in Google AI Studio (aistudio.google.com/apikey). | The chat button still appears, but replies say the assistant is unavailable and point to the contact form. |
+| `GEMINI_API_KEY` | Recommended | Google Gemini API key for the website chat assistant (`app/api/chat`, model `gemini-3.5-flash`). Server-only: never prefix it with `NEXT_PUBLIC_`. Create one in Google AI Studio (aistudio.google.com/apikey). | The chat button still appears, but replies say the assistant is unavailable and point to the contact form. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | **Yes** for launch | Public contact address shown in the footer, FAQ, legal pages, and the booking fallback. | Falls back to `axonvia@gmail.com`. |
-| `NEXT_PUBLIC_SITE_URL` | **Yes** for launch | Canonical origin without a trailing slash, e.g. `https://axonvia.com`. Used for unsubscribe links in emails, share-preview URLs, `robots.txt`, and `sitemap.xml`. | On Vercel, falls back to the project's production domain (`VERCEL_PROJECT_PRODUCTION_URL`, e.g. `https://axonvia.vercel.app`); elsewhere to `http://localhost:3000`. Set it explicitly for a custom domain. |
-| `NEXT_PUBLIC_CAL_LINK` | Recommended | Cal.com event path, e.g. `axonvia/strategy-call`. Enables the booking pop-up on every "Book" button. | Booking buttons open an email to `NEXT_PUBLIC_CONTACT_EMAIL` instead. |
+
+The site URL and the booking destination are not environment variables: they are `SITE_URL` and `BOOKING_URL`
+in `lib/site.ts`. Change `SITE_URL` when the domain changes (it drives metadata, canonical URLs, Open Graph,
+the sitemap, robots.txt, JSON-LD and email links). `BOOKING_URL` is `#final-cta` (the contact form) until there
+is a booking page; set it to a full Cal.com link and every "Book a Free Automation Audit" button opens it.
 
 `NEXT_PUBLIC_*` values are compiled into the site at build time: **rebuild and redeploy after changing them.**
 

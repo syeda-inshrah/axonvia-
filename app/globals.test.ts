@@ -31,7 +31,7 @@ describe('globals.css', () => {
 
   it('stops every looping background animation for reduced motion', () => {
     const reduced = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'))
-    for (const loop of ['.ambient-a', '.ambient-b', '.ambient-c', '.pipeline-pulse', '.marquee-track']) expect(reduced).toContain(loop)
+    for (const loop of ['.ambient-a', '.ambient-b', '.ambient-c']) expect(reduced).toContain(loop)
     expect(reduced).toMatch(/animation:\s*none !important/)
   })
 

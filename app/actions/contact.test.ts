@@ -94,4 +94,12 @@ describe('submitContactForm', () => {
     expect(result.success).toBe(false)
     expect(sendContactConfirmation).toHaveBeenCalledTimes(3)
   })
+
+  it('saves the "What would you like to automate?" answer at the top of the message', async () => {
+    const { submitContactForm } = await import('./contact')
+    await submitContactForm(formDataFrom({ name: 'Jane', email: 'jane@example.com', automate: 'Lead follow-ups', message: 'More detail.' }))
+    expect(values).toHaveBeenCalledWith(
+      expect.objectContaining({ message: "What they'd like to automate: Lead follow-ups\n\nMore detail." })
+    )
+  })
 })
