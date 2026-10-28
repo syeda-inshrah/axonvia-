@@ -5,3 +5,8 @@ node_modules
 
 # local PGlite database (DATABASE_URL=pglite:.local-db)
 /.local-db/
+
+# Vercel CLI link and any pulled environment files
+.vercel
+.env*
+!.env.local.example

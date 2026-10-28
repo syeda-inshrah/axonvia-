@@ -1,6 +1,6 @@
 /** The canonical origin, without a trailing slash: metadataBase, canonical and Open Graph URLs, sitemap, robots,
  * JSON-LD and links in emails all come from here. Change this one line when the domain changes. */
-export const SITE_URL = 'https://axonviaai.com'
+export const SITE_URL = 'https://www.axonviaai.com'
 
 /**
  * Where every "Book a Free Automation Audit" button goes. Until a booking page exists it scrolls to the contact

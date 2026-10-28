@@ -8,16 +8,16 @@ describe('robots.txt', () => {
     const rules = robots()
     const rule = Array.isArray(rules.rules) ? rules.rules[0] : rules.rules
     expect(rule.disallow).toEqual(expect.arrayContaining(['/admin', '/newsletter/unsubscribe']))
-    expect(rules.sitemap).toBe('https://axonviaai.com/sitemap.xml')
+    expect(rules.sitemap).toBe('https://www.axonviaai.com/sitemap.xml')
   })
 })
 
 describe('sitemap.xml', () => {
   it('lists exactly the public pages as canonical URLs on SITE_URL', () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
-      'https://axonviaai.com/',
-      'https://axonviaai.com/privacy',
-      'https://axonviaai.com/terms',
+      'https://www.axonviaai.com/',
+      'https://www.axonviaai.com/privacy',
+      'https://www.axonviaai.com/terms',
     ])
   })
 

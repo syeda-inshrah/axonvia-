@@ -21,7 +21,7 @@ describe('siteConfig', () => {
 
   it('keeps the canonical site URL in one constant, without a trailing slash', async () => {
     const { SITE_URL, siteConfig } = await import('./site')
-    expect(SITE_URL).toBe('https://axonviaai.com')
+    expect(SITE_URL).toBe('https://www.axonviaai.com')
     expect(siteConfig.url).toBe(SITE_URL)
   })
 

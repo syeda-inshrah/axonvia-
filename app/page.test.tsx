@@ -40,7 +40,7 @@ describe('HomePage', () => {
   it('publishes Organization structured data with the official profiles', async () => {
     const { container } = render(await HomePage())
     const data = JSON.parse(container.querySelector('script[type="application/ld+json"]')!.textContent!)
-    expect(data).toMatchObject({ '@type': 'Organization', name: 'Axonvia', url: 'https://axonviaai.com', email: 'axonvia@gmail.com' })
+    expect(data).toMatchObject({ '@type': 'Organization', name: 'Axonvia', url: 'https://www.axonviaai.com', email: 'axonvia@gmail.com' })
     expect(data.sameAs).toEqual(expect.arrayContaining(['https://x.com/axonvia_ai', 'https://www.facebook.com/Axonvia/']))
   })
 
