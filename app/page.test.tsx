@@ -37,11 +37,34 @@ describe('HomePage', () => {
     expect(container.querySelector('#final-cta')).not.toBeNull()
   })
 
-  it('publishes Organization structured data with the official profiles', async () => {
+  function structuredData(container: HTMLElement) {
+    return Array.from(container.querySelectorAll('script[type="application/ld+json"]'), (s) => JSON.parse(s.textContent!))
+  }
+
+  it('publishes Organization structured data with the official company profiles', async () => {
     const { container } = render(await HomePage())
-    const data = JSON.parse(container.querySelector('script[type="application/ld+json"]')!.textContent!)
-    expect(data).toMatchObject({ '@type': 'Organization', name: 'Axonvia', url: 'https://www.axonviaai.com', email: 'axonvia@gmail.com' })
-    expect(data.sameAs).toEqual(expect.arrayContaining(['https://x.com/axonvia_ai', 'https://www.facebook.com/Axonvia/']))
+    const graph = structuredData(container).flatMap((d) => d['@graph'] ?? [d])
+    const org = graph.find((n) => n['@type'] === 'Organization')
+    expect(org).toMatchObject({ name: 'Axonvia', url: 'https://www.axonviaai.com', email: 'axonvia@gmail.com' })
+    expect(org.sameAs).toEqual(expect.arrayContaining(['https://x.com/axonvia_ai', 'https://www.facebook.com/Axonvia/']))
+    // The LinkedIn link is the founder's personal profile, not the company's.
+    expect(org.sameAs.join(' ')).not.toContain('linkedin.com/in/')
+  })
+
+  it('describes the website and each of the five services, all provided by the organization', async () => {
+    const { container } = render(await HomePage())
+    const graph = structuredData(container).flatMap((d) => d['@graph'] ?? [d])
+    const org = graph.find((n) => n['@type'] === 'Organization')
+    expect(graph.find((n) => n['@type'] === 'WebSite')).toMatchObject({ url: 'https://www.axonviaai.com', publisher: { '@id': org['@id'] } })
+    const services = graph.filter((n) => n['@type'] === 'Service')
+    expect(services.map((s) => s.name)).toEqual([
+      'Business Process Automation',
+      'Intelligent Lead Management',
+      'AI Agents & Intelligent Assistants',
+      'Custom AI-Powered Software',
+      'System Integration & Workflow Design',
+    ])
+    for (const service of services) expect(service.provider).toEqual({ '@id': org['@id'] })
   })
 
   it('opts into request-time rendering so CMS edits show without a rebuild', async () => {

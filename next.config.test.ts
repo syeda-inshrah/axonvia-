@@ -36,3 +36,15 @@ describe('security headers', () => {
     expect(nextConfig.poweredByHeader).toBe(false)
   })
 })
+
+describe('redirects', () => {
+  it('sends the default Vercel domain to the canonical domain, keeping the path', async () => {
+    const rules = (await nextConfig.redirects?.()) ?? []
+    expect(rules).toContainEqual({
+      source: '/:path*',
+      has: [{ type: 'host', value: 'axonvia.vercel.app' }],
+      destination: 'https://www.axonviaai.com/:path*',
+      permanent: true,
+    })
+  })
+})

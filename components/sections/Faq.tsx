@@ -3,6 +3,7 @@ import { Section } from '@/components/ui/SectionHeader'
 import { FaqAccordion } from '@/components/sections/FaqAccordion'
 import { BOOKING_URL, siteConfig } from '@/lib/site'
 import { withCoreFaqs } from '@/lib/faq-content'
+import { JsonLd } from '@/components/seo/JsonLd'
 
 function AskUs() {
   return (
@@ -42,6 +43,18 @@ export async function Faq() {
           <FaqAccordion items={faqs} />
         </div>
       </div>
+      {/* The same questions and answers as structured data, so search and AI answer engines can quote them. */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.question,
+            acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+          })),
+        }}
+      />
     </Section>
   )
 }

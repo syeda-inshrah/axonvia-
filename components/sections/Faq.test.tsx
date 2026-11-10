@@ -81,4 +81,21 @@ describe('Faq', () => {
     expect(screen.getByRole('link', { name: 'axonvia@gmail.com' })).toHaveAttribute('href', 'mailto:axonvia@gmail.com')
     expect(screen.getByRole('link', { name: 'book a free automation audit' })).toHaveAttribute('href', '#final-cta')
   })
+
+  it('publishes exactly the questions it shows as FAQPage structured data, admin FAQs included', async () => {
+    getPublishedFaqs.mockResolvedValue([
+      { id: 'b', question: 'Do you offer training?', answer: 'Yes.', isPublished: true, sortOrder: 1 },
+    ])
+    const { Faq } = await import('./Faq')
+    const { container } = render(await Faq())
+    const data = JSON.parse(container.querySelector('script[type="application/ld+json"]')!.textContent!)
+    const shown = screen.getAllByRole('button').map((b) => b.textContent)
+    expect(data['@type']).toBe('FAQPage')
+    expect(data.mainEntity.map((q: { name: string }) => q.name)).toEqual(shown)
+    expect(data.mainEntity.at(-1)).toEqual({
+      '@type': 'Question',
+      name: 'Do you offer training?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes.' },
+    })
+  })
 })

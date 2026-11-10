@@ -1,10 +1,14 @@
-import { SITE_URL, siteConfig } from '@/lib/site'
+import { SITE_URL, services, siteConfig } from '@/lib/site'
+import { JsonLd } from '@/components/seo/JsonLd'
 
-// Organization structured data for search engines: name, site, contact email, logo and official profiles.
+const ORG_ID = `${SITE_URL}/#organization`
+
+// Structured data for search engines: the organization and its official profiles, the website, and each service
+// it provides, linked by @id so they read as one entity.
 export function OrganizationJsonLd() {
-  const data = {
-    '@context': 'https://schema.org',
+  const organization = {
     '@type': 'Organization',
+    '@id': ORG_ID,
     name: siteConfig.name,
     url: SITE_URL,
     email: siteConfig.contactEmail,
@@ -13,13 +17,28 @@ export function OrganizationJsonLd() {
     description: siteConfig.positioning,
     address: { '@type': 'PostalAddress', addressLocality: 'Karachi', addressCountry: 'PK' },
     areaServed: 'Worldwide',
-    sameAs: Object.values(siteConfig.social),
+    knowsAbout: ['AI automation', 'Workflow automation', 'Lead management', 'AI agents', 'Custom software'],
+    // Company profiles only; the LinkedIn link is the founder's personal profile.
+    sameAs: [siteConfig.social.instagram, siteConfig.social.facebook, siteConfig.social.x],
   }
-  // JSON.stringify output is safe here (no user input); escape "<" so it can never close the script tag.
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }}
-    />
-  )
+  const website = {
+    '@type': 'WebSite',
+    '@id': `${SITE_URL}/#website`,
+    name: siteConfig.name,
+    url: SITE_URL,
+    inLanguage: 'en',
+    publisher: { '@id': ORG_ID },
+  }
+  const offered = services.map((service) => ({
+    '@type': 'Service',
+    '@id': `${SITE_URL}/#${service.slug}`,
+    name: service.title,
+    serviceType: service.title,
+    description: service.description,
+    provider: { '@id': ORG_ID },
+    areaServed: 'Worldwide',
+    url: `${SITE_URL}/#services`,
+  }))
+
+  return <JsonLd data={{ '@context': 'https://schema.org', '@graph': [organization, website, ...offered] }} />
 }

@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import { SITE_URL } from './lib/site'
 
 const isDev = process.env.NODE_ENV === 'development'
 
@@ -31,6 +32,18 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // The project's default Vercel domain serves the same site; send it to the canonical domain so search engines
+  // index one copy. Preview deployments (other *.vercel.app hosts) are not affected.
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'axonvia.vercel.app' }],
+        destination: `${SITE_URL}/:path*`,
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       { source: '/:path*', headers: securityHeaders },

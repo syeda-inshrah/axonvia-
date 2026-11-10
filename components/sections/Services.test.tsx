@@ -4,9 +4,9 @@ import { describe, it, expect } from 'vitest'
 import { Services } from './Services'
 
 describe('Services', () => {
-  it('renders "What we build" with exactly the five services, in order', () => {
+  it('renders "AI automation services" with exactly the five services, in order', () => {
     render(<Services />)
-    expect(screen.getByRole('heading', { level: 2, name: 'What we build' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'AI automation services' })).toBeInTheDocument()
     expect(screen.getByText('From a single automated workflow to a complete AI system, built around your business.')).toBeInTheDocument()
     expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
       'Business Process Automation',

@@ -31,7 +31,8 @@ const plexMono = IBM_Plex_Mono({
 // GSAP hasn't started within 3s (slow device, blocked script), intro-timeout reveals everything as plain content.
 const scriptFlag = `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('intro-timeout')},3000)`
 
-const title = 'Axonvia | AI Automation Agency: Workflow Automation, Lead Management & AI Agents'
+// Kept under ~60 characters so search results show it whole.
+const title = 'AI Automation Agency: Workflows, Leads & AI Agents | Axonvia'
 const description =
   'Axonvia helps businesses automate operations, manage leads intelligently, and build AI-powered systems that save time and support growth. Book a free automation audit.'
 

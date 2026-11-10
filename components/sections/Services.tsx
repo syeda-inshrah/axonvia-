@@ -17,7 +17,7 @@ export function Services() {
     <Section id="services" labelledBy="services-title">
       <SectionHeader
         id="services-title"
-        title="What we build"
+        title="AI automation services"
         subtitle="From a single automated workflow to a complete AI system, built around your business."
       />
 
