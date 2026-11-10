@@ -3,17 +3,15 @@ import { BookingButton } from '@/components/ui/BookingButton'
 import { NewsletterForm } from '@/components/NewsletterForm'
 import { Logo } from '@/components/ui/Logo'
 import { FacebookIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/ui/SocialIcons'
-import { services, siteConfig } from '@/lib/site'
+import { services, siteConfig, solutionPages } from '@/lib/site'
+import { sectionLinks } from '@/components/sections/section-links'
 
-const navigateLinks = [
-  { href: '#services', label: 'Services' },
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#about', label: 'About' },
-  { href: '#faq', label: 'FAQ' },
+// Every solution page and service, so each page of the site links to all of them.
+const serviceLinks = [
+  ...solutionPages.map(({ path, label }) => ({ href: path, label })),
+  ...services.map((service) => ({ href: `/services#${service.slug}`, label: service.title })),
+  { href: '/services', label: 'All services' },
 ]
-
-// The same five services as the Services section (lib/site.ts).
-const serviceLinks = services.map((service) => service.title)
 
 const socialLinks = [
   { href: siteConfig.social.instagram, label: 'Axonvia on Instagram', Icon: InstagramIcon },
@@ -24,7 +22,7 @@ const socialLinks = [
 
 const linkClasses = 'link-underline w-fit hover:text-[var(--text-primary)]'
 
-export function Footer() {
+export function Footer({ home = true }: { home?: boolean }) {
   return (
     <footer className="px-5 md:px-10 pt-8 pb-28">
       <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10">
@@ -64,7 +62,7 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">Navigate</h3>
           <nav aria-label="Footer" className="mt-3 flex flex-col gap-2 text-sm text-[var(--text-secondary)]">
-            {navigateLinks.map((link) => (
+            {sectionLinks(home).map((link) => (
               <Link key={link.label} href={link.href} className={linkClasses}>
                 {link.label}
               </Link>
@@ -75,8 +73,8 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">Services</h3>
           <nav aria-label="Services" className="mt-3 flex flex-col gap-2 text-sm text-[var(--text-secondary)]">
-            {serviceLinks.map((label) => (
-              <Link key={label} href="#services" className={linkClasses}>
+            {serviceLinks.map(({ href, label }) => (
+              <Link key={href} href={href} className={linkClasses}>
                 {label}
               </Link>
             ))}

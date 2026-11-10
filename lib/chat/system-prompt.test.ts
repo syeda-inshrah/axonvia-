@@ -7,7 +7,7 @@ describe('chatbot system prompt', () => {
     for (const service of [
       'Business Process Automation',
       'Intelligent Lead Management',
-      'AI Agents & Intelligent Assistants',
+      'AI Agents, Chatbots & Voice Agents',
       'Custom AI-Powered Software',
       'System Integration & Workflow Design',
     ]) {
@@ -16,8 +16,9 @@ describe('chatbot system prompt', () => {
     expect(SITE_KNOWLEDGE).toContain('Free Discovery Call')
     expect(SITE_KNOWLEDGE).toContain('AI that works for your business.')
     expect(SITE_KNOWLEDGE).toMatch(/free automation audit/i)
-    // Calling is an option inside AI Agents, not the headline.
-    expect(SITE_KNOWLEDGE).toMatch(/voice or calling agents are available as part of AI Agents/i)
+    // Voice agents and chatbots are services with their own pages.
+    expect(SITE_KNOWLEDGE).toMatch(/builds custom AI voice agents/i)
+    expect(SITE_KNOWLEDGE).toContain('/real-estate-ai-automation')
   })
 
   it('steers visitors to the contact form and forbids inventing prices, clients, or results', () => {

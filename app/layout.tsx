@@ -34,7 +34,7 @@ const scriptFlag = `document.documentElement.classList.add('js');setTimeout(func
 // Kept under ~60 characters so search results show it whole.
 const title = 'AI Automation Agency: Workflows, Leads & AI Agents | Axonvia'
 const description =
-  'Axonvia helps businesses automate operations, manage leads intelligently, and build AI-powered systems that save time and support growth. Book a free automation audit.'
+  'AI automation agency for US and international businesses: AI chatbots, AI voice agents, lead management and workflow automation. Book a free automation audit.'
 
 // All absolute URLs (Open Graph, canonical, share images) resolve against SITE_URL (lib/site.ts). Canonical
 // URLs are set per page, so no page inherits the homepage's. The share image is app/opengraph-image.tsx.

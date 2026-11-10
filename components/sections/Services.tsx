@@ -1,4 +1,5 @@
-import { Bot, Check, Inbox, LayoutDashboard, Network, Workflow, type LucideIcon } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowRight, Bot, Check, Inbox, LayoutDashboard, Network, Workflow, type LucideIcon } from 'lucide-react'
 import { Section, SectionHeader } from '@/components/ui/SectionHeader'
 import { TiltCard } from '@/components/ui/TiltCard'
 import { services } from '@/lib/site'
@@ -45,6 +46,18 @@ export function Services() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                  {service.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="link-underline group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent-cyan)]"
+                    >
+                      {link.label}
+                      <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </Link>
+                  ))}
+                </div>
               </TiltCard>
             </li>
           )

@@ -16,6 +16,10 @@ describe('sitemap.xml', () => {
   it('lists exactly the public pages as canonical URLs on SITE_URL', () => {
     expect(sitemap().map((entry) => entry.url)).toEqual([
       'https://www.axonviaai.com/',
+      'https://www.axonviaai.com/services',
+      'https://www.axonviaai.com/ai-voice-agents',
+      'https://www.axonviaai.com/ai-chatbots',
+      'https://www.axonviaai.com/real-estate-ai-automation',
       'https://www.axonviaai.com/privacy',
       'https://www.axonviaai.com/terms',
     ])

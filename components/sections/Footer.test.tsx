@@ -20,16 +20,28 @@ describe('Footer', () => {
     expect(screen.getByRole('button', { name: 'Subscribe' })).toBeInTheDocument()
   })
 
-  it('lists the same services the Services section offers', () => {
+  it('links every service and solution page, so each one is reachable from every page', () => {
     render(<Footer />)
     const services = screen.getByRole('navigation', { name: 'Services' })
-    expect(Array.from(services.querySelectorAll('a'), (link) => link.textContent)).toEqual([
-      'Business Process Automation',
-      'Intelligent Lead Management',
-      'AI Agents & Intelligent Assistants',
-      'Custom AI-Powered Software',
-      'System Integration & Workflow Design',
+    expect(Array.from(services.querySelectorAll('a'), (link) => [link.textContent, link.getAttribute('href')])).toEqual([
+      ['AI Voice Agents', '/ai-voice-agents'],
+      ['AI Chatbots', '/ai-chatbots'],
+      ['Real Estate AI Automation', '/real-estate-ai-automation'],
+      ['Business Process Automation', '/services#process-automation'],
+      ['Intelligent Lead Management', '/services#lead-management'],
+      ['AI Agents, Chatbots & Voice Agents', '/services#ai-agents'],
+      ['Custom AI-Powered Software', '/services#custom-software'],
+      ['System Integration & Workflow Design', '/services#integration'],
+      ['All services', '/services'],
     ])
+  })
+
+  it('points the section links back to the homepage when shown on another page', () => {
+    const { rerender } = render(<Footer />)
+    const hrefs = () => Array.from(screen.getByRole('navigation', { name: 'Footer' }).querySelectorAll('a'), (a) => a.getAttribute('href'))
+    expect(hrefs()).toEqual(['#services', '#how-it-works', '#about', '#faq'])
+    rerender(<Footer home={false} />)
+    expect(hrefs()).toEqual(['/services', '/#how-it-works', '/#about', '/#faq'])
   })
 
   it('links the configured contact email', () => {

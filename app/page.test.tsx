@@ -60,7 +60,7 @@ describe('HomePage', () => {
     expect(services.map((s) => s.name)).toEqual([
       'Business Process Automation',
       'Intelligent Lead Management',
-      'AI Agents & Intelligent Assistants',
+      'AI Agents, Chatbots & Voice Agents',
       'Custom AI-Powered Software',
       'System Integration & Workflow Design',
     ])

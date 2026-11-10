@@ -17,7 +17,7 @@ export function OrganizationJsonLd() {
     description: siteConfig.positioning,
     address: { '@type': 'PostalAddress', addressLocality: 'Karachi', addressCountry: 'PK' },
     areaServed: 'Worldwide',
-    knowsAbout: ['AI automation', 'Workflow automation', 'Lead management', 'AI agents', 'Custom software'],
+    knowsAbout: ['AI automation', 'Workflow automation', 'Lead management', 'AI chatbots', 'AI voice agents', 'Real estate automation', 'Custom software'],
     // Company profiles only; the LinkedIn link is the founder's personal profile.
     sameAs: [siteConfig.social.instagram, siteConfig.social.facebook, siteConfig.social.x],
   }
@@ -37,7 +37,7 @@ export function OrganizationJsonLd() {
     description: service.description,
     provider: { '@id': ORG_ID },
     areaServed: 'Worldwide',
-    url: `${SITE_URL}/#services`,
+    url: `${SITE_URL}/services#${service.slug}`,
   }))
 
   return <JsonLd data={{ '@context': 'https://schema.org', '@graph': [organization, website, ...offered] }} />

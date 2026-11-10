@@ -11,7 +11,7 @@ describe('Services', () => {
     expect(screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent)).toEqual([
       'Business Process Automation',
       'Intelligent Lead Management',
-      'AI Agents & Intelligent Assistants',
+      'AI Agents, Chatbots & Voice Agents',
       'Custom AI-Powered Software',
       'System Integration & Workflow Design',
     ])
@@ -26,10 +26,15 @@ describe('Services', () => {
     }
   })
 
-  it('mentions voice agents only as an option inside AI Agents, never as a service of its own', () => {
+  it('links each card to the page that covers it in depth, chatbots and voice agents included', () => {
     render(<Services />)
-    const headings = screen.getAllByRole('heading', { level: 3 }).map((h) => h.textContent ?? '')
-    expect(headings.some((h) => /voice|call/i.test(h))).toBe(false)
-    expect(screen.getByRole('heading', { name: 'AI Agents & Intelligent Assistants' }).closest('li')).toHaveTextContent(/including voice agents/)
+    const card = screen.getByRole('heading', { name: 'AI Agents, Chatbots & Voice Agents' }).closest('li')!
+    expect(within(card).getByRole('link', { name: /AI chatbots/ })).toHaveAttribute('href', '/ai-chatbots')
+    expect(within(card).getByRole('link', { name: /AI voice agents/ })).toHaveAttribute('href', '/ai-voice-agents')
+    const leads = screen.getByRole('heading', { name: 'Intelligent Lead Management' }).closest('li')!
+    expect(within(leads).getByRole('link', { name: /For real estate/ })).toHaveAttribute('href', '/real-estate-ai-automation')
+    for (const item of screen.getAllByRole('listitem').filter((li) => li.querySelector('h3'))) {
+      expect(within(item).getAllByRole('link').length).toBeGreaterThan(0)
+    }
   })
 })

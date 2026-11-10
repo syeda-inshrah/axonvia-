@@ -1,14 +1,9 @@
-import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/page-metadata'
 import { ContactEmail, LegalDocument } from '@/components/layout/LegalDocument'
 
 const description = 'The terms for using the Axonvia website and its AI assistant.'
 
-export const metadata: Metadata = {
-  title: 'Terms of Service',
-  description,
-  alternates: { canonical: '/terms' },
-  openGraph: { title: 'Terms of Service | Axonvia', description, url: '/terms' },
-}
+export const metadata = pageMetadata({ title: 'Terms of Service', description, path: '/terms' })
 
 export default function TermsPage() {
   return (

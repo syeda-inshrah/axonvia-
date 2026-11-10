@@ -46,7 +46,7 @@ describe('siteConfig', () => {
     expect(services.map((service) => service.title)).toEqual([
       'Business Process Automation',
       'Intelligent Lead Management',
-      'AI Agents & Intelligent Assistants',
+      'AI Agents, Chatbots & Voice Agents',
       'Custom AI-Powered Software',
       'System Integration & Workflow Design',
     ])

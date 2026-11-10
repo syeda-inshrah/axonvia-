@@ -9,8 +9,10 @@ ${siteConfig.positioning} Tagline: "${siteConfig.tagline}"
 Services
 ${services.map((service) => `- ${service.title}: ${service.description} Examples: ${service.examples.join('; ')}.`).join('\n')}
 
-Voice or calling agents are available as part of AI Agents & Intelligent Assistants when a business needs them; they
-are an option, not Axonvia's main focus.
+Axonvia builds custom AI voice agents (an AI receptionist that answers calls, qualifies callers, books
+appointments and transfers to a person when needed) and custom AI chatbots for websites and WhatsApp. Pages with more
+detail: AI voice agents (${siteConfig.url}/ai-voice-agents), AI chatbots (${siteConfig.url}/ai-chatbots), real estate
+AI automation (${siteConfig.url}/real-estate-ai-automation) and all services (${siteConfig.url}/services).
 
 Who Axonvia helps
 Growing service businesses, especially clinics and med spas, real estate, coaches and consultants, agencies,

@@ -1,15 +1,10 @@
-import type { Metadata } from 'next'
+import { pageMetadata } from '@/lib/page-metadata'
 import { ContactEmail, LegalDocument } from '@/components/layout/LegalDocument'
 import { siteConfig } from '@/lib/site'
 
 const description = 'What information Axonvia collects through this website, why, and who processes it.'
 
-export const metadata: Metadata = {
-  title: 'Privacy Policy',
-  description,
-  alternates: { canonical: '/privacy' },
-  openGraph: { title: 'Privacy Policy | Axonvia', description, url: '/privacy' },
-}
+export const metadata = pageMetadata({ title: 'Privacy Policy', description, path: '/privacy' })
 
 // Written from what the site actually does: keep it in step with the code when forms, providers or cookies change.
 export default function PrivacyPage() {

@@ -5,15 +5,10 @@ import Link from 'next/link'
 import { Menu, X } from 'lucide-react'
 import { BookingButton } from '@/components/ui/BookingButton'
 import { Logo } from '@/components/ui/Logo'
+import { sectionLinks } from '@/components/sections/section-links'
 
-const navLinks = [
-  { href: '#services', label: 'Services' },
-  { href: '#how-it-works', label: 'How it works' },
-  { href: '#about', label: 'About' },
-  { href: '#faq', label: 'FAQ' },
-]
-
-export function Navbar() {
+export function Navbar({ home = true }: { home?: boolean }) {
+  const links = sectionLinks(home)
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -56,7 +51,7 @@ export function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-          {navLinks.map((link) => (
+          {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -83,7 +78,7 @@ export function Navbar() {
       {menuOpen && (
         <div className="fixed inset-x-0 bottom-0 top-[4.25rem] bg-[var(--bg-primary)]/95 px-5 py-8 backdrop-blur-xl md:hidden">
           <nav className="flex flex-col gap-2" aria-label="Mobile">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}

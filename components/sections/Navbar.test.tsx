@@ -76,4 +76,15 @@ describe('Navbar', () => {
     render(<Navbar />)
     expect(screen.getByRole('link', { name: 'Axonvia' }).querySelector('svg')).toBeInTheDocument()
   })
+
+  it('on other pages, links back to the homepage sections and to the services hub', () => {
+    render(<Navbar home={false} />)
+    const nav = screen.getByRole('navigation', { name: 'Primary' })
+    expect(Array.from(nav.querySelectorAll('a'), (a) => [a.textContent, a.getAttribute('href')])).toEqual([
+      ['Services', '/services'],
+      ['How it works', '/#how-it-works'],
+      ['About', '/#about'],
+      ['FAQ', '/#faq'],
+    ])
+  })
 })
