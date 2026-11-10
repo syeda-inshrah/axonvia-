@@ -64,4 +64,20 @@ describe('email helpers', () => {
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('RESEND_API_KEY'))
     warn.mockRestore()
   })
+
+  it('lets the team reply to the lead directly, and flags an enquiry that could not be saved', async () => {
+    const { sendContactNotification } = await import('./email')
+    await sendContactNotification({ name: 'Jane', email: 'jane@example.com', saved: false })
+
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ replyTo: 'jane@example.com', subject: expect.stringMatching(/^\[Not saved\]/) })
+    )
+  })
+
+  it('throws when Resend rejects the email, instead of failing silently', async () => {
+    send.mockResolvedValueOnce({ data: null, error: { name: 'validation_error', message: 'domain is not verified' } } as never)
+    const { sendContactConfirmation } = await import('./email')
+
+    await expect(sendContactConfirmation({ name: 'Jane', email: 'jane@example.com' })).rejects.toThrow('domain is not verified')
+  })
 })

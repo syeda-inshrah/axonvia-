@@ -1,12 +1,14 @@
 # Deploying to Vercel
 
-The site is a standard Next.js 16 App Router app, so Vercel detects and builds it with no extra configuration
-(`npm run build` → `next build`). No `vercel.json` is needed.
+The site is a standard Next.js 16 App Router app, so Vercel detects and builds it with no extra configuration.
+No `vercel.json` is needed. On Vercel the build runs `npm run vercel-build`, which first applies the database
+migrations (`scripts/migrate-deploy.ts`) to Vercel's own `DATABASE_URL`, then runs `next build`.
 
 ## Project settings
 
 - **Framework preset:** Next.js (auto-detected)
-- **Build command / output:** defaults (`next build`, `.next`)
+- **Build command / output:** defaults (Vercel runs the `vercel-build` script; output `.next`). Don't override the
+  build command, or migrations stop running on deploy.
 - **Node.js version:** 24.x (Vercel's default) or 22.x. Node 20 is deprecated on Vercel.
 
 ## Environment variables
@@ -23,6 +25,7 @@ deployments). Never commit real values. See `docs/ENVIRONMENT.md` for details on
 | `ADMIN_NOTIFICATION_EMAIL` | Recommended | Inbox for new-lead alerts, e.g. `axonvia@gmail.com`. |
 | `GEMINI_API_KEY` | For the chat assistant | Google Gemini API key (server-only). Without it the chat replies that it's unavailable and points to the contact form. |
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Yes | Public contact address, e.g. `axonvia@gmail.com`. |
+| `ADMIN_EMAIL` / `ADMIN_PASSWORD` | First deploy only | Creates the first admin during the build if that email has no account (password: 12+ characters). Existing accounts are never changed; remove `ADMIN_PASSWORD` once you can sign in. |
 
 `AUTH_URL` is **not** needed on Vercel: Auth.js trusts the host automatically when the `VERCEL` environment
 variable is present. `NEXT_PUBLIC_*` values are inlined at build time, so redeploy after changing them.
@@ -30,12 +33,18 @@ The site URL (`SITE_URL`) and booking destination (`BOOKING_URL`) live in `lib/s
 
 ## After the first deploy
 
-1. Apply migrations to the production database, with `DATABASE_URL` pointing at it: check with
-   `npm run db:status` (read-only), apply with `npm run db:migrate`, then run `npm run db:status` again; it should
-   say "Up to date". Migrations only `CREATE TABLE IF NOT EXISTS`, so existing tables and data are never touched.
-   Repeat after any deploy that adds a migration in `drizzle/`.
-2. Create the first admin (`scripts/create-admin.ts`, see `docs/ENVIRONMENT.md`) and sign in at `/admin/login`.
-3. Send one test contact message and one newsletter signup and confirm the emails arrive.
+1. Check the build log for `migrate-deploy: database schema is up to date` (and the `admin bootstrap:` line).
+   Migrations only `CREATE TABLE IF NOT EXISTS` and are recorded in `drizzle.__drizzle_migrations`, so existing
+   tables and data are never touched and re-running is a no-op. To check a database by hand, run
+   `npm run db:status` (read-only) with `DATABASE_URL` pointing at it.
+2. Sign in at `/admin/login` with `ADMIN_EMAIL` / `ADMIN_PASSWORD` (or create an admin with `scripts/create-admin.ts`,
+   see `docs/ENVIRONMENT.md`), then remove `ADMIN_PASSWORD` from Vercel.
+3. Send one test contact message and one newsletter signup; confirm they appear under Admin → Leads / Newsletter
+   and that the emails arrive.
+
+Failures are logged as one JSON line each (Vercel → Logs): `lead_save_error` (with `emailedInstead` when the
+enquiry was emailed to the team because it couldn't be saved), `subscriber_save_error`, `email_send_error` and
+`db_query_error`.
 
 ## Notes
 

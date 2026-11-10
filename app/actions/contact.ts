@@ -7,6 +7,7 @@ import { sendContactNotification, sendContactConfirmation } from '@/lib/email'
 import { headers } from 'next/headers'
 import { allowSubmission, looksAutomated } from '@/lib/spam'
 import { clientIp } from '@/lib/client-ip'
+import { diagnoseDbError } from '@/lib/db/diagnose'
 
 export interface ActionResult {
   success: boolean
@@ -36,6 +37,8 @@ export async function submitContactForm(formData: FormData): Promise<ActionResul
     return { success: false, error: 'Too many messages. Please try again later.' }
   }
 
+  let saved = true
+  let saveFailure: ReturnType<typeof diagnoseDbError> | undefined
   try {
     await db.insert(leads).values({
       name,
@@ -43,18 +46,32 @@ export async function submitContactForm(formData: FormData): Promise<ActionResul
       company: company || null,
       message: message || null,
     })
-  } catch {
+  } catch (error) {
+    saved = false
+    saveFailure = diagnoseDbError(error)
+  }
+
+  // The team notification doubles as the backup copy when the save failed. Each email is settled separately so one
+  // failing (e.g. an unverified sender) never stops the other, and every failure is logged as one JSON line.
+  const lead = { name, email, company, message, saved }
+  const [notification, confirmation] = await Promise.allSettled([
+    sendContactNotification(lead),
+    sendContactConfirmation(lead),
+  ])
+  const emailedInstead = notification.status === 'fulfilled' && notification.value != null
+
+  if (saveFailure) {
+    console.error(JSON.stringify({ event: 'lead_save_error', ...saveFailure, emailedInstead }))
+  }
+  for (const [kind, result] of [['contact_notification', notification], ['contact_confirmation', confirmation]] as const) {
+    if (result.status === 'rejected') {
+      const reason = result.reason instanceof Error ? result.reason.message : String(result.reason)
+      console.error(JSON.stringify({ event: 'email_send_error', email: kind, message: reason }))
+    }
+  }
+
+  if (!saved && !emailedInstead) {
     return { success: false, error: 'Something went wrong saving your message. Please try again.' }
   }
-
-  try {
-    await Promise.all([
-      sendContactNotification({ name, email, company, message }),
-      sendContactConfirmation({ name, email, company, message }),
-    ])
-  } catch (emailError) {
-    console.error('Contact form email send failed:', emailError)
-  }
-
   return { success: true }
 }

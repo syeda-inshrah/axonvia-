@@ -7,6 +7,7 @@ import { sendNewsletterWelcome } from '@/lib/email'
 import { headers } from 'next/headers'
 import { allowSubmission, looksAutomated } from '@/lib/spam'
 import { clientIp } from '@/lib/client-ip'
+import { diagnoseDbError } from '@/lib/db/diagnose'
 import type { ActionResult } from '@/app/actions/contact'
 
 export async function subscribeNewsletter(formData: FormData): Promise<ActionResult> {
@@ -28,14 +29,16 @@ export async function subscribeNewsletter(formData: FormData): Promise<ActionRes
       .insert(newsletterSubscribers)
       .values({ email, status: 'subscribed' })
       .onConflictDoUpdate({ target: newsletterSubscribers.email, set: { status: 'subscribed' } })
-  } catch {
+  } catch (error) {
+    console.error(JSON.stringify({ event: 'subscriber_save_error', ...diagnoseDbError(error) }))
     return { success: false, error: 'Something went wrong subscribing. Please try again.' }
   }
 
   try {
     await sendNewsletterWelcome(email)
   } catch (emailError) {
-    console.error('Newsletter welcome email failed:', emailError)
+    const message = emailError instanceof Error ? emailError.message : String(emailError)
+    console.error(JSON.stringify({ event: 'email_send_error', email: 'newsletter_welcome', message }))
   }
 
   return { success: true }

@@ -4,8 +4,8 @@ const values = vi.fn(async () => {})
 const insert = vi.fn(() => ({ values }))
 vi.mock('@/lib/db', () => ({ db: { insert } }))
 
-const sendContactNotification = vi.fn(async () => {})
-const sendContactConfirmation = vi.fn(async () => {})
+const sendContactNotification = vi.fn<(lead: unknown) => Promise<unknown>>(async () => ({ id: 'email_1' }))
+const sendContactConfirmation = vi.fn<(lead: unknown) => Promise<unknown>>(async () => ({ id: 'email_2' }))
 vi.mock('@/lib/email', () => ({ sendContactNotification, sendContactConfirmation }))
 
 const requestIp = vi.hoisted(() => ({ value: '203.0.113.7' }))
@@ -50,14 +50,45 @@ describe('submitContactForm', () => {
     expect(sendContactConfirmation).toHaveBeenCalled()
   })
 
-  it('returns an error when the database insert throws', async () => {
-    values.mockRejectedValueOnce(new Error('db down'))
+  it('logs a failed save, then still emails the enquiry to the team so it is not lost', async () => {
+    values.mockRejectedValueOnce(Object.assign(new Error('relation "leads" does not exist'), { code: '42P01' }))
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
     const { submitContactForm } = await import('./contact')
-    const result = await submitContactForm(
-      formDataFrom({ name: 'Jane', email: 'jane@example.com' })
-    )
+    const result = await submitContactForm(formDataFrom({ name: 'Jane', email: 'jane@example.com', message: 'Hi' }))
+
+    expect(result).toEqual({ success: true })
+    expect(sendContactNotification).toHaveBeenCalledWith(expect.objectContaining({ email: 'jane@example.com', saved: false }))
+    const logged = JSON.parse(String(error.mock.calls[0][0]))
+    expect(logged).toMatchObject({ event: 'lead_save_error', kind: 'missing_table', emailedInstead: true })
+    error.mockRestore()
+  })
+
+  it('tells the visitor to try again only when the enquiry was neither saved nor emailed', async () => {
+    values.mockRejectedValueOnce(new Error('db down'))
+    sendContactNotification.mockResolvedValueOnce(null) // email not configured
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { submitContactForm } = await import('./contact')
+    const result = await submitContactForm(formDataFrom({ name: 'Jane', email: 'jane@example.com' }))
 
     expect(result.success).toBe(false)
+    expect(JSON.parse(String(error.mock.calls[0][0]))).toMatchObject({ event: 'lead_save_error', emailedInstead: false })
+    error.mockRestore()
+  })
+
+  it('keeps the saved lead and sends the confirmation even when the team notification fails, and logs it', async () => {
+    sendContactNotification.mockRejectedValueOnce(new Error('domain is not verified'))
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { submitContactForm } = await import('./contact')
+    const result = await submitContactForm(formDataFrom({ name: 'Jane', email: 'jane@example.com' }))
+
+    expect(result).toEqual({ success: true })
+    expect(sendContactConfirmation).toHaveBeenCalled()
+    expect(JSON.parse(String(error.mock.calls[0][0]))).toMatchObject({
+      event: 'email_send_error',
+      email: 'contact_notification',
+      message: 'domain is not verified',
+    })
+    error.mockRestore()
   })
 
   it('silently drops a submission that filled the honeypot: reports success, saves nothing, emails nobody', async () => {

@@ -24,23 +24,39 @@ export interface LeadEmailPayload {
   email: string
   company?: string
   message?: string
+  /** False when the lead could not be written to the database, so this email is the only copy. */
+  saved?: boolean
+}
+
+type EmailMessage = Parameters<Resend['emails']['send']>[0]
+
+// Resend reports a rejected email (unverified domain, bad address, quota) in the result instead of throwing;
+// turn that into an error so callers can log it rather than assume it was sent.
+async function deliver(resend: Resend, message: EmailMessage) {
+  const { data, error } = await resend.emails.send(message)
+  if (error) throw new Error(error.message)
+  return data
 }
 
 export async function sendContactNotification(lead: LeadEmailPayload) {
   const resend = emailClient()
   if (!resend) return null
-  return resend.emails.send({
+  return deliver(resend, {
     from: FROM_EMAIL,
     to: ADMIN_EMAIL,
-    subject: `New lead: ${lead.name}`,
-    text: `Name: ${lead.name}\nEmail: ${lead.email}\nCompany: ${lead.company ?? '—'}\nMessage: ${lead.message ?? '—'}`,
+    // Replying to the notification answers the lead directly.
+    replyTo: lead.email,
+    subject: `${lead.saved === false ? '[Not saved] ' : ''}New lead: ${lead.name}`,
+    text:
+      (lead.saved === false ? 'This enquiry could NOT be saved to the database, so this email is the only copy.\n\n' : '') +
+      `Name: ${lead.name}\nEmail: ${lead.email}\nCompany: ${lead.company ?? '—'}\nMessage: ${lead.message ?? '—'}`,
   })
 }
 
 export async function sendContactConfirmation(lead: LeadEmailPayload) {
   const resend = emailClient()
   if (!resend) return null
-  return resend.emails.send({
+  return deliver(resend, {
     from: FROM_EMAIL,
     to: lead.email,
     subject: 'We received your message — Axonvia',
@@ -52,7 +68,7 @@ export async function sendNewsletterWelcome(email: string) {
   const resend = emailClient()
   if (!resend) return null
   const unsubscribe = unsubscribeUrl(email)
-  return resend.emails.send({
+  return deliver(resend, {
     from: FROM_EMAIL,
     to: email,
     subject: "You're subscribed — Axonvia",
