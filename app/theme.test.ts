@@ -56,12 +56,15 @@ describe('theme tokens', () => {
 describe('components follow the theme tokens', () => {
   // Hard-coded colours from the old dark theme that would break on a white page.
   const DARK_THEME_COLOURS = [/#05070D/i, /#0A0E1A/i, /#0F1420/i, /rgba\(5,7,13/, /rgba\(15,20,32/, /rgba\(255,255,255,0\.0\d\)/, /text-red-400/]
+  // The admin sign-in screen is deliberately dark navy (its own palette, not the site's light theme), so faint white
+  // highlights are correct there.
+  const DARK_BY_DESIGN = [/components[\\/]admin[\\/]Login(Form|Screen)\.tsx$/]
 
   function sourceFiles(dir: string): string[] {
     return readdirSync(dir).flatMap((entry) => {
       const full = path.join(dir, entry)
       if (statSync(full).isDirectory()) return sourceFiles(full)
-      return /\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry) ? [full] : []
+      return /\.tsx?$/.test(entry) && !/\.test\.tsx?$/.test(entry) && !DARK_BY_DESIGN.some((p) => p.test(full)) ? [full] : []
     })
   }
 
